@@ -5,10 +5,17 @@
       <div class="logo-section">
         <a href="/" class="logo">
           <img 
-            :src="customLogo || '/aiworkspace-logo.svg'" 
+            v-if="customLogo"
+            :src="customLogo" 
             alt="AIWorkspace" 
             class="logo-image"
           />
+          <div v-else class="default-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="32" height="32" rx="6" fill="#3B82F6"/>
+              <text x="16" y="22" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">A</text>
+            </svg>
+          </div>
           <span class="logo-text">AIWorkspace</span>
         </a>
       </div>
@@ -89,11 +96,11 @@ const props = withDefaults(defineProps<HeaderProps>(), {
 
 // Default navigation links for AIWorkspace
 const defaultNavigation = [
-  { label: 'Dashboard', url: '/dashboard' },
-  { label: 'Goals', url: '/goals' },
-  { label: 'Tasks', url: '/tasks' },
-  { label: 'Analytics', url: '/analytics' },
-  { label: 'Settings', url: '/settings' }
+  { label: 'Dashboard', url: '/dashboard', external: false },
+  { label: 'Goals', url: '/goals', external: false },
+  { label: 'Tasks', url: '/tasks', external: false },
+  { label: 'Analytics', url: '/analytics', external: false },
+  { label: 'Settings', url: '/settings', external: false }
 ]
 
 // Use custom links if provided, otherwise use defaults
@@ -172,10 +179,13 @@ onUnmounted(() => {
   font-size: 1.25rem;
 }
 
-.logo-image {
+.logo-image,
+.default-logo {
   height: 32px;
   width: auto;
   margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .logo-text {

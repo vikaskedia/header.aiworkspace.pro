@@ -1,64 +1,67 @@
-import { ref as L, onMounted as y, defineComponent as A, computed as C, onUnmounted as U, openBlock as a, createElementBlock as n, createElementVNode as e, Fragment as I, renderList as E, toDisplayString as k, createCommentVNode as m, unref as i } from "vue";
-const b = "aiworkspace_auth", w = "aiworkspace_user_id";
-function T() {
-  const r = L({
+import { ref as y, onMounted as A, defineComponent as L, computed as x, onUnmounted as C, openBlock as n, createElementBlock as a, createElementVNode as e, Fragment as U, renderList as I, toDisplayString as m, createCommentVNode as k, unref as i } from "vue";
+const w = "aiworkspace_auth", b = "aiworkspace_user_id";
+function E() {
+  const l = y({
     user: null,
     isAuthenticated: !1,
     isLoading: !0
-  }), l = (t) => {
-    var c;
-    const g = `; ${document.cookie}`.split(`; ${t}=`);
-    return g.length === 2 && ((c = g.pop()) == null ? void 0 : c.split(";").shift()) || null;
-  }, p = (t, d, g = 7) => {
-    const c = /* @__PURE__ */ new Date();
-    c.setTime(c.getTime() + g * 24 * 60 * 60 * 1e3), document.cookie = `${t}=${d};expires=${c.toUTCString()};path=/;domain=.aiworkspace.pro`;
-  }, u = (t) => {
+  }), r = (t) => {
+    var u;
+    const p = `; ${document.cookie}`.split(`; ${t}=`);
+    return p.length === 2 && ((u = p.pop()) == null ? void 0 : u.split(";").shift()) || null;
+  }, g = (t, d, p = 7) => {
+    const u = /* @__PURE__ */ new Date();
+    u.setTime(u.getTime() + p * 24 * 60 * 60 * 1e3), document.cookie = `${t}=${d};expires=${u.toUTCString()};path=/;domain=.aiworkspace.pro`;
+  }, c = (t) => {
     document.cookie = `${t}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.aiworkspace.pro`;
   }, s = async () => {
     try {
-      const t = l(b), d = l(w);
-      t && d ? r.value = {
+      const t = r(w), d = r(b);
+      t && d ? l.value = {
         user: { id: d, email: "" },
         // You can fetch full user data here
         isAuthenticated: !0,
         isLoading: !1
-      } : r.value = {
+      } : l.value = {
         user: null,
         isAuthenticated: !1,
         isLoading: !1
       };
     } catch (t) {
-      console.error("Auth check failed:", t), r.value = {
+      console.error("Auth check failed:", t), l.value = {
         user: null,
         isAuthenticated: !1,
         isLoading: !1
       };
     }
-  }, f = () => {
-    u(b), u(w), r.value = {
+  }, _ = () => {
+    c(w), c(b), l.value = {
       user: null,
       isAuthenticated: !1,
       isLoading: !1
     };
   };
-  return y(() => {
+  return A(() => {
     s();
   }), {
-    authState: r,
+    authState: l,
     checkAuth: s,
-    logout: f,
-    getCookie: l,
-    setCookie: p,
-    clearCookie: u
+    logout: _,
+    getCookie: r,
+    setCookie: g,
+    clearCookie: c
   };
 }
-const N = { class: "aiworkspace-header" }, S = { class: "header-container" }, D = { class: "logo-section" }, x = {
+const T = { class: "aiworkspace-header" }, N = { class: "header-container" }, S = { class: "logo-section" }, D = {
   href: "/",
   class: "logo"
-}, M = ["src"], $ = { class: "nav-links" }, O = ["href", "target"], W = { class: "right-section" }, B = {
+}, B = ["src"], M = {
+  key: 1,
+  class: "default-logo"
+}, $ = { class: "nav-links" }, O = ["href", "target"], W = { class: "right-section" }, H = {
   key: 1,
   class: "user-section"
-}, H = {
+}, F = {
   key: 0,
   class: "loading-spinner"
 }, G = {
@@ -67,13 +70,13 @@ const N = { class: "aiworkspace-header" }, S = { class: "header-container" }, D 
 }, K = ["src", "alt"], V = {
   key: 1,
   class: "user-avatar-placeholder"
-}, F = { class: "user-name" }, J = {
+}, z = { class: "user-name" }, J = {
   key: 0,
   class: "user-dropdown"
 }, P = {
   key: 2,
   class: "auth-buttons"
-}, R = /* @__PURE__ */ A({
+}, R = /* @__PURE__ */ L({
   __name: "AIWorkspaceHeader",
   props: {
     showUserMenu: { type: Boolean, default: !0 },
@@ -81,84 +84,109 @@ const N = { class: "aiworkspace-header" }, S = { class: "header-container" }, D 
     customLogo: { default: "" },
     customLinks: { default: () => [] }
   },
-  setup(r) {
-    const l = r, p = [
-      { label: "Dashboard", url: "/dashboard" },
-      { label: "Goals", url: "/goals" },
-      { label: "Tasks", url: "/tasks" },
-      { label: "Analytics", url: "/analytics" },
-      { label: "Settings", url: "/settings" }
-    ], u = C(() => l.customLinks && l.customLinks.length > 0 ? l.customLinks : p), { authState: s, logout: f } = T(), t = L(!1), d = () => {
+  setup(l) {
+    const r = l, g = [
+      { label: "Dashboard", url: "/dashboard", external: !1 },
+      { label: "Goals", url: "/goals", external: !1 },
+      { label: "Tasks", url: "/tasks", external: !1 },
+      { label: "Analytics", url: "/analytics", external: !1 },
+      { label: "Settings", url: "/settings", external: !1 }
+    ], c = x(() => r.customLinks && r.customLinks.length > 0 ? r.customLinks : g), { authState: s, logout: _ } = E(), t = y(!1), d = () => {
       t.value = !t.value;
-    }, g = () => {
+    }, p = () => {
       console.log("Toggle notifications");
-    }, c = () => {
-      f(), t.value = !1;
+    }, u = () => {
+      _(), t.value = !1;
     }, v = (h) => {
       h.target.closest(".user-menu") || (t.value = !1);
     };
-    return y(() => {
+    return A(() => {
       document.addEventListener("click", v);
-    }), U(() => {
+    }), C(() => {
       document.removeEventListener("click", v);
-    }), (h, o) => (a(), n("header", N, [
-      e("div", S, [
-        e("div", D, [
-          e("a", x, [
-            e("img", {
-              src: h.customLogo || "/aiworkspace-logo.svg",
+    }), (h, o) => (n(), a("header", T, [
+      e("div", N, [
+        e("div", S, [
+          e("a", D, [
+            h.customLogo ? (n(), a("img", {
+              key: 0,
+              src: h.customLogo,
               alt: "AIWorkspace",
               class: "logo-image"
-            }, null, 8, M),
-            o[0] || (o[0] = e("span", { class: "logo-text" }, "AIWorkspace", -1))
+            }, null, 8, B)) : (n(), a("div", M, [...o[0] || (o[0] = [
+              e("svg", {
+                width: "32",
+                height: "32",
+                viewBox: "0 0 32 32",
+                fill: "none",
+                xmlns: "http://www.w3.org/2000/svg"
+              }, [
+                e("rect", {
+                  width: "32",
+                  height: "32",
+                  rx: "6",
+                  fill: "#3B82F6"
+                }),
+                e("text", {
+                  x: "16",
+                  y: "22",
+                  "font-family": "Arial, sans-serif",
+                  "font-size": "18",
+                  "font-weight": "bold",
+                  "text-anchor": "middle",
+                  fill: "white"
+                }, "A")
+              ], -1)
+            ])])),
+            o[1] || (o[1] = e("span", { class: "logo-text" }, "AIWorkspace", -1))
           ])
         ]),
         e("nav", $, [
-          (a(!0), n(I, null, E(u.value, (_) => (a(), n("a", {
-            key: _.label,
-            href: _.url,
-            target: _.external ? "_blank" : void 0,
+          (n(!0), a(U, null, I(c.value, (f) => (n(), a("a", {
+            key: f.label,
+            href: f.url,
+            target: f.external ? "_blank" : void 0,
             class: "nav-link"
-          }, k(_.label), 9, O))), 128))
+          }, m(f.label), 9, O))), 128))
         ]),
         e("div", W, [
-          h.showNotifications ? (a(), n("button", {
+          h.showNotifications ? (n(), a("button", {
             key: 0,
             class: "notification-btn",
-            onClick: g
-          }, [...o[1] || (o[1] = [
+            onClick: p
+          }, [...o[2] || (o[2] = [
             e("span", { class: "notification-icon" }, "🔔", -1)
-          ])])) : m("", !0),
-          h.showUserMenu ? (a(), n("div", B, [
-            i(s).isLoading ? (a(), n("div", H, " Loading... ")) : i(s).isAuthenticated && i(s).user ? (a(), n("div", G, [
+          ])])) : k("", !0),
+          h.showUserMenu ? (n(), a("div", H, [
+            i(s).isLoading ? (n(), a("div", F, " Loading... ")) : i(s).isAuthenticated && i(s).user ? (n(), a("div", G, [
               e("button", {
                 class: "user-button",
                 onClick: d
               }, [
-                i(s).user.avatar_url ? (a(), n("img", {
+                i(s).user.avatar_url ? (n(), a("img", {
                   key: 0,
                   src: i(s).user.avatar_url,
                   alt: i(s).user.name || "User",
                   class: "user-avatar"
-                }, null, 8, K)) : (a(), n("span", V, k((i(s).user.name || i(s).user.email).charAt(0).toUpperCase()), 1)),
-                e("span", F, k(i(s).user.name || i(s).user.email), 1),
-                o[2] || (o[2] = e("span", { class: "dropdown-arrow" }, "▼", -1))
+                }, null, 8, K)) : (n(), a("span", V, m((i(s).user.name || i(s).user.email).charAt(0).toUpperCase()), 1)),
+                e("span", z, m(i(s).user.name || i(s).user.email), 1),
+                o[3] || (o[3] = e("span", { class: "dropdown-arrow" }, "▼", -1))
               ]),
-              t.value ? (a(), n("div", J, [
-                o[3] || (o[3] = e("a", {
+              t.value ? (n(), a("div", J, [
+                o[4] || (o[4] = e("a", {
                   href: "/profile",
                   class: "dropdown-item"
                 }, "Profile", -1)),
-                o[4] || (o[4] = e("a", {
+                o[5] || (o[5] = e("a", {
                   href: "/settings",
                   class: "dropdown-item"
                 }, "Settings", -1)),
                 e("button", {
-                  onClick: c,
+                  onClick: u,
                   class: "dropdown-item logout-btn"
                 }, "Logout")
-              ])) : m("", !0)
-            ])) : (a(), n("div", P, [...o[5] || (o[5] = [
+              ])) : k("", !0)
+            ])) : (n(), a("div", P, [...o[6] || (o[6] = [
               e("a", {
                 href: "/login",
                 class: "auth-btn login-btn"
@@ -168,19 +196,19 @@ const N = { class: "aiworkspace-header" }, S = { class: "header-container" }, D 
                 class: "auth-btn signup-btn"
               }, "Sign Up", -1)
             ])]))
-          ])) : m("", !0)
+          ])) : k("", !0)
         ])
       ])
     ]));
   }
 });
-const j = (r, l) => {
-  const p = r.__vccOpts || r;
-  for (const [u, s] of l)
-    p[u] = s;
-  return p;
-}, z = /* @__PURE__ */ j(R, [["__scopeId", "data-v-bbacf2a6"]]);
+const j = (l, r) => {
+  const g = l.__vccOpts || l;
+  for (const [c, s] of r)
+    g[c] = s;
+  return g;
+}, Q = /* @__PURE__ */ j(R, [["__scopeId", "data-v-e8e5bb78"]]);
 export {
-  z as AIWorkspaceHeader,
-  T as useAuth
+  Q as AIWorkspaceHeader,
+  E as useAuth
 };
