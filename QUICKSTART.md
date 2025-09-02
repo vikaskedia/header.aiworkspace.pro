@@ -75,6 +75,11 @@ const appNavigation = [
   { label: 'Features', url: '/features' }
 ]
 </script>
+
+<style>
+/* Import the header styles */
+@import '@aiworkspace/shared-header/style.css';
+</style>
 ```
 
 ### 3. Update Authentication

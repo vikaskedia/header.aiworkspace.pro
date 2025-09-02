@@ -59,6 +59,7 @@
             <li>Install: <code>npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git</code></li>
             <li>Import: <code>import { AIWorkspaceHeader } from '@aiworkspace/shared-header'</code></li>
             <li>Use: <code>&lt;AIWorkspaceHeader /&gt;</code></li>
+            <li><strong>Important:</strong> Import CSS: <code>@import '@aiworkspace/shared-header/style.css';</code></li>
           </ol>
           
           <h3>Method 2: Local Development with npm link</h3>
@@ -66,6 +67,7 @@
             <li>In header repo: <code>npm link</code></li>
             <li>In your app: <code>npm link @aiworkspace/shared-header</code></li>
             <li>Import and use as above</li>
+            <li><strong>Important:</strong> Import CSS: <code>@import '@aiworkspace/shared-header/style.css';</code></li>
           </ol>
           
           <h3>Method 3: Publish to NPM (For Team Use)</h3>
@@ -73,7 +75,24 @@
             <li>Publish: <code>npm publish --access public</code></li>
             <li>Install: <code>npm install @aiworkspace/shared-header</code></li>
             <li>Import and use as above</li>
+            <li><strong>Important:</strong> Import CSS: <code>@import '@aiworkspace/shared-header/style.css';</code></li>
           </ol>
+          
+          <h3>Complete Example:</h3>
+          <pre><code>&lt;template&gt;
+  &lt;div&gt;
+    &lt;AIWorkspaceHeader /&gt;
+    &lt;!-- Your app content --&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
+&lt;/script&gt;
+
+&lt;style&gt;
+@import '@aiworkspace/shared-header/style.css';
+&lt;/style&gt;</code></pre>
         </section>
       </div>
     </main>

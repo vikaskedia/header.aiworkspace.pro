@@ -38,7 +38,11 @@ const appNavigation = [
   { label: 'Analytics', url: '/analytics' }
 ]
 </script>
-```
+
+<style>
+/* Import the header styles */
+@import '@aiworkspace/shared-header/style.css';
+</style>
 
 ## 🔄 **Development Workflow**
 

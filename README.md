@@ -60,6 +60,11 @@ npm install @aiworkspace/shared-header
 <script setup>
 import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 </script>
+
+<style>
+/* Import the header styles */
+@import '@aiworkspace/shared-header/style.css';
+</style>
 ```
 
 ### Advanced Configuration
@@ -83,6 +88,11 @@ import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 <script setup>
 import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 </script>
+
+<style>
+/* Import the header styles */
+@import '@aiworkspace/shared-header/style.css';
+</style>
 ```
 
 ## Authentication Setup
@@ -249,6 +259,17 @@ git submodule add https://github.com/aiworkspace/header.aiworkspace.pro.git shar
 2. **Styling conflicts**: Use scoped styles in the header component
 3. **Router conflicts**: Ensure Vue Router is properly configured in each app
 4. **Build errors**: Check Vue version compatibility
+
+### CSS/Styling Issues
+
+1. **Header shows but no styling**: Import CSS file in your app
+   ```css
+   @import '@aiworkspace/shared-header/style.css';
+   ```
+
+2. **Logo appears twice**: CSS not loaded properly
+3. **Layout broken**: Check if CSS import path is correct
+4. **Styles not applying**: Ensure CSS import is in the right component
 
 ### Support
 
