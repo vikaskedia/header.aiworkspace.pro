@@ -1,0 +1,35 @@
+{
+  "name": "@aiworkspace/shared-header",
+  "version": "1.0.0",
+  "description": "Shared header component for AIWorkspace small apps",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "vue": "^3.3.0",
+    "vite": "^4.4.0",
+    "@vitejs/plugin-vue": "^4.3.0",
+    "typescript": "^5.0.0",
+    "@vue/tsconfig": "^0.4.0",
+    "vue-router": "^4.2.0"
+  },
+  "keywords": [
+    "vue",
+    "header",
+    "component",
+    "aiworkspace"
+  ],
+  "author": "Vikas Kedia <kedia.vikas@gmail.com>",
+  "license": "MIT"
+}
