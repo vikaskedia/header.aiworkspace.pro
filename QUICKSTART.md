@@ -25,9 +25,22 @@ npm publish --access public
 ## Phase 2: Update Each App (2 minutes per app)
 
 ### 1. Install Package
+
+**Option A: Install from GitHub (Recommended)**
 ```bash
 cd your-app-directory
-npm install @aiworkspace/shared-header
+npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git
+```
+
+**Option B: Local Development**
+```bash
+# In header repo
+cd header.aiworkspace.pro
+npm link
+
+# In your app
+cd your-app-directory
+npm link @aiworkspace/shared-header
 ```
 
 ### 2. Replace Header Component

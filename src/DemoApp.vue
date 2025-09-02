@@ -53,10 +53,26 @@
         <section class="demo-section">
           <h2>Integration Instructions</h2>
           <p>To use this header in your app:</p>
+          
+          <h3>Method 1: Install from GitHub (Recommended)</h3>
           <ol>
-            <li>Install: <code>npm install @aiworkspace/shared-header</code></li>
+            <li>Install: <code>npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git</code></li>
             <li>Import: <code>import { AIWorkspaceHeader } from '@aiworkspace/shared-header'</code></li>
             <li>Use: <code>&lt;AIWorkspaceHeader /&gt;</code></li>
+          </ol>
+          
+          <h3>Method 2: Local Development with npm link</h3>
+          <ol>
+            <li>In header repo: <code>npm link</code></li>
+            <li>In your app: <code>npm link @aiworkspace/shared-header</code></li>
+            <li>Import and use as above</li>
+          </ol>
+          
+          <h3>Method 3: Publish to NPM (For Team Use)</h3>
+          <ol>
+            <li>Publish: <code>npm publish --access public</code></li>
+            <li>Install: <code>npm install @aiworkspace/shared-header</code></li>
+            <li>Import and use as above</li>
           </ol>
         </section>
       </div>

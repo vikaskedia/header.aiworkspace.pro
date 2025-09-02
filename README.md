@@ -22,7 +22,26 @@ npm publish --access public
 
 ### 2. Install in Each App
 
+**Option A: Install from GitHub (Recommended)**
 ```bash
+npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git
+```
+
+**Option B: Local Development with npm link**
+```bash
+# In header repo
+npm link
+
+# In each app
+npm link @aiworkspace/shared-header
+```
+
+**Option C: Publish to NPM (For Team Use)**
+```bash
+# First publish
+npm publish --access public
+
+# Then install in apps
 npm install @aiworkspace/shared-header
 ```
 
