@@ -1,3 +1,11 @@
+// Import CSS for styling
+import './components/AIWorkspaceHeader.vue'
+
+// Export components
 export { default as AIWorkspaceHeader } from './components/AIWorkspaceHeader.vue'
+
+// Export composables
 export { useAuth } from './composables/useAuth'
-export type { User, AuthState } from './types'
+
+// Export types
+export type { User, AuthState, HeaderProps } from './types'

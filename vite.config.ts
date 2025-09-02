@@ -22,7 +22,11 @@ export default defineConfig(({ command }) => {
         lib: {
           entry: resolve(__dirname, 'src/index.ts'),
           name: 'AIWorkspaceHeader',
-          fileName: (format) => `index.${format === 'es' ? 'esm' : format}.js`
+          fileName: (format) => {
+            if (format === 'es') return 'index.esm.js'
+            if (format === 'umd') return 'index.js'
+            return `index.${format}.js`
+          }
         },
         rollupOptions: {
           external: ['vue'],
