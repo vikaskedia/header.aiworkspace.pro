@@ -14,43 +14,6 @@
       
       <div class="demo-sections">
         <section class="demo-section">
-          <h2>Features Demonstrated</h2>
-          <ul>
-            <li>✅ Responsive header design</li>
-            <li>✅ Authentication state management</li>
-            <li>✅ Custom navigation links</li>
-            <li>✅ User menu with dropdown</li>
-            <li>✅ Notifications button</li>
-            <li>✅ Router integration</li>
-          </ul>
-        </section>
-        
-        <section class="demo-section">
-          <h2>Navigation Links</h2>
-          <p>Custom navigation links configured for this demo:</p>
-          <nav class="demo-nav">
-            <router-link 
-              v-for="link in demoNavigation" 
-              :key="link.label"
-              :to="link.url"
-              class="demo-nav-link"
-            >
-              {{ link.label }}
-            </router-link>
-          </nav>
-        </section>
-        
-        <section class="demo-section">
-          <h2>Authentication Testing</h2>
-          <p>Try these actions to test the header:</p>
-          <div class="demo-actions">
-            <button @click="simulateLogin" class="demo-btn login-btn">Simulate Login</button>
-            <button @click="simulateLogout" class="demo-btn logout-btn">Simulate Logout</button>
-            <button @click="toggleNotifications" class="demo-btn">Toggle Notifications</button>
-          </div>
-        </section>
-        
-        <section class="demo-section">
           <h2>Integration Instructions</h2>
           <p>To use this header in your app:</p>
           
@@ -108,30 +71,6 @@ import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 &lt;/template&gt;</code></pre>
         </section>
         
-        <section class="demo-section">
-          <h2>Simple Usage (No Parameters)</h2>
-          <p>You can now use the header without any parameters - it comes with default AIWorkspace branding:</p>
-          
-          <div style="margin: 1rem 0; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
-            <AIWorkspaceHeader />
-          </div>
-          
-          <p><strong>Code:</strong></p>
-          <pre><code>&lt;template&gt;
-  &lt;div&gt;
-    &lt;AIWorkspaceHeader /&gt;
-    &lt;!-- Your app content --&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script setup&gt;
-import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
-&lt;/script&gt;
-
-&lt;style&gt;
-@import '@aiworkspace/shared-header/style.css';
-&lt;/style&gt;</code></pre>
-        </section>
       </div>
     </main>
   </div>
