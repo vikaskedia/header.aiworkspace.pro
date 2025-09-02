@@ -4,7 +4,13 @@
   "description": "Shared header component for AIWorkspace small apps",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
   "files": [
     "dist"
   ],

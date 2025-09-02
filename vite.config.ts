@@ -35,7 +35,8 @@ export default defineConfig(({ command }) => {
               vue: 'Vue'
             }
           }
-        }
+        },
+        cssCodeSplit: false
       }
     }
   }

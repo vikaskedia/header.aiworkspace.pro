@@ -1,6 +1,3 @@
-// Import CSS for styling
-import './components/AIWorkspaceHeader.vue'
-
 // Export components
 export { default as AIWorkspaceHeader } from './components/AIWorkspaceHeader.vue'
 
