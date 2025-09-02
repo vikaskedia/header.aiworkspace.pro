@@ -78,7 +78,45 @@
             <li><strong>Important:</strong> Import CSS: <code>@import '@aiworkspace/shared-header/style.css';</code></li>
           </ol>
           
-          <h3>Complete Example:</h3>
+          <h3>Simple Usage (No Parameters):</h3>
+          <pre><code>&lt;template&gt;
+  &lt;div&gt;
+    &lt;AIWorkspaceHeader /&gt;
+    &lt;!-- Your app content --&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
+&lt;/script&gt;
+
+&lt;style&gt;
+@import '@aiworkspace/shared-header/style.css';
+&lt;/style&gt;</code></pre>
+          
+          <h3>Customized Usage (Optional):</h3>
+          <pre><code>&lt;template&gt;
+  &lt;div&gt;
+    &lt;AIWorkspaceHeader 
+      :custom-logo="/your-logo.svg"
+      :custom-links="[
+        { label: 'Home', url: '/' },
+        { label: 'Features', url: '/features' }
+      ]"
+    /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</code></pre>
+        </section>
+        
+        <section class="demo-section">
+          <h2>Simple Usage (No Parameters)</h2>
+          <p>You can now use the header without any parameters - it comes with default AIWorkspace branding:</p>
+          
+          <div style="margin: 1rem 0; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+            <AIWorkspaceHeader />
+          </div>
+          
+          <p><strong>Code:</strong></p>
           <pre><code>&lt;template&gt;
   &lt;div&gt;
     &lt;AIWorkspaceHeader /&gt;

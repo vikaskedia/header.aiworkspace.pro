@@ -67,6 +67,8 @@ import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 </style>
 ```
 
+**✨ No parameters needed!** The header comes with default AIWorkspace branding and navigation.
+
 ### Advanced Configuration
 
 ```vue

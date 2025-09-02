@@ -5,7 +5,7 @@
       <div class="logo-section">
         <a href="/" class="logo">
           <img 
-            :src="customLogo || '/logo.svg'" 
+            :src="customLogo || '/aiworkspace-logo.svg'" 
             alt="AIWorkspace" 
             class="logo-image"
           />
@@ -14,9 +14,9 @@
       </div>
 
       <!-- Navigation Links -->
-      <nav class="nav-links" v-if="customLinks && customLinks.length">
+      <nav class="nav-links">
         <a 
-          v-for="link in customLinks" 
+          v-for="link in navigationLinks" 
           :key="link.label"
           :href="link.url"
           :target="link.external ? '_blank' : undefined"
@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuth } from '../composables/useAuth'
 import type { HeaderProps } from '../types'
 
@@ -85,6 +85,22 @@ const props = withDefaults(defineProps<HeaderProps>(), {
   showNotifications: true,
   customLogo: '',
   customLinks: () => []
+})
+
+// Default navigation links for AIWorkspace
+const defaultNavigation = [
+  { label: 'Dashboard', url: '/dashboard' },
+  { label: 'Goals', url: '/goals' },
+  { label: 'Tasks', url: '/tasks' },
+  { label: 'Analytics', url: '/analytics' },
+  { label: 'Settings', url: '/settings' }
+]
+
+// Use custom links if provided, otherwise use defaults
+const navigationLinks = computed(() => {
+  return props.customLinks && props.customLinks.length > 0 
+    ? props.customLinks 
+    : defaultNavigation
 })
 
 const { authState, logout } = useAuth()
