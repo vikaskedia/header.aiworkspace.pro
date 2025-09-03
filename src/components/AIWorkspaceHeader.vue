@@ -90,7 +90,7 @@
                   :key="w.id"
                   :command="`workspace-${w.id}`"
                 >
-                  <a :href="`/single-workspace/${w.id}/dashboard`" class="nav-link" @click.prevent="switchWorkspace(w)">
+                  <a :href="`https://single-ws-dashboard.aiworkspace.pro/single-workspace/${w.id}/dashboard`" class="nav-link">
                     <div class="workspace-dropdown-item" :style="{ paddingLeft: ((w.level || 0) * 16) + 'px' }">
                       <span class="workspace-icon">{{ w.children && w.children.length ? '📁' : '📄' }}</span>
                       <span>{{ w.title }}</span>
