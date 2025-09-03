@@ -18,6 +18,10 @@ A comprehensive, production-ready header component for AIWorkspace applications 
 npm install @aiworkspace/shared-header
 ```
 
+> **Note**: This package supports both Pinia v2 and v3. If you encounter dependency conflicts, see the [Troubleshooting](#troubleshooting) section below.
+
+> **Library Note**: This is a library package, so `package-lock.json` is not committed. Dependencies are managed by the consuming application.
+
 ## Dependencies
 
 This package requires the following peer dependencies in your app:
@@ -25,6 +29,22 @@ This package requires the following peer dependencies in your app:
 ```bash
 npm install vue@^3.0.0 element-plus@^2.0.0 pinia@^2.0.0 @supabase/supabase-js@^2.0.0
 ```
+
+## Troubleshooting
+
+### Pinia Version Conflicts
+
+If you get errors like `peer pinia@"^2.0.0" from @aiworkspace/shared-header@1.0.0` when you have Pinia v3:
+
+**Quick Fix:**
+```bash
+npm install @aiworkspace/shared-header --legacy-peer-deps
+```
+
+**Alternative Solutions:**
+- Use Yarn: `yarn add @aiworkspace/shared-header`
+- Clear npm cache: `npm cache clean --force`
+- Check [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed solutions
 
 ## Quick Start
 

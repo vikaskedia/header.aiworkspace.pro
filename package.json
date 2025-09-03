@@ -22,7 +22,16 @@
   "peerDependencies": {
     "vue": "^3.0.0",
     "element-plus": "^2.0.0",
-    "pinia": "^2.0.0"
+    "pinia": "^2.0.0 || ^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "pinia": {
+      "optional": false
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0"
