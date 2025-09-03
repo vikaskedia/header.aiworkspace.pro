@@ -36,6 +36,11 @@ export interface HeaderProps {
   showWorkspaceSelector?: boolean
   showSecondaryNavigation?: boolean
   currentWorkspaceId?: string | number
+  onProfileClick?: () => void
+  onSettingsClick?: () => void
+  onWorkspaceChange?: (workspace: Workspace) => void
+  onLogout?: () => void
+  onLogin?: () => void
 }
 
 export interface NavigationItem {

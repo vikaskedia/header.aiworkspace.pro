@@ -285,13 +285,6 @@ onMounted(() => {
   }
 })
 
-// Watch for Pinia availability and retry
-watch(isPiniaReady, (ready) => {
-  if (!ready && piniaRetryCount.value < maxPiniaRetries) {
-    retryPiniaStore()
-  }
-})
-
 // Local state
 const workspaceSwitcherVisible = ref(false)
 const availableWorkspaces = ref<Workspace[]>([])
@@ -304,6 +297,85 @@ const userInfo = ref<{ name: string; email: string; avatar_url: string | null; i
 })
 const workspaceTree = ref<Workspace[]>([])
 const flattenedWorkspaces = ref<Workspace[]>([])
+
+// Watch for workspaces to be loaded and auto-select from URL
+watch(flattenedWorkspaces, async (workspaces) => {
+  if (workspaces.length > 0 && isPiniaReady.value && isAuthenticated.value) {
+    await autoSelectWorkspaceFromUrl()
+  }
+}, { immediate: false })
+
+// Watch for URL changes to auto-select workspace
+watch(() => window.location.pathname + window.location.search + window.location.hash, async () => {
+  if (isPiniaReady.value && isAuthenticated.value) {
+    await autoSelectWorkspaceFromUrl()
+  }
+}, { immediate: false })
+
+// Watch for Pinia availability and retry
+watch(isPiniaReady, (ready) => {
+  if (!ready && piniaRetryCount.value < maxPiniaRetries) {
+    retryPiniaStore()
+  }
+})
+
+// URL parameter detection and workspace selection
+const getWorkspaceIdFromUrl = () => {
+  try {
+    // Check for workspace_id in URL path (e.g., /single-workspace/3/dashboard)
+    const pathMatch = window.location.pathname.match(/\/single-workspace\/(\d+)/)
+    if (pathMatch) {
+      return pathMatch[1]
+    }
+    
+    // Check for workspace_id in URL search params
+    const urlParams = new URLSearchParams(window.location.search)
+    const workspaceId = urlParams.get('workspace_id')
+    if (workspaceId) {
+      return workspaceId
+    }
+    
+    // Check for workspace_id in URL hash
+    const hashMatch = window.location.hash.match(/workspace_id=(\d+)/)
+    if (hashMatch) {
+      return hashMatch[1]
+    }
+    
+    return null
+  } catch (error) {
+    console.warn('[AIWorkspaceHeader] Error parsing URL for workspace_id:', error)
+    return null
+  }
+}
+
+// Auto-select workspace based on URL
+const autoSelectWorkspaceFromUrl = async () => {
+  if (!workspaceStore.value || !isPiniaReady.value) return
+  
+  const urlWorkspaceId = getWorkspaceIdFromUrl()
+  if (!urlWorkspaceId) return
+  
+  try {
+    // Load workspaces if not already loaded
+    if (flattenedWorkspaces.value.length === 0) {
+      await loadWorkspaces()
+    }
+    
+    // Find and select the workspace from URL
+    const workspace = flattenedWorkspaces.value.find(w => w.id.toString() === urlWorkspaceId)
+    if (workspace) {
+      workspaceStore.value.setCurrentWorkspace(workspace)
+      console.log(`[AIWorkspaceHeader] Auto-selected workspace from URL: ${workspace.title} (ID: ${workspace.id})`)
+      
+      // Emit workspace change event
+      emit('workspaceChange', workspace)
+    } else {
+      console.warn(`[AIWorkspaceHeader] Workspace with ID ${urlWorkspaceId} not found in available workspaces`)
+    }
+  } catch (error) {
+    console.error('[AIWorkspaceHeader] Error auto-selecting workspace from URL:', error)
+  }
+}
 
 // Computed
 const isAuthenticated = computed(() => authState.value.isAuthenticated)
@@ -643,6 +715,7 @@ watch(() => props.currentWorkspaceId, (newId) => {
 onMounted(async () => {
   if (isAuthenticated.value) {
     await loadUserInfo()
+    await autoSelectWorkspaceFromUrl() // Auto-select workspace from URL on mount
   }
 })
 
