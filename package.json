@@ -1,7 +1,7 @@
 {
   "name": "@aiworkspace/shared-header",
   "version": "1.0.0",
-  "description": "Shared header component for AIWorkspace small apps",
+  "description": "Shared header component for AIWorkspace small apps with authentication, workspace management, and cross-subdomain support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "exports": {
@@ -20,7 +20,12 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "element-plus": "^2.0.0",
+    "pinia": "^2.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
   },
   "devDependencies": {
     "vue": "^3.3.0",
@@ -28,13 +33,20 @@
     "@vitejs/plugin-vue": "^4.3.0",
     "typescript": "^5.0.0",
     "@vue/tsconfig": "^0.4.0",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "element-plus": "^2.4.0",
+    "pinia": "^2.1.0",
+    "@element-plus/icons-vue": "^2.1.0"
   },
   "keywords": [
     "vue",
     "header",
     "component",
-    "aiworkspace"
+    "aiworkspace",
+    "authentication",
+    "workspace",
+    "supabase",
+    "cross-subdomain"
   ],
   "author": "Vikas Kedia <kedia.vikas@gmail.com>",
   "license": "MIT"

@@ -1,53 +1,34 @@
 # AIWorkspace Shared Header
 
-A shared header component for AIWorkspace small apps that handles authentication state and user management across multiple Vue.js applications.
+A comprehensive, production-ready header component for AIWorkspace applications with built-in authentication, workspace management, and cross-subdomain support.
 
 ## Features
 
-- 🔐 **Shared Authentication**: Uses cookies to maintain login state across all apps
-- 🎨 **Customizable**: Configurable logo, navigation links, and features
-- 📱 **Responsive**: Mobile-friendly design
-- 🚀 **TypeScript**: Full TypeScript support
-- 🔄 **Real-time Updates**: Automatic auth state synchronization
+- 🔐 **Built-in Authentication**: Integrated with Supabase for seamless user management
+- 🏢 **Workspace Management**: Hierarchical workspace selection and switching
+- 🌐 **Cross-Subdomain Support**: Seamless authentication across all aiworkspace.pro subdomains
+- 🎨 **Customizable UI**: Built with Element Plus for consistent, beautiful design
+- 📱 **Responsive Design**: Works perfectly on all device sizes
+- 🔄 **State Management**: Pinia store integration for workspace and user data
+- 🚀 **TypeScript Support**: Full type safety and IntelliSense support
 
 ## Installation
 
-### 1. Publish to NPM (Recommended)
-
 ```bash
-# In this repo
-npm login
-npm publish --access public
-```
-
-### 2. Install in Each App
-
-**Option A: Install from GitHub (Recommended)**
-```bash
-npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git
-```
-
-**Option B: Local Development with npm link**
-```bash
-# In header repo
-npm link
-
-# In each app
-npm link @aiworkspace/shared-header
-```
-
-**Option C: Publish to NPM (For Team Use)**
-```bash
-# First publish
-npm publish --access public
-
-# Then install in apps
 npm install @aiworkspace/shared-header
 ```
 
-## Usage
+## Dependencies
 
-### Basic Implementation
+This package requires the following peer dependencies in your app:
+
+```bash
+npm install vue@^3.0.0 element-plus@^2.0.0 pinia@^2.0.0 @supabase/supabase-js@^2.0.0
+```
+
+## Quick Start
+
+### Basic Usage
 
 ```vue
 <template>
@@ -62,225 +43,247 @@ import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 </script>
 
 <style>
-/* Import the header styles */
 @import '@aiworkspace/shared-header/style.css';
 </style>
 ```
 
-**✨ No parameters needed!** The header comes with default AIWorkspace branding and navigation.
+### With Environment Variables
 
-### Advanced Configuration
+Create a `.env` file in your app:
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_APEX_DOMAIN=aiworkspace.pro
+```
+
+## Advanced Usage
+
+### Customized Header
 
 ```vue
 <template>
-  <div>
-    <AIWorkspaceHeader 
-      :custom-logo="/custom-logo.svg"
-      :custom-links="[
-        { label: 'Dashboard', url: '/dashboard' },
-        { label: 'Analytics', url: '/analytics' },
-        { label: 'Docs', url: 'https://docs.aiworkspace.pro', external: true }
-      ]"
-      :show-notifications="true"
-      :show-user-menu="true"
-    />
-  </div>
+  <AIWorkspaceHeader 
+    :custom-logo="/your-logo.svg"
+    :show-workspace-selector="true"
+    :show-secondary-navigation="true"
+    :current-workspace-id="currentWorkspaceId"
+    @workspace-change="handleWorkspaceChange"
+    @logout="handleLogout"
+  />
 </template>
 
 <script setup>
 import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
+
+const currentWorkspaceId = ref('123')
+
+const handleWorkspaceChange = (workspace) => {
+  console.log('Workspace changed to:', workspace)
+}
+
+const handleLogout = () => {
+  console.log('User logged out')
+}
 </script>
-
-<style>
-/* Import the header styles */
-@import '@aiworkspace/shared-header/style.css';
-</style>
 ```
 
-## Authentication Setup
+### Using Composables
 
-### 1. Cookie Configuration
+```vue
+<script setup>
+import { useEnhancedAuth, useWorkspaceStore } from '@aiworkspace/shared-header'
 
-The header automatically manages these cookies:
-- `aiworkspace_auth`: Authentication token
-- `aiworkspace_user_id`: User ID
+const { authState, signIn, logout } = useEnhancedAuth()
+const { currentWorkspace, loadWorkspaces } = useWorkspaceStore()
 
-**Important**: Set the domain to `.aiworkspace.pro` to share across subdomains.
-
-### 2. Supabase Integration
-
-```typescript
-// In your auth service
-import { useAuth } from '@aiworkspace/shared-header'
-
-const { setCookie, clearCookie } = useAuth()
-
-// On successful login
-setCookie('aiworkspace_auth', supabaseToken)
-setCookie('aiworkspace_user_id', userId)
-
-// On logout
-clearCookie('aiworkspace_auth')
-clearCookie('aiworkspace_user_id')
-```
-
-### 3. Cross-App Navigation
-
-```typescript
-// Navigate between apps while maintaining auth state
-const navigateToApp = (appName: string) => {
-  const appUrls = {
-    'dashboard': 'https://dashboard.aiworkspace.pro',
-    'analytics': 'https://analytics.aiworkspace.pro',
-    'chat': 'https://chat.aiworkspace.pro'
+// Sign in user
+const handleSignIn = async () => {
+  const result = await signIn('user@example.com', 'password')
+  if (result.success) {
+    console.log('Signed in successfully')
   }
-  
-  window.location.href = appUrls[appName]
+}
+
+// Load workspaces
+onMounted(async () => {
+  await loadWorkspaces()
+})
+</script>
+```
+
+### Cross-Subdomain Authentication
+
+The header automatically handles authentication across all aiworkspace.pro subdomains:
+
+```javascript
+// In your app's main.js or main.ts
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)
+app.mount('#app')
+```
+
+## API Reference
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `showUserMenu` | `boolean` | `true` | Show/hide user menu |
+| `showNotifications` | `boolean` | `true` | Show/hide notifications |
+| `showWorkspaceSelector` | `boolean` | `true` | Show/hide workspace selector |
+| `showSecondaryNavigation` | `boolean` | `true` | Show/hide secondary navigation |
+| `customLogo` | `string` | `''` | Custom logo URL |
+| `customLinks` | `Array` | `[]` | Custom navigation links |
+| `currentWorkspaceId` | `string \| number` | `undefined` | Current workspace ID |
+
+### Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `workspace-change` | `Workspace` | Fired when workspace is changed |
+| `logout` | - | Fired when user logs out |
+| `login` | - | Fired when user logs in |
+| `profile-click` | - | Fired when profile is clicked |
+| `settings-click` | - | Fired when settings is clicked |
+
+### Composables
+
+#### `useEnhancedAuth()`
+
+Provides authentication state and methods:
+
+```typescript
+const {
+  authState,        // Reactive auth state
+  currentUser,      // Computed current user
+  isAuthenticated,  // Computed auth status
+  isLoading,        // Computed loading state
+  signIn,           // Sign in method
+  signUp,           // Sign up method
+  logout,           // Logout method
+  checkAuth         // Check auth status
+} = useEnhancedAuth()
+```
+
+#### `useWorkspaceStore()`
+
+Provides workspace management:
+
+```typescript
+const {
+  currentWorkspace,     // Current workspace
+  workspaces,           // All available workspaces
+  user,                 // Current user
+  setCurrentWorkspace,  // Set current workspace
+  loadWorkspaces,       // Load workspaces from API
+  clearData            // Clear all data
+} = useWorkspaceStore()
+```
+
+### Utilities
+
+#### `authRedirect` utilities
+
+```typescript
+import { 
+  setSessionCookie, 
+  getCookie, 
+  clearSessionCookie,
+  ensureCrossSubdomainCookies 
+} from '@aiworkspace/shared-header'
+
+// Set cross-subdomain cookie
+setSessionCookie('token-name', 'token-value')
+
+// Get cookie value
+const token = getCookie('token-name')
+
+// Clear cookie
+clearSessionCookie('token-name')
+
+// Ensure cookies are set for cross-subdomain access
+ensureCrossSubdomainCookies(['token1', 'token2'])
+```
+
+## Database Schema
+
+The header requires the following Supabase tables:
+
+```sql
+-- Workspaces table
+CREATE TABLE workspaces (
+  id BIGSERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  parent_workspace_id BIGINT REFERENCES workspaces(id),
+  created_by UUID REFERENCES auth.users(id),
+  archived BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Workspace access table
+CREATE TABLE workspace_access (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  workspace_id BIGINT REFERENCES workspaces(id),
+  access_type TEXT CHECK (access_type IN ('view', 'edit')),
+  status TEXT DEFAULT 'active',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Workspace activities table (optional)
+CREATE TABLE workspace_activities (
+  id BIGSERIAL PRIMARY KEY,
+  workspace_id BIGINT REFERENCES workspaces(id),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+```
+
+## Styling
+
+The header comes with built-in Element Plus styling. To customize:
+
+```css
+/* Override default styles */
+.aiworkspace-header {
+  --header-bg-color: #your-color;
+  --header-text-color: #your-color;
+}
+
+/* Custom workspace selector styles */
+.workspace-dropdown-item {
+  background-color: #your-color;
 }
 ```
 
-## App-Specific Customization
+## Browser Support
 
-### 1. Custom Navigation Links
+- Chrome 88+
+- Firefox 85+
+- Safari 14+
+- Edge 88+
 
-```typescript
-const appSpecificLinks = [
-  { label: 'Home', url: '/' },
-  { label: 'Features', url: '/features' },
-  { label: 'Pricing', url: '/pricing' }
-]
-```
+## Contributing
 
-### 2. Custom Logo
-
-```typescript
-const customLogo = '/app-specific-logo.svg'
-```
-
-### 3. Feature Toggles
-
-```typescript
-const headerConfig = {
-  showNotifications: false, // Disable for certain apps
-  showUserMenu: true,
-  customLinks: appSpecificLinks,
-  customLogo: customLogo
-}
-```
-
-## Development
-
-### Local Development
-
-```bash
-npm install
-npm run dev
-# Server will start on http://localhost:3000
-```
-
-### Building
-
-```bash
-npm run build
-```
-
-### Testing in Apps
-
-```bash
-# Link locally for testing
-npm link
-
-# In your app
-npm link @aiworkspace/shared-header
-```
-
-## Architecture
-
-```
-header.aiworkspace.pro/          # This repo
-├── src/
-│   ├── components/
-│   │   └── AIWorkspaceHeader.vue
-│   ├── composables/
-│   │   └── useAuth.ts
-│   ├── types/
-│   │   └── index.ts
-│   └── index.ts
-├── package.json
-└── vite.config.ts
-
-app1.aiworkspace.pro/           # App 1
-├── src/
-│   └── App.vue                 # Uses shared header
-└── package.json                 # Depends on shared header
-
-app2.aiworkspace.pro/           # App 2
-├── src/
-│   └── App.vue                 # Uses shared header
-└── package.json                 # Depends on shared header
-```
-
-## Deployment Strategy
-
-### 1. **NPM Package** (Recommended)
-- Publish to NPM
-- Each app installs as dependency
-- Easy version management
-- Automatic updates
-
-### 2. **Git Submodules**
-```bash
-# In each app
-git submodule add https://github.com/aiworkspace/header.aiworkspace.pro.git shared/header
-```
-
-### 3. **Monorepo with Workspaces**
-```json
-// In root package.json
-{
-  "workspaces": [
-    "apps/*",
-    "packages/header"
-  ]
-}
-```
-
-## Best Practices
-
-1. **Version Management**: Use semantic versioning for the shared header
-2. **Breaking Changes**: Communicate major changes to all app teams
-3. **Testing**: Test header changes across all apps before releasing
-4. **Documentation**: Keep this README updated with new features
-5. **Backward Compatibility**: Maintain API compatibility when possible
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Cookies not shared**: Ensure domain is set to `.aiworkspace.pro`
-2. **Styling conflicts**: Use scoped styles in the header component
-3. **Router conflicts**: Ensure Vue Router is properly configured in each app
-4. **Build errors**: Check Vue version compatibility
-
-### CSS/Styling Issues
-
-1. **Header shows but no styling**: Import CSS file in your app
-   ```css
-   @import '@aiworkspace/shared-header/style.css';
-   ```
-
-2. **Logo appears twice**: CSS not loaded properly
-3. **Layout broken**: Check if CSS import path is correct
-4. **Styles not applying**: Ensure CSS import is in the right component
-
-### Support
-
-For issues or questions:
-1. Check this README
-2. Review the component source code
-3. Create an issue in this repository
-4. Contact the AIWorkspace team
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## License
 
-MIT License - see LICENSE file for details
+MIT License - see LICENSE file for details.
+
+## Support
+
+For support and questions:
+- Create an issue on GitHub
+- Contact: kedia.vikas@gmail.com

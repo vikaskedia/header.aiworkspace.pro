@@ -1,157 +1,216 @@
-# 🚀 Quick Start Guide
+# 🚀 AIWorkspace Header - Quick Start Guide
 
-Get the shared header running across all 7 apps in under 10 minutes!
+Get up and running with the comprehensive AIWorkspace header in under 5 minutes!
 
-## Phase 1: Setup Shared Header (5 minutes)
-
-### 1. Install Dependencies
-```bash
-cd header.aiworkspace.pro
-npm install
-```
-
-### 2. Test Locally
-```bash
-npm run dev
-# Server will start on http://localhost:3000
-```
-
-### 3. Publish to NPM
-```bash
-npm login
-npm publish --access public
-```
-
-## Phase 2: Update Each App (2 minutes per app)
+## ⚡ Super Quick Start
 
 ### 1. Install Package
-
-**Option A: Install from GitHub (Recommended)**
 ```bash
-cd your-app-directory
-npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git
+npm install @aiworkspace/shared-header
 ```
 
-**Option B: Local Development**
+### 2. Install Dependencies
 ```bash
-# In header repo
-cd header.aiworkspace.pro
-npm link
-
-# In your app
-cd your-app-directory
-npm link @aiworkspace/shared-header
+npm install vue@^3.0.0 element-plus@^2.0.0 pinia@^2.0.0 @supabase/supabase-js@^2.0.0
 ```
 
-### 2. Replace Header Component
+### 3. Add to Your App
 ```vue
-<!-- Before: Your old header -->
 <template>
   <div>
-    <!-- OLD HEADER CODE -->
-    <YourOldHeader />
-    
-    <!-- Your app content -->
-  </div>
-</template>
-
-<!-- After: New shared header -->
-<template>
-  <div>
-    <AIWorkspaceHeader 
-      :custom-links="appNavigation"
-      :custom-logo="/your-logo.svg"
-    />
-    
-    <!-- Your app content -->
+    <AIWorkspaceHeader />
+    <!-- Your app content here -->
   </div>
 </template>
 
 <script setup>
 import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
-
-const appNavigation = [
-  { label: 'Home', url: '/' },
-  { label: 'Features', url: '/features' }
-]
 </script>
 
 <style>
-/* Import the header styles */
 @import '@aiworkspace/shared-header/style.css';
 </style>
 ```
 
-### 3. Update Authentication
-```typescript
-// In your auth service
-import { useAuth } from '@aiworkspace/shared-header'
-
-const { setCookie, clearCookie } = useAuth()
-
-// On login success
-setCookie('aiworkspace_auth', supabaseToken)
-setCookie('aiworkspace_user_id', userId)
-
-// On logout
-clearCookie('aiworkspace_auth')
-clearCookie('aiworkspace_user_id')
+### 4. Add Environment Variables
+Create a `.env` file:
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_APEX_DOMAIN=aiworkspace.pro
 ```
 
-## Phase 3: Test & Deploy (5 minutes)
+**🎉 That's it!** Your header is now working with full authentication and workspace management.
 
-### 1. Test Each App
-- Verify header appears correctly
-- Test login/logout functionality
-- Check cross-app navigation
+## 🔧 Basic Configuration
 
-### 2. Deploy Updates
-```bash
-# Deploy each app with the new header
-git add .
-git commit -m "feat: integrate shared header component"
-git push
+### Enable/Disable Features
+```vue
+<AIWorkspaceHeader 
+  :show-workspace-selector="true"
+  :show-secondary-navigation="true"
+  :show-notifications="true"
+  :show-user-menu="true"
+/>
 ```
 
-## 🎯 What You Get
+### Custom Logo
+```vue
+<AIWorkspaceHeader 
+  :custom-logo="/your-logo.svg"
+/>
+```
 
-✅ **Unified Experience**: Same header across all 7 apps  
-✅ **Shared Auth**: Login once, access all apps  
-✅ **Easy Updates**: Change header once, update everywhere  
-✅ **Customizable**: Each app can have unique navigation  
-✅ **Responsive**: Works on all devices  
+### Custom Navigation Links
+```vue
+<AIWorkspaceHeader 
+  :custom-links="[
+    { label: 'Dashboard', url: '/dashboard' },
+    { label: 'Analytics', url: '/analytics' }
+  ]"
+/>
+```
 
-## 🔧 Troubleshooting
+## 🔐 Authentication Setup
 
-### Header Not Showing
-- Check import: `import { AIWorkspaceHeader } from '@aiworkspace/shared-header'`
-- Verify component name: `<AIWorkspaceHeader />`
+### 1. Initialize Pinia (Required)
+```javascript
+// main.js or main.ts
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
 
-### Auth Not Working
-- Ensure cookies are set with domain `.aiworkspace.pro`
-- Check Supabase integration in your auth service
+const app = createApp(App)
+const pinia = createPinia()
 
-### Styling Issues
-- Header uses scoped styles, shouldn't conflict
-- Check for CSS specificity conflicts
+app.use(pinia)
+app.mount('#app')
+```
 
-## 📞 Need Help?
+### 2. Use Authentication Composable
+```vue
+<script setup>
+import { useEnhancedAuth } from '@aiworkspace/shared-header'
 
-1. Check the main README.md
-2. Review the example in `examples/app-usage.vue`
-3. Check component source in `src/components/AIWorkspaceHeader.vue`
+const { authState, signIn, logout } = useEnhancedAuth()
 
-## 🚀 Next Steps
+// Sign in user
+const handleSignIn = async () => {
+  const result = await signIn('user@example.com', 'password')
+  if (result.success) {
+    console.log('Signed in successfully!')
+  }
+}
 
-After setup:
-1. Customize navigation links for each app
-2. Add app-specific logos
-3. Configure feature toggles
-4. Set up automated deployments
+// Check auth status
+const isAuthenticated = computed(() => authState.value.isAuthenticated)
+</script>
+```
+
+### 3. Handle Authentication Events
+```vue
+<AIWorkspaceHeader 
+  @login="handleLogin"
+  @logout="handleLogout"
+  @profile-click="handleProfileClick"
+/>
+```
+
+## 🏢 Workspace Management
+
+### 1. Use Workspace Store
+```vue
+<script setup>
+import { useWorkspaceStore } from '@aiworkspace/shared-header'
+
+const { currentWorkspace, loadWorkspaces } = useWorkspaceStore()
+
+// Load workspaces on mount
+onMounted(async () => {
+  await loadWorkspaces()
+})
+</script>
+```
+
+### 2. Handle Workspace Changes
+```vue
+<AIWorkspaceHeader 
+  :current-workspace-id="currentWorkspaceId"
+  @workspace-change="handleWorkspaceChange"
+/>
+
+<script setup>
+const handleWorkspaceChange = (workspace) => {
+  console.log('Workspace changed to:', workspace.title)
+  // Navigate to new workspace or update app state
+}
+</script>
+```
+
+## 🌐 Cross-Subdomain Setup
+
+The header automatically handles authentication across all aiworkspace.pro subdomains. Just ensure your environment variables are set:
+
+```env
+VITE_APEX_DOMAIN=aiworkspace.pro
+```
+
+## 📱 Responsive Design
+
+The header is fully responsive and works on all devices. No additional configuration needed!
+
+## 🎨 Customization
+
+### CSS Customization
+```css
+/* Override default styles */
+.aiworkspace-header {
+  --header-bg-color: #your-color;
+  --header-text-color: #your-color;
+}
+
+/* Custom workspace selector */
+.workspace-dropdown-item {
+  background-color: #your-color;
+}
+```
+
+### Component Customization
+```vue
+<AIWorkspaceHeader 
+  :show-workspace-selector="false"
+  :show-secondary-navigation="false"
+  :custom-logo="/minimal-logo.svg"
+/>
+```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. **Header not showing**: Check if CSS is imported
+2. **Authentication not working**: Verify Supabase credentials
+3. **Workspaces not loading**: Check database schema and permissions
+4. **Styling issues**: Ensure Element Plus CSS is loaded
+
+### Debug Mode
+```javascript
+// Check browser console for detailed logs
+// All authentication and workspace operations are logged
+```
+
+## 📚 Next Steps
+
+- Check the [full README](./README.md) for complete API reference
+- Explore the [demo app](./src/DemoApp.vue) for examples
+- Review the [types](./src/types/index.ts) for TypeScript support
+
+## 🆘 Need Help?
+
+- Create an issue on GitHub
+- Contact: kedia.vikas@gmail.com
+- Check the browser console for detailed error messages
 
 ---
 
-**Time to complete: ~10 minutes total**  
-**Apps updated: 7**  
-**Shared components: 1**  
-**Maintenance overhead: Reduced by 80%** 🎉
+**🎯 Pro Tip**: Start with the basic implementation and gradually add features as needed. The header works great out of the box!

@@ -3,45 +3,64 @@
     <!-- Demo Header with different configurations -->
     <AIWorkspaceHeader 
       :custom-links="demoNavigation"
-      :custom-logo="'/demo-logo.svg'"
-      :show-notifications="true"
       :show-user-menu="true"
+      :show-workspace-selector="true"
+      :show-secondary-navigation="true"
+      @workspace-change="handleWorkspaceChange"
+      @logout="handleLogout"
     />
     
     <main class="demo-content">
-      <h1>AIWorkspace Shared Header - Demo</h1>
-      <p>This is a demonstration of the shared header component that will be used across all 7 apps.</p>
+      <h1>AIWorkspace Shared Header - Comprehensive Demo</h1>
+      <p>This is a demonstration of the comprehensive shared header component with authentication, workspace management, and cross-subdomain support.</p>
       
       <div class="demo-sections">
         <section class="demo-section">
-          <h2>Integration Instructions</h2>
-          <p>To use this header in your app:</p>
+          <h2>🚀 New Features</h2>
+          <div class="feature-grid">
+            <div class="feature-item">
+              <h3>🔐 Built-in Authentication</h3>
+              <p>Integrated Supabase authentication with automatic session management</p>
+            </div>
+            <div class="feature-item">
+              <h3>🏢 Workspace Management</h3>
+              <p>Hierarchical workspace selection and switching across all apps</p>
+            </div>
+            <div class="feature-item">
+              <h3>🌐 Cross-Subdomain Support</h3>
+              <p>Seamless authentication across all aiworkspace.pro subdomains</p>
+            </div>
+            <div class="feature-item">
+              <h3>🎨 Element Plus UI</h3>
+              <p>Beautiful, consistent UI components built with Element Plus</p>
+            </div>
+            <div class="feature-item">
+              <h3>📱 Responsive Design</h3>
+              <p>Perfect experience on all device sizes</p>
+            </div>
+            <div class="feature-item">
+              <h3>🔄 State Management</h3>
+              <p>Pinia store integration for workspace and user data</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="demo-section">
+          <h2>📦 Installation & Setup</h2>
           
-          <h3>Method 1: Install from GitHub (Recommended)</h3>
-          <ol>
-            <li>Install: <code>npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git</code></li>
-            <li>Import: <code>import { AIWorkspaceHeader } from '@aiworkspace/shared-header'</code></li>
-            <li>Use: <code>&lt;AIWorkspaceHeader /&gt;</code></li>
-            <li><strong>Important:</strong> Import CSS: <code>@import '@aiworkspace/shared-header/style.css';</code></li>
-          </ol>
+          <h3>1. Install Package</h3>
+          <pre><code>npm install @aiworkspace/shared-header</code></pre>
           
-          <h3>Method 2: Local Development with npm link</h3>
-          <ol>
-            <li>In header repo: <code>npm link</code></li>
-            <li>In your app: <code>npm link @aiworkspace/shared-header</code></li>
-            <li>Import and use as above</li>
-            <li><strong>Important:</strong> Import CSS: <code>@import '@aiworkspace/shared-header/style.css';</code></li>
-          </ol>
+          <h3>2. Install Dependencies</h3>
+          <pre><code>npm install vue@^3.0.0 element-plus@^2.0.0 pinia@^2.0.0 @supabase/supabase-js@^2.0.0</code></pre>
           
-          <h3>Method 3: Publish to NPM (For Team Use)</h3>
-          <ol>
-            <li>Publish: <code>npm publish --access public</code></li>
-            <li>Install: <code>npm install @aiworkspace/shared-header</code></li>
-            <li>Import and use as above</li>
-            <li><strong>Important:</strong> Import CSS: <code>@import '@aiworkspace/shared-header/style.css';</code></li>
-          </ol>
+          <h3>3. Environment Variables</h3>
+          <p>Create a <code>.env</code> file in your app:</p>
+          <pre><code>VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_APEX_DOMAIN=aiworkspace.pro</code></pre>
           
-          <h3>Simple Usage (No Parameters):</h3>
+          <h3>4. Basic Usage</h3>
           <pre><code>&lt;template&gt;
   &lt;div&gt;
     &lt;AIWorkspaceHeader /&gt;
@@ -56,56 +75,175 @@ import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 &lt;style&gt;
 @import '@aiworkspace/shared-header/style.css';
 &lt;/style&gt;</code></pre>
-          
-          <h3>Customized Usage (Optional):</h3>
-          <pre><code>&lt;template&gt;
-  &lt;div&gt;
-    &lt;AIWorkspaceHeader 
-      :custom-logo="/your-logo.svg"
-      :custom-links="[
-        { label: 'Home', url: '/' },
-        { label: 'Features', url: '/features' }
-      ]"
-    /&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</code></pre>
         </section>
         
+        <section class="demo-section">
+          <h2>🔧 Advanced Usage</h2>
+          
+          <h3>Customized Header</h3>
+          <pre><code>&lt;AIWorkspaceHeader 
+  :custom-logo="/your-logo.svg"
+  :show-workspace-selector="true"
+  :show-secondary-navigation="true"
+  :current-workspace-id="currentWorkspaceId"
+  @workspace-change="handleWorkspaceChange"
+  @logout="handleLogout"
+/&gt;</code></pre>
+          
+          <h3>Using Composables</h3>
+          <pre><code>import { useEnhancedAuth, useWorkspaceStore } from '@aiworkspace/shared-header'
+
+const { authState, signIn, logout } = useEnhancedAuth()
+const { currentWorkspace, loadWorkspaces } = useWorkspaceStore()
+
+// Sign in user
+const handleSignIn = async () => {
+  const result = await signIn('user@example.com', 'password')
+  if (result.success) {
+    console.log('Signed in successfully')
+  }
+}</code></pre>
+          
+          <h3>Cross-Subdomain Setup</h3>
+          <pre><code>// In your app's main.js or main.ts
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)
+app.mount('#app')</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>🗄️ Database Schema</h2>
+          <p>The header requires these Supabase tables:</p>
+          <pre><code>-- Workspaces table
+CREATE TABLE workspaces (
+  id BIGSERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  parent_workspace_id BIGINT REFERENCES workspaces(id),
+  created_by UUID REFERENCES auth.users(id),
+  archived BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Workspace access table
+CREATE TABLE workspace_access (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  workspace_id BIGINT REFERENCES workspaces(id),
+  access_type TEXT CHECK (access_type IN ('view', 'edit')),
+  status TEXT DEFAULT 'active',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);</code></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>🎯 Demo Controls</h2>
+          <div class="demo-actions">
+            <button class="demo-btn login-btn" @click="simulateLogin">
+              🔐 Simulate Login
+            </button>
+            <button class="demo-btn logout-btn" @click="simulateLogout">
+              🚪 Simulate Logout
+            </button>
+            <button class="demo-btn" @click="toggleNotifications">
+              🔔 Toggle Notifications
+            </button>
+            <button class="demo-btn" @click="showWorkspaceModal">
+              🏢 Show Workspace Modal
+            </button>
+          </div>
+          
+          <div class="demo-info">
+            <h3>Current State:</h3>
+            <ul>
+              <li><strong>Authenticated:</strong> {{ isAuthenticated ? 'Yes' : 'No' }}</li>
+              <li><strong>Current User:</strong> {{ currentUser?.name || 'None' }}</li>
+              <li><strong>Current Workspace:</strong> {{ currentWorkspace?.title || 'None' }}</li>
+              <li><strong>Available Workspaces:</strong> {{ availableWorkspaces.length }}</li>
+            </ul>
+          </div>
+        </section>
       </div>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import AIWorkspaceHeader from './components/AIWorkspaceHeader.vue'
+import { useEnhancedAuth } from './composables/useEnhancedAuth'
+import { useWorkspaceStore } from './store/workspace'
 
 const demoNavigation = [
-  { label: 'Home', url: '/' },
-  { label: 'Features', url: '/features' },
-  { label: 'Documentation', url: '/docs' },
+  { label: 'Home', url: '/', external: false },
+  { label: 'Features', url: '/features', external: false },
+  { label: 'Documentation', url: '/docs', external: false },
   { label: 'GitHub', url: 'https://github.com/aiworkspace', external: true }
 ]
 
-const simulateLogin = () => {
-  // Simulate setting auth cookies
-  document.cookie = 'aiworkspace_auth=demo-token;domain=.aiworkspace.pro;path=/'
-  document.cookie = 'aiworkspace_user_id=demo-user;domain=.aiworkspace.pro;path=/'
-  // Refresh to see the change
-  window.location.reload()
+// Use the enhanced auth composable
+const { authState, signIn, logout } = useEnhancedAuth()
+const workspaceStore = useWorkspaceStore()
+
+// Computed properties
+const isAuthenticated = computed(() => authState.value.isAuthenticated)
+const currentUser = computed(() => authState.value.user)
+const currentWorkspace = computed(() => workspaceStore.currentWorkspace)
+const availableWorkspaces = computed(() => workspaceStore.workspaces)
+
+// Demo functions
+const simulateLogin = async () => {
+  try {
+    // Simulate a login with demo credentials
+    const result = await signIn('demo@aiworkspace.pro', 'demo123')
+    if (result.success) {
+      console.log('Demo login successful')
+    } else {
+      console.log('Demo login failed:', result.error)
+    }
+  } catch (error) {
+    console.error('Demo login error:', error)
+  }
 }
 
-const simulateLogout = () => {
-  // Simulate clearing auth cookies
-  document.cookie = 'aiworkspace_auth=;domain=.aiworkspace.pro;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT'
-  document.cookie = 'aiworkspace_user_id=;domain=.aiworkspace.pro;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT'
-  // Refresh to see the change
-  window.location.reload()
+const simulateLogout = async () => {
+  try {
+    await logout()
+    console.log('Demo logout successful')
+  } catch (error) {
+    console.error('Demo logout error:', error)
+  }
 }
 
 const toggleNotifications = () => {
   alert('Notifications feature clicked! This would show notifications in a real app.')
 }
+
+const showWorkspaceModal = () => {
+  alert('Workspace modal would open here in a real app!')
+}
+
+// Event handlers
+const handleWorkspaceChange = (workspace: any) => {
+  console.log('Workspace changed to:', workspace)
+  alert(`Workspace changed to: ${workspace.title}`)
+}
+
+const handleLogout = () => {
+  console.log('User logged out')
+  alert('User logged out successfully!')
+}
+
+onMounted(async () => {
+  // Load initial data
+  console.log('Demo app mounted')
+})
 </script>
 
 <style scoped>
@@ -152,46 +290,42 @@ const toggleNotifications = () => {
   font-size: 1.25rem;
 }
 
-.demo-section ul {
-  list-style: none;
-  padding: 0;
+.demo-section h3 {
+  color: #374151;
+  margin: 1.5rem 0 0.5rem 0;
+  font-size: 1.1rem;
 }
 
-.demo-section li {
-  padding: 0.5rem 0;
-  color: #64748b;
+.feature-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
-.demo-nav {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.demo-nav-link {
-  padding: 0.5rem 1rem;
-  background-color: #f1f5f9;
-  color: #475569;
-  text-decoration: none;
+.feature-item {
+  padding: 1rem;
+  background: #f8fafc;
   border-radius: 0.5rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
 }
 
-.demo-nav-link:hover {
-  background-color: #e2e8f0;
+.feature-item h3 {
+  margin: 0 0 0.5rem 0;
   color: #1e293b;
+  font-size: 1rem;
 }
 
-.demo-nav-link.router-link-active {
-  background-color: #3b82f6;
-  color: white;
+.feature-item p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
 }
 
 .demo-actions {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  margin-bottom: 1.5rem;
 }
 
 .demo-btn {
@@ -231,13 +365,38 @@ const toggleNotifications = () => {
   background-color: #2563eb;
 }
 
-.demo-section ol {
+.demo-info {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.demo-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.demo-info ul {
+  margin: 0;
   padding-left: 1.5rem;
   color: #64748b;
 }
 
-.demo-section li {
+.demo-info li {
   padding: 0.25rem 0;
+}
+
+.demo-section pre {
+  background-color: #f1f5f9;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  color: #1e293b;
+  overflow-x: auto;
+  margin: 1rem 0;
 }
 
 .demo-section code {
@@ -264,6 +423,10 @@ const toggleNotifications = () => {
   
   .demo-btn {
     width: 100%;
+  }
+  
+  .feature-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
