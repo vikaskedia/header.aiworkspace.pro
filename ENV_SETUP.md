@@ -1,176 +1,137 @@
-# 🌍 Environment Setup Guide
+# Environment Variables Setup
 
-This guide explains how to set up environment variables for the AIWorkspace Header DemoApp.
+## 🚨 **Required Environment Variables**
 
-## 📁 Create Environment File
-
-Create a `.env` file in your project root directory:
+Create a `.env` file in your app root with these variables:
 
 ```bash
-touch .env
-```
-
-## 🔧 Required Environment Variables
-
-Add the following variables to your `.env` file:
-
-```env
-# Supabase Configuration
-VITE_SUPABASE_URL=https://your-project-url.supabase.co
+# Supabase Configuration (Required)
+VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 
-# Domain Configuration
+# Cross-subdomain Authentication (Required)
 VITE_APEX_DOMAIN=aiworkspace.pro
 
-# Default Post-Login URL
-VITE_DEFAULT_POST_LOGIN_URL=/
-
-# Environment Mode
-VITE_ENV=development
+# Optional: Default post-login redirect
+VITE_DEFAULT_POST_LOGIN_URL=/dashboard
 ```
 
-## 📋 Variable Descriptions
+## 🔑 **Getting Your Supabase Credentials**
 
-### `VITE_SUPABASE_URL`
-- **Required**: Yes
-- **Description**: Your Supabase project URL
-- **Format**: `https://your-project-id.supabase.co`
-- **Example**: `https://abc123.supabase.co`
+### 1. **Go to Supabase Dashboard**
+- Visit [https://supabase.com/dashboard](https://supabase.com/dashboard)
+- Sign in to your account
 
-### `VITE_SUPABASE_ANON_KEY`
-- **Required**: Yes
-- **Description**: Your Supabase anonymous/public key
-- **Format**: Long string starting with `eyJ...`
-- **Location**: Found in Supabase Dashboard → Settings → API
+### 2. **Select Your Project**
+- Choose the project you want to use
+- Or create a new project if needed
 
-### `VITE_APEX_DOMAIN`
-- **Required**: Yes
-- **Description**: Your main domain for cross-subdomain authentication
-- **Default**: `aiworkspace.pro`
-- **Example**: `yourcompany.com`
+### 3. **Get API Keys**
+- Go to **Settings** → **API**
+- Copy the **Project URL** → `VITE_SUPABASE_URL`
+- Copy the **anon public** key → `VITE_SUPABASE_ANON_KEY`
 
-### `VITE_DEFAULT_POST_LOGIN_URL`
-- **Required**: No
-- **Description**: Default redirect URL after successful login
-- **Default**: `/`
-- **Example**: `/dashboard`
+## 🌐 **Cross-Subdomain Configuration**
 
-### `VITE_ENV`
-- **Required**: No
-- **Description**: Environment mode for debugging
-- **Options**: `development`, `staging`, `production`
-- **Default**: `development`
-
-## 🔍 How to Get Supabase Credentials
-
-### 1. Go to Supabase Dashboard
-Visit [https://supabase.com/dashboard](https://supabase.com/dashboard)
-
-### 2. Select Your Project
-Choose the project you want to use
-
-### 3. Go to Settings → API
-- Click on the gear icon (Settings)
-- Select "API" from the sidebar
-
-### 4. Copy Credentials
-- **Project URL**: Copy the "Project URL"
-- **Anon/Public Key**: Copy the "anon public" key
-
-## 🚀 Testing Your Configuration
-
-### 1. Start the Demo App
+### **Apex Domain Setting**
 ```bash
-npm run dev
+VITE_APEX_DOMAIN=aiworkspace.pro
 ```
 
-### 2. Check Browser Console
-Look for these log messages:
+**This enables:**
+- ✅ **Shared authentication** across all subdomains
+- ✅ **Single sign-on** between apps
+- ✅ **Persistent sessions** across domains
+- ✅ **Secure cookie sharing** with proper domain scope
+
+### **Supported Subdomain Pattern**
 ```
-Supabase Configuration: { url: "https://...", hasKey: true, ... }
-URL: https://*****.supabase.co
-Key configured: true
-Environment mode: development
-```
-
-### 3. Test Authentication
-- Click "Simulate Login" button
-- Check if authentication state changes
-- Look for any error messages in console
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-#### 1. "Key configured: false"
-- Check if `VITE_SUPABASE_ANON_KEY` is set correctly
-- Ensure the key starts with `eyJ...`
-- Verify there are no extra spaces or quotes
-
-#### 2. "URL: https://*****.supabase.co"
-- Check if `VITE_SUPABASE_URL` is set correctly
-- Ensure the URL format is `https://project-id.supabase.co`
-- Verify there are no trailing slashes
-
-#### 3. Authentication not working
-- Check if Supabase project is active
-- Verify RLS (Row Level Security) policies
-- Check if auth is enabled in Supabase
-
-#### 4. Cross-subdomain issues
-- Ensure `VITE_APEX_DOMAIN` is set correctly
-- Check if cookies are being set with proper domain
-- Verify SameSite and Secure cookie settings
-
-### Debug Mode
-
-Enable detailed logging by setting:
-```env
-VITE_ENV=development
+app.aiworkspace.pro          ✅ Works
+dashboard.aiworkspace.pro    ✅ Works
+single-ws.aiworkspace.pro    ✅ Works
+localhost:3000               ✅ Works (development)
 ```
 
-Check browser console for detailed logs about:
-- Cookie operations
-- Authentication state changes
-- Workspace loading
-- Cross-subdomain operations
+## 📁 **File Structure**
 
-## 🔒 Security Notes
+```
+your-app/
+├── .env                     ← Create this file
+├── package.json
+├── src/
+└── ...
+```
 
-### Never Commit .env Files
+## 🔧 **Configuration Details**
+
+### **Supabase Client Settings**
+The header package automatically configures:
+- **Storage**: `localStorage` for session persistence
+- **Auto-refresh**: Automatic token refresh
+- **Cross-domain cookies**: Proper domain scoping
+- **Session persistence**: Maintains login state
+
+### **Cookie Configuration**
+- **Domain**: `.aiworkspace.pro` (apex domain)
+- **Path**: `/` (available across all paths)
+- **SameSite**: `Lax` (secure cross-site requests)
+- **Secure**: `true` (HTTPS only in production)
+
+## 🚀 **Quick Setup**
+
+### **Option 1: Manual Setup**
+1. Create `.env` file in your app root
+2. Copy the template above
+3. Fill in your Supabase credentials
+4. Set your apex domain
+
+### **Option 2: Use Setup Script**
 ```bash
-# Add to .gitignore
-echo ".env" >> .gitignore
-echo ".env.local" >> .gitignore
-echo ".env.*.local" >> .gitignore
+# Make the script executable
+chmod +x setup-env.sh
+
+# Run the setup script
+./setup-env.sh
 ```
 
-### Production Environment
-- Use different Supabase projects for staging/production
-- Set `VITE_ENV=production` in production
-- Use environment-specific API keys
+### **Option 3: Copy from Template**
+```bash
+# Copy the template
+cp env.config.js .env
 
-### API Key Security
-- The `VITE_SUPABASE_ANON_KEY` is safe to expose in client-side code
-- It's designed for public use and has limited permissions
-- Never expose service role keys or admin keys
+# Edit with your values
+nano .env
+```
 
-## 📚 Next Steps
+## ✅ **Verification**
 
-After setting up your environment:
+After setting up, verify your configuration:
 
-1. **Test the DemoApp**: Run `npm run dev` and test all features
-2. **Customize Configuration**: Adjust URLs and domains as needed
-3. **Deploy to Your Apps**: Use the same configuration in your 7 apps
-4. **Monitor Logs**: Check console for any configuration issues
+1. **Check console logs** for Supabase connection
+2. **Verify authentication** works across subdomains
+3. **Test session persistence** on page reload
+4. **Confirm cross-domain cookies** are set
 
-## 🆘 Need Help?
+## 🐛 **Common Issues**
 
-- Check the browser console for error messages
-- Review the [README](./README.md) for complete documentation
-- Create an issue on GitHub
-- Contact: kedia.vikas@gmail.com
+### **"Supabase URL not configured"**
+- Check `.env` file exists
+- Verify `VITE_SUPABASE_URL` is set
+- Ensure no typos in variable names
 
----
+### **"Invalid API key"**
+- Copy the **anon public** key (not the service role key)
+- Check for extra spaces or characters
+- Verify the key is from the correct project
 
-**🎯 Pro Tip**: Start with the demo app to test your configuration before integrating into your production apps!
+### **"Cross-domain cookies not working"**
+- Verify `VITE_APEX_DOMAIN` is set correctly
+- Check that you're using a subdomain of the apex domain
+- Ensure HTTPS in production
+
+## 🔗 **Related Documentation**
+
+- [Installation Guide](./INSTALLATION_GUIDE.md)
+- [CommonJS Installation](./COMMONJS_INSTALLATION.md)
+- [Troubleshooting Guide](./TROUBLESHOOTING.md)
+- [URL Workspace Selection](./URL_WORKSPACE_SELECTION.md)

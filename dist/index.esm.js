@@ -174,23 +174,22 @@ async function Ce() {
     return console.log("[auth][restore] Exception during session restoration:", s), { success: !1, error: s };
   }
 }
-if (typeof window < "u")
-  try {
-    Ue([V, z]);
-  } catch (s) {
-    console.log("[auth][cookie][promote] error (pre-init)", s);
+const ve = "https://oqdnbpmmgntqtigstaow.supabase.co", _e = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xZG5icG1tZ250cXRpZ3N0YW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0NTk2NDYsImV4cCI6MjA1MDAzNTY0Nn0.rn0nRY9xLgLt-ajiSPeG0PcdS9V-549C1yeqhcxxG40", P = Me(
+  ve,
+  _e,
+  {
+    db: {
+      schema: "public"
+    },
+    auth: {
+      storageKey: "sb-auth-token",
+      storage: localStorage,
+      autoRefreshToken: !0,
+      persistSession: !0
+    }
   }
-const ve = "https://oqdnbpmmgntqtigstaow.supabase.co", _e = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xZG5icG1tZ250cXRpZ3N0YW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0NTk2NDYsImV4cCI6MjA1MDAzNTY0Nn0.rn0nRY9xLgLt-ajiSPeG0PcdS9V-549C1yeqhcxxG40", P = Me(ve, _e, {
-  auth: {
-    // Enable automatic token refresh
-    autoRefreshToken: !0,
-    // Persist session in localStorage
-    persistSession: !0,
-    // Detect session in URL (for OAuth callbacks)
-    detectSessionInUrl: !0
-  }
-});
-typeof window < "u" && Ge();
+);
+typeof window < "u" && (Ue([V, z]), Ge());
 console.log("Supabase Configuration:", {
   url: ve,
   hasKey: !!_e,
