@@ -1,7 +1,7 @@
 <template>
   <header class="aiworkspace-header">
     <!-- Show loading state if Pinia is not ready -->
-    <div v-if="!isPiniaReady" class="header-content header-loading">
+    <div v-if="!isPiniaReady && piniaRetryCount < maxPiniaRetries" class="header-content header-loading">
       <div class="header-left">
         <div class="logo-section">
           <a href="/" class="logo">
@@ -13,6 +13,33 @@
       </div>
       <div class="header-center">
         <span class="loading-text">Initializing...</span>
+      </div>
+    </div>
+    
+    <!-- Show fallback header when Pinia fails to initialize -->
+    <div v-else-if="!isPiniaReady && piniaRetryCount >= maxPiniaRetries" class="header-content header-fallback">
+      <div class="header-left">
+        <div class="logo-section">
+          <a href="/" class="logo">
+            <div class="text-logo">
+              <span class="logo-text">AI Workspace</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header-center">
+        <span class="fallback-text">Header Ready (Fallback Mode)</span>
+        <button @click="manualRetry" class="retry-button">Retry Pinia</button>
+      </div>
+      <div class="header-right">
+        <div class="user-profile">
+          <div class="user-info">
+            <span class="user-name">User</span>
+          </div>
+          <div class="user-avatar">
+            <span class="avatar-placeholder">U</span>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -211,25 +238,57 @@ const getWorkspaceStore = () => {
   }
 }
 
-const workspaceStore = ref(getWorkspaceStore())
-const isPiniaReady = computed(() => !!workspaceStore.value)
-
-// Retry Pinia store initialization when it becomes available
-const retryPiniaStore = () => {
-  if (!workspaceStore.value) {
-    const store = getWorkspaceStore()
-    if (store) {
-      workspaceStore.value = store
-      console.log('[AIWorkspaceHeader] Pinia store initialized successfully')
+// Check if Pinia is available globally
+const isPiniaAvailable = () => {
+  try {
+    // Check if we can access Pinia from the global scope
+    if (typeof window !== 'undefined') {
+      // Try to detect if Pinia is available in the global scope
+      return !!(window as any).__PINIA__ || !!(window as any).Pinia
     }
+    return false
+  } catch {
+    return false
   }
 }
 
+const workspaceStore = ref(getWorkspaceStore())
+const isPiniaReady = computed(() => !!workspaceStore.value)
+const piniaRetryCount = ref(0)
+const maxPiniaRetries = 50 // Try for 5 seconds (50 * 100ms)
+
+// Retry Pinia store initialization when it becomes available
+const retryPiniaStore = () => {
+  if (!workspaceStore.value && piniaRetryCount.value < maxPiniaRetries) {
+    // Check if Pinia is now available
+    if (isPiniaAvailable()) {
+      const store = getWorkspaceStore()
+      if (store) {
+        workspaceStore.value = store
+        console.log('[AIWorkspaceHeader] Pinia store initialized successfully')
+        return
+      }
+    }
+    
+    // Increment retry count and try again
+    piniaRetryCount.value++
+    setTimeout(retryPiniaStore, 100)
+  } else if (piniaRetryCount.value >= maxPiniaRetries) {
+    console.warn('[AIWorkspaceHeader] Pinia initialization failed after maximum retries, using fallback mode')
+  }
+}
+
+// Start retry process immediately
+onMounted(() => {
+  if (!workspaceStore.value) {
+    retryPiniaStore()
+  }
+})
+
 // Watch for Pinia availability and retry
 watch(isPiniaReady, (ready) => {
-  if (!ready) {
-    // Retry after a short delay
-    setTimeout(retryPiniaStore, 100)
+  if (!ready && piniaRetryCount.value < maxPiniaRetries) {
+    retryPiniaStore()
   }
 })
 
@@ -581,6 +640,13 @@ onMounted(async () => {
     await loadUserInfo()
   }
 })
+
+// Manual retry function for fallback state
+const manualRetry = () => {
+  piniaRetryCount.value = 0 // Reset retry count
+  retryPiniaStore()
+  ElMessage.success('Manual Pinia retry initiated.')
+}
 </script>
 
 <style scoped>
@@ -616,6 +682,35 @@ onMounted(async () => {
 
 .loading-text {
   color: #606266;
+}
+
+.header-fallback {
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f2f5;
+  color: #606266;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.fallback-text {
+  color: #606266;
+  margin-right: 1rem;
+}
+
+.retry-button {
+  background: #409eff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retry-button:hover {
+  background: #337ecc;
 }
 
 .header-left {

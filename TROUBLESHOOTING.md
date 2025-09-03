@@ -28,23 +28,51 @@ npm cache clean --force
 npm install @aiworkspace/shared-header
 ```
 
-### 2. Element Plus Version Conflicts
+### 2. Header Shows "Initializing..." or "Header Ready (Fallback Mode)"
 
-If you get Element Plus version conflicts:
+If your header shows these messages instead of the full header:
+
+#### **Root Cause**: Pinia is not properly initialized in the consuming app
+
+#### **Solution**: Ensure proper initialization order in your main.ts/main.js
+
+```typescript
+// ✅ CORRECT ORDER
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import App from './App.vue'
+
+const app = createApp(App)
+const pinia = createPinia()
+
+// ⚠️ CRITICAL: Pinia must be initialized BEFORE the header component
+app.use(pinia)
+app.use(ElementPlus)
+
+app.mount('#app')
+```
+
+#### **Quick Fix**: If you see "Header Ready (Fallback Mode)", click the "Retry Pinia" button
+
+#### **Manual Retry**: The header will automatically retry Pinia initialization for 5 seconds
+
+### 3. Element Plus Components Not Working
 
 **Solution**: Ensure you have Element Plus v2.x installed:
 ```bash
 npm install element-plus@^2.0.0
 ```
 
-### 3. Vue Version Issues
+### 4. Vue Version Issues
 
 **Solution**: Ensure you're using Vue 3:
 ```bash
 npm install vue@^3.0.0
 ```
 
-### 4. TypeScript Errors
+### 5. TypeScript Errors
 
 If you get TypeScript compilation errors:
 
