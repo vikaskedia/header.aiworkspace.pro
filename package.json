@@ -4,10 +4,12 @@
   "description": "Shared header component for AIWorkspace small apps with authentication, workspace management, and cross-subdomain support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
+  "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
     },
     "./style.css": "./dist/style.css"
   },

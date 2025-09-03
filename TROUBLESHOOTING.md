@@ -58,6 +58,8 @@ app.mount('#app')
 
 #### **Manual Retry**: The header will automatically retry Pinia initialization for 5 seconds
 
+#### **CommonJS Apps**: If your app uses `"type": "commonjs"`, see [CommonJS Installation Guide](./COMMONJS_INSTALLATION.md)
+
 ### 3. Element Plus Components Not Working
 
 **Solution**: Ensure you have Element Plus v2.x installed:

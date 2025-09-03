@@ -1,20 +1,17 @@
+// Re-export all types for external use
 export interface User {
   id: string
   email: string
   name?: string
-  avatar_url?: string
-  user_metadata?: {
-    name?: string
-    user_name?: string
-    full_name?: string
-    avatar_url?: string
-  }
+  avatar_url?: string | null
+  created_at?: string
 }
 
 export interface AuthState {
-  user: User | null
   isAuthenticated: boolean
   isLoading: boolean
+  user: User | null
+  error: string | null
 }
 
 export interface Workspace {
@@ -33,39 +30,24 @@ export interface Workspace {
 }
 
 export interface HeaderProps {
-  showUserMenu?: boolean
-  showNotifications?: boolean
   customLogo?: string
-  customLinks?: Array<{
-    label: string
-    url: string
-    external?: boolean
-  }>
-  // New props for enhanced functionality
+  customLinks?: NavigationItem[]
+  showUserMenu?: boolean
   showWorkspaceSelector?: boolean
   showSecondaryNavigation?: boolean
   currentWorkspaceId?: string | number
-  onWorkspaceChange?: (workspace: Workspace) => void
-  onLogout?: () => void
-  onLogin?: () => void
-  onProfileClick?: () => void
-  onSettingsClick?: () => void
 }
 
 export interface NavigationItem {
   label: string
-  key: string
   url: string
-  external?: boolean
   active?: boolean
 }
 
 export interface SecondaryNavigationItem extends NavigationItem {
-  icon?: string
-  description?: string
+  key: string
 }
 
-// Auth related types
 export interface AuthTokens {
   access_token: string
   refresh_token: string
@@ -78,7 +60,10 @@ export interface Session {
 }
 
 export interface AuthResult {
-  success: boolean
-  session?: Session
-  error?: any
+  user: User | null
+  session: Session | null
+  error: string | null
 }
+
+// Export types for external use
+export type { User, AuthState, Workspace, HeaderProps, NavigationItem, SecondaryNavigationItem, AuthTokens, Session, AuthResult }
