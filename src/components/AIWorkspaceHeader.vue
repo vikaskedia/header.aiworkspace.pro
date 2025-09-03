@@ -1,6 +1,23 @@
 <template>
   <header class="aiworkspace-header">
-    <div v-if="isAuthenticated" class="header-content">
+    <!-- Show loading state if Pinia is not ready -->
+    <div v-if="!isPiniaReady" class="header-content header-loading">
+      <div class="header-left">
+        <div class="logo-section">
+          <a href="/" class="logo">
+            <div class="text-logo">
+              <span class="logo-text">AI Workspace</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header-center">
+        <span class="loading-text">Initializing...</span>
+      </div>
+    </div>
+    
+    <!-- Show full header when Pinia is ready -->
+    <div v-else-if="isAuthenticated" class="header-content">
       <!-- Left side - Logo and Workspace -->
       <div class="header-left">
         <div class="logo-section">
@@ -111,6 +128,8 @@
         </el-dropdown>
       </div>
     </div>
+    
+    <!-- Show unauthenticated message when Pinia is ready but user is not authenticated -->
     <div v-else class="unauth-message">
       <div class="unauth-inner">
         <strong>Authentication required.</strong> Please log in to access the workspace.
@@ -181,7 +200,38 @@ const emit = defineEmits<{
 
 // Composables
 const { authState, logout: authLogout } = useEnhancedAuth()
-const workspaceStore = useWorkspaceStore()
+
+// Lazy Pinia store initialization to prevent errors before Pinia is ready
+const getWorkspaceStore = () => {
+  try {
+    return useWorkspaceStore()
+  } catch (error) {
+    console.warn('[AIWorkspaceHeader] Pinia not initialized yet, using fallback state')
+    return null
+  }
+}
+
+const workspaceStore = ref(getWorkspaceStore())
+const isPiniaReady = computed(() => !!workspaceStore.value)
+
+// Retry Pinia store initialization when it becomes available
+const retryPiniaStore = () => {
+  if (!workspaceStore.value) {
+    const store = getWorkspaceStore()
+    if (store) {
+      workspaceStore.value = store
+      console.log('[AIWorkspaceHeader] Pinia store initialized successfully')
+    }
+  }
+}
+
+// Watch for Pinia availability and retry
+watch(isPiniaReady, (ready) => {
+  if (!ready) {
+    // Retry after a short delay
+    setTimeout(retryPiniaStore, 100)
+  }
+})
 
 // Local state
 const workspaceSwitcherVisible = ref(false)
@@ -198,7 +248,10 @@ const flattenedWorkspaces = ref<Workspace[]>([])
 
 // Computed
 const isAuthenticated = computed(() => authState.value.isAuthenticated)
-const currentWorkspace = computed<Workspace | null>(() => workspaceStore.currentWorkspace)
+const currentWorkspace = computed<Workspace | null>(() => {
+  if (!workspaceStore.value) return null
+  return workspaceStore.value.currentWorkspace
+})
 
 // Static secondary nav items 
 const secondaryNavItems = ref<SecondaryNavigationItem[]>([
@@ -260,8 +313,8 @@ const flattenTree = (nodes: Workspace[], level = 0, acc: Workspace[] = []) => {
 // Load hierarchical workspaces via store
 const loadWorkspaces = async () => {
   try {
-    const list = await workspaceStore.loadWorkspaces()
-    workspaceTree.value = buildWorkspaceTree(list)
+    const list = await workspaceStore.value?.loadWorkspaces()
+    workspaceTree.value = buildWorkspaceTree(list || [])
     flattenedWorkspaces.value = flattenTree(workspaceTree.value)
     assignedWorkspaces.value = flattenedWorkspaces.value // keep old ref for modal logic
     availableWorkspaces.value = flattenedWorkspaces.value
@@ -270,10 +323,10 @@ const loadWorkspaces = async () => {
     if (props.currentWorkspaceId) {
       const found = flattenedWorkspaces.value.find(w => w.id.toString() === props.currentWorkspaceId?.toString())
       if (found) {
-        workspaceStore.setCurrentWorkspace(found)
+        workspaceStore.value?.setCurrentWorkspace(found)
       }
     } else if (!currentWorkspace.value && flattenedWorkspaces.value.length) {
-      workspaceStore.setCurrentWorkspace(flattenedWorkspaces.value[0])
+      workspaceStore.value?.setCurrentWorkspace(flattenedWorkspaces.value[0])
     }
   } catch (e) {
     console.error('loadWorkspaces (header) error', e)
@@ -420,7 +473,7 @@ const handleUserCommand = (command: string) => {
 
 // Switch workspace
 const switchWorkspace = (workspace: Workspace) => {
-  workspaceStore.setCurrentWorkspace(workspace)
+  workspaceStore.value?.setCurrentWorkspace(workspace)
   workspaceSwitcherVisible.value = false
   
   // Emit event for parent component
@@ -450,7 +503,7 @@ const createNewWorkspace = () => {
     }
     
     availableWorkspaces.value.push(newWorkspace)
-    workspaceStore.setWorkspaces(availableWorkspaces.value)
+    workspaceStore.value?.setWorkspaces(availableWorkspaces.value)
     switchWorkspace(newWorkspace)
     
     ElMessage.success(`Created workspace: ${value}`)
@@ -471,7 +524,7 @@ const handleLogout = () => {
     }
   ).then(async () => {
     // Clear all data from store and localStorage
-    workspaceStore.clearData()
+    workspaceStore.value?.clearData()
     
     // Call auth logout
     await authLogout()
@@ -511,7 +564,7 @@ watch(() => authState.value.user, (newUser) => {
     loadUserInfo()
   } else {
     userInfo.value = { name: '', email: '', avatar_url: null, initials: '' }
-    workspaceStore.clearData()
+    workspaceStore.value?.clearData()
   }
 })
 
@@ -519,7 +572,7 @@ watch(() => authState.value.user, (newUser) => {
 watch(() => props.currentWorkspaceId, (newId) => {
   if (newId && flattenedWorkspaces.value.length) {
     const w = flattenedWorkspaces.value.find(x => x.id.toString() === newId.toString())
-    if (w) workspaceStore.setCurrentWorkspace(w)
+    if (w) workspaceStore.value?.setCurrentWorkspace(w)
   }
 })
 
@@ -550,6 +603,19 @@ onMounted(async () => {
   justify-content: space-between;
   padding: 0 2rem;
   height: 60px;
+}
+
+.header-loading {
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f2f5;
+  color: #606266;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.loading-text {
+  color: #606266;
 }
 
 .header-left {

@@ -14,6 +14,12 @@ A comprehensive, production-ready header component for AIWorkspace applications 
 
 ## Installation
 
+### **Development Phase (Current)**
+```bash
+npm install git+https://github.com/vikaskedia/header.aiworkspace.pro.git
+```
+
+### **Production (When Published to NPM)**
 ```bash
 npm install @aiworkspace/shared-header
 ```
