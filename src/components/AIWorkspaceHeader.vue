@@ -401,16 +401,21 @@ const handleNavCommand = (command: string) => {
     window.location.href = 'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'
     return
   }
+  else {
+    const workspaceId = parseInt(command.replace('workspace-', ''))
+    window.location.href = `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${workspaceId}/dashboard`
+    return
+  }
   
   // Handle workspace switching from assigned workspaces dropdown
-  if (command.startsWith('workspace-')) {
+  /*if (command.startsWith('workspace-')) {
     const workspaceId = command.replace('workspace-', '')
     const workspace = assignedWorkspaces.value.find(w => w.id === parseInt(workspaceId))
     if (workspace) {
       switchWorkspace(workspace)
     }
     return
-  }
+  }*/
 }
 
 // Handle secondary navigation clicks
@@ -421,9 +426,9 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
     case 'dashboard':
       // Stay in current app for dashboard
       if (workspace) {
-        window.location.href = `/single-workspace/${workspace.id}/dashboard`
+        window.location.href = `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${workspace.id}/dashboard`
       } else {
-        window.location.href = '/'
+        window.location.href = 'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'
       }
       break
 
