@@ -68,17 +68,18 @@
           <!-- Workspace selector -->
           <el-dropdown v-if="showWorkspaceSelector" @command="handleNavCommand" trigger="hover">
             <span class="nav-item">
-              {{ currentWorkspace?.title || 'Select Workspace' }}
+              {{ isInAllWorkspaceMode ? 'All workspace' : (currentWorkspace?.title || 'Select Workspace') }}
               <el-icon class="nav-arrow"><ArrowDown /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu class="workspace-tree-dropdown">
                 <!-- All workspace option -->
-                <el-dropdown-item command="all-workspace">
+                <el-dropdown-item command="all-workspace" :class="{ active: isInAllWorkspaceMode }">
                   <a :href="'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'" class="nav-link">
                     <div class="workspace-dropdown-item">
                       <span class="workspace-icon">🌐</span>
                       <span>All workspace</span>
+                      <el-tag v-if="isInAllWorkspaceMode" size="small" type="success">Current</el-tag>
                     </div>
                   </a>
                 </el-dropdown-item>
@@ -297,6 +298,7 @@ const userInfo = ref<{ name: string; email: string; avatar_url: string | null; i
 })
 const workspaceTree = ref<Workspace[]>([])
 const flattenedWorkspaces = ref<Workspace[]>([])
+const isInAllWorkspaceMode = ref(false)
 
 // Watch for workspaces to be loaded and auto-select from URL
 watch(flattenedWorkspaces, async (workspaces) => {
@@ -354,9 +356,31 @@ const getWorkspaceIdFromUrl = () => {
   }
 }
 
+// Check if URL indicates all-workspace mode
+const isAllWorkspaceMode = () => {
+  try {
+    return window.location.pathname.includes('/all-workspace/')
+  } catch (error) {
+    console.warn('[AIWorkspaceHeader] Error checking all-workspace mode:', error)
+    return false
+  }
+}
+
 // Auto-select workspace based on URL
 const autoSelectWorkspaceFromUrl = async () => {
   if (!workspaceStore.value || !isPiniaReady.value) return
+  
+  // Check if we're in all-workspace mode
+  const allWorkspaceMode = isAllWorkspaceMode()
+  isInAllWorkspaceMode.value = allWorkspaceMode
+  
+  if (allWorkspaceMode) {
+    // Clear current workspace when in all-workspace mode
+    workspaceStore.value.currentWorkspace = null
+    localStorage.removeItem('current_workspace')
+    console.log('[AIWorkspaceHeader] Auto-selected all-workspace mode from URL')
+    return
+  }
   
   const urlWorkspaceId = getWorkspaceIdFromUrl()
   if (!urlWorkspaceId) return
