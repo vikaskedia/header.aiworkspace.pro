@@ -312,6 +312,12 @@ watch(() => window.location.pathname + window.location.search + window.location.
   }
 }, { immediate: false })
 
+// Watch for URL changes to update current section label
+const currentUrl = ref(window.location.pathname)
+watch(() => window.location.pathname, (newPath) => {
+  currentUrl.value = newPath
+}, { immediate: true })
+
 // Watch for Pinia availability and retry
 watch(isPiniaReady, (ready) => {
   if (!ready && piniaRetryCount.value < maxPiniaRetries) {
@@ -404,8 +410,49 @@ const secondaryNavItems = ref<SecondaryNavigationItem[]>([
 ])
 
 const currentSectionLabel = computed(() => {
-  // For now, return a default label since we don't have route info in this component
-  return 'Dashboard'
+  try {
+    // Get current URL path from reactive ref
+    const currentPath = currentUrl.value
+    
+    // Extract the section from URL patterns like:
+    // /single-workspace/3/outlines -> outlines
+    // /single-workspace/3/dashboard -> dashboard
+    // /outlines -> outlines
+    // /dashboard -> dashboard
+    
+    let section = ''
+    
+    // Check for single-workspace pattern: /single-workspace/{id}/{section}
+    const singleWorkspaceMatch = currentPath.match(/\/single-workspace\/\d+\/([^\/]+)/)
+    if (singleWorkspaceMatch) {
+      section = singleWorkspaceMatch[1]
+    } else {
+      // Check for direct pattern: /{section}
+      const directMatch = currentPath.match(/\/([^\/]+)$/)
+      if (directMatch) {
+        section = directMatch[1]
+      }
+    }
+    
+    // Find matching secondary nav item
+    if (section) {
+      const matchingItem = secondaryNavItems.value.find(item => 
+        item.key === section || 
+        item.url.includes(`/${section}`) ||
+        item.url === `/${section}`
+      )
+      
+      if (matchingItem) {
+        return matchingItem.label
+      }
+    }
+    
+    // Default fallback
+    return 'Dashboard'
+  } catch (error) {
+    console.warn('[AIWorkspaceHeader] Error determining current section:', error)
+    return 'Dashboard'
+  }
 })
 
 // Helper: build tree from flat list
