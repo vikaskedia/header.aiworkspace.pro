@@ -81,17 +81,42 @@ export function buildOAuthRedirectUrl() {
 
 export function getPostLoginBase(): string {
   try {
-    const params = new URLSearchParams(location.search)
-    const paramKey = ['redirect','redirect_to','returnTo','next'].find(k => params.get(k))
-    let candidate = paramKey ? params.get(paramKey)! : ''
+    // Check both search params and hash params (OAuth callbacks often use hash)
+    const searchParams = new URLSearchParams(location.search)
+    const hashParams = new URLSearchParams(location.hash.replace('#', ''))
     
-    console.log('[getPostLoginBase] URL params:', Object.fromEntries(params))
-    console.log('[getPostLoginBase] Found param key:', paramKey)
+    // Look for redirect parameters in both search and hash
+    const searchParamKey = ['redirect','redirect_to','returnTo','next','redirect_origin'].find(k => searchParams.get(k))
+    const hashParamKey = ['redirect','redirect_to','returnTo','next','redirect_origin'].find(k => hashParams.get(k))
+    
+    let candidate = searchParamKey ? searchParams.get(searchParamKey)! : 
+                   hashParamKey ? hashParams.get(hashParamKey)! : ''
+    
+    console.log('[getPostLoginBase] Search params:', Object.fromEntries(searchParams))
+    console.log('[getPostLoginBase] Hash params:', Object.fromEntries(hashParams))
+    console.log('[getPostLoginBase] Found search param key:', searchParamKey)
+    console.log('[getPostLoginBase] Found hash param key:', hashParamKey)
     console.log('[getPostLoginBase] Candidate from params:', candidate)
     
     if (!candidate) {
-      candidate = sessionStorage.getItem('post-login-redirect') || localStorage.getItem('post-login-redirect') || ''
-      console.log('[getPostLoginBase] Candidate from storage:', candidate)
+      const storedUrl = sessionStorage.getItem('post-login-redirect') || localStorage.getItem('post-login-redirect') || ''
+      console.log('[getPostLoginBase] Stored URL from storage:', storedUrl)
+      
+      // If stored URL is a full URL, extract the path
+      if (storedUrl.startsWith('http')) {
+        try {
+          const url = new URL(storedUrl)
+          candidate = url.pathname + url.search + url.hash
+          console.log('[getPostLoginBase] Extracted path from stored URL:', candidate)
+        } catch (e) {
+          console.log('[getPostLoginBase] Error parsing stored URL:', e)
+          candidate = storedUrl
+        }
+      } else {
+        candidate = storedUrl
+      }
+      
+      console.log('[getPostLoginBase] Final candidate from storage:', candidate)
     }
     
     if (!candidate) {
