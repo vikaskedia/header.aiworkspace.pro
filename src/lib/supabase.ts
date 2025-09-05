@@ -27,7 +27,14 @@ export const supabase = createClient(
       storageKey: 'sb-auth-token',
       storage: localStorage,
       autoRefreshToken: true,
-      persistSession: true
+      persistSession: true,
+      cookieOptions: {
+        domain: window.location.hostname === 'localhost' ? 'localhost' : '.aiworkspace.pro',
+        path: '/',
+        sameSite: 'Lax',
+        secure: window.location.protocol === 'https:',
+        maxAge: 365 * 24 * 60 * 60 // 1 year in seconds
+      }
     }
   }
 )

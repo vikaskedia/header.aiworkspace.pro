@@ -157,10 +157,38 @@
       </div>
     </div>
     
-    <!-- Show unauthenticated message when Pinia is ready but user is not authenticated -->
-    <div v-else class="unauth-message">
-      <div class="unauth-inner">
-        <strong>Authentication required.</strong> Please log in to access the workspace.
+    <!-- Show login button when Pinia is ready but user is not authenticated -->
+    <div v-else class="header-content header-unauthenticated">
+      <div class="header-left">
+        <div class="logo-section">
+          <a href="/" class="logo">
+            <img 
+              v-if="customLogo"
+              :src="customLogo" 
+              alt="AIWorkspace" 
+              class="logo-image"
+            />
+            <div v-else class="text-logo">
+              <span class="logo-text">AI Workspace</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+      <div class="header-center">
+        <span class="welcome-text">Welcome to AI Workspace</span>
+      </div>
+      
+      <div class="header-right">
+        <el-button 
+          type="primary" 
+          size="large"
+          class="login-button"
+          @click="showLoginModal = true"
+        >
+          <el-icon><User /></el-icon>
+          Login / Signup
+        </el-button>
       </div>
     </div>
 
@@ -198,15 +226,22 @@
         <el-button type="primary" @click="createNewWorkspace">Create New Workspace</el-button>
       </template>
     </el-dialog>
+
+    <!-- Login Modal -->
+    <LoginModal 
+      v-model="showLoginModal"
+      @login-success="handleLoginSuccess"
+    />
   </header>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Check } from '@element-plus/icons-vue'
+import { ArrowDown, Check, User } from '@element-plus/icons-vue'
 import { useEnhancedAuth } from '../composables/useEnhancedAuth'
 import { useWorkspaceStore } from '../store/workspace'
+import LoginModal from './LoginModal.vue'
 import type { HeaderProps, Workspace, SecondaryNavigationItem } from '../types'
 
 const props = withDefaults(defineProps<HeaderProps>(), {
@@ -288,6 +323,7 @@ onMounted(() => {
 
 // Local state
 const workspaceSwitcherVisible = ref(false)
+const showLoginModal = ref(false)
 const availableWorkspaces = ref<Workspace[]>([])
 const assignedWorkspaces = ref<Workspace[]>([])
 const userInfo = ref<{ name: string; email: string; avatar_url: string | null; initials: string }>({ 
@@ -625,6 +661,16 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       }
       break
 
+    case 'settings':
+      // Redirect to settings.aiworkspace.pro
+      if (workspace) {
+        const settingsUrl = `https://settings.aiworkspace.pro/single-workspace/${workspace.id}/settings`
+        window.location.href = settingsUrl
+      } else {
+        window.location.href = 'https://settings.aiworkspace.pro'
+      }
+      break
+
     default:
       // Redirect to main app.aiworkspace.pro for all other items
       if (workspace) {
@@ -643,7 +689,7 @@ const secondaryHref = (item: SecondaryNavigationItem) => {
   const workspace = currentWorkspace.value
   switch (item.key) {
     case 'dashboard':
-      return workspace ? `/single-workspace/${workspace.id}/dashboard` : '/'
+      return workspace ? `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${workspace.id}/dashboard` : 'https://single-ws-dashboard.aiworkspace.pro'
     case 'ai-portfolios':
       return workspace ? `https://spreadsheet.aiworkspace.pro/single-workspace/${workspace.id}/ai-portfolios` : 'https://spreadsheet.aiworkspace.pro'
     case 'outlines':
@@ -654,6 +700,8 @@ const secondaryHref = (item: SecondaryNavigationItem) => {
       return workspace ? `https://drive.aiworkspace.pro/single-workspace/${workspace.id}/files` : 'https://drive.aiworkspace.pro'
     case 'tasks':
       return workspace ? `https://tasks.aiworkspace.pro/single-workspace/${workspace.id}/tasks` : 'https://tasks.aiworkspace.pro'
+    case 'settings':
+      return workspace ? `https://settings.aiworkspace.pro/single-workspace/${workspace.id}/settings` : 'https://settings.aiworkspace.pro'
     default:
       return workspace ? `https://app.aiworkspace.pro/single-workspace/${workspace.id}/${item.key}` : `https://app.aiworkspace.pro/${item.key}`
   }
@@ -789,6 +837,20 @@ onMounted(async () => {
     await autoSelectWorkspaceFromUrl() // Auto-select workspace from URL on mount
   }
 })
+
+// Handle successful login
+const handleLoginSuccess = async (user: any) => {
+  console.log('Login successful:', user)
+  showLoginModal.value = false
+  
+  // Reload user info and workspaces
+  await loadUserInfo()
+  
+  // Emit login event
+  emit('login')
+  
+  ElMessage.success('Welcome back!')
+}
 
 // Manual retry function for fallback state
 const manualRetry = () => {
@@ -1184,20 +1246,37 @@ const manualRetry = () => {
   box-shadow: none !important;
 }
 
-.unauth-message { 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  height: 60px; 
-  font-size: 0.9rem; 
-  color: #c0392b; 
-  background: #fff5f5; 
-  border-bottom: 1px solid #f2d7d5; 
+.header-unauthenticated {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.unauth-inner { 
-  max-width: 1400px; 
-  width: 100%; 
-  padding: 0 2rem; 
+.welcome-text {
+  color: #475569;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.login-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.login-button .el-icon {
+  margin-right: 8px;
+  font-size: 0.9rem;
 }
 </style>

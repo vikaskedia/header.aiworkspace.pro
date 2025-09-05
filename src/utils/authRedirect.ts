@@ -84,20 +84,41 @@ export function getPostLoginBase(): string {
     const params = new URLSearchParams(location.search)
     const paramKey = ['redirect','redirect_to','returnTo','next'].find(k => params.get(k))
     let candidate = paramKey ? params.get(paramKey)! : ''
+    
+    console.log('[getPostLoginBase] URL params:', Object.fromEntries(params))
+    console.log('[getPostLoginBase] Found param key:', paramKey)
+    console.log('[getPostLoginBase] Candidate from params:', candidate)
+    
     if (!candidate) {
       candidate = sessionStorage.getItem('post-login-redirect') || localStorage.getItem('post-login-redirect') || ''
+      console.log('[getPostLoginBase] Candidate from storage:', candidate)
     }
-    if (!candidate) candidate = (import.meta as any).env?.VITE_DEFAULT_POST_LOGIN_URL || '/'
+    
+    if (!candidate) {
+      candidate = (import.meta as any).env?.VITE_DEFAULT_POST_LOGIN_URL || '/'
+      console.log('[getPostLoginBase] Using default:', candidate)
+    }
+    
     if (candidate.startsWith('http')) {
       try {
         const u = new URL(candidate)
-        if (isUnderApex(u.hostname) || isLocalHost(u.hostname)) return candidate
+        if (isUnderApex(u.hostname) || isLocalHost(u.hostname)) {
+          console.log('[getPostLoginBase] Returning absolute URL:', candidate)
+          return candidate
+        }
+        console.log('[getPostLoginBase] Invalid hostname, returning /')
         return '/'
-      } catch { return '/' }
+      } catch { 
+        console.log('[getPostLoginBase] Invalid URL, returning /')
+        return '/' 
+      }
     }
+    
     if (!candidate.startsWith('/')) candidate = '/' + candidate
+    console.log('[getPostLoginBase] Final candidate:', candidate)
     return candidate
-  } catch {
+  } catch (error) {
+    console.log('[getPostLoginBase] Error:', error)
     return '/'
   }
 }
