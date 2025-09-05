@@ -1,6 +1,9 @@
 // Universal OAuth callback handler that works with any app
 // This handles OAuth callbacks without requiring specific routing setup
 
+import { supabase } from '../lib/supabase'
+import { setSessionCookie, syncCookiesToLocalStorage, ACCESS_COOKIE, REFRESH_COOKIE, getPostLoginBase } from './authRedirect'
+
 export function setupUniversalCallback() {
   // Check if we're on an OAuth callback URL
   const isOAuthCallback = () => {
@@ -73,9 +76,7 @@ export function setupUniversalCallback() {
     console.log('[UniversalCallback] Current hash:', window.location.hash)
 
     try {
-      // Import Supabase client dynamically to avoid circular dependencies
-      const { supabase } = await import('../lib/supabase')
-      const { setSessionCookie, syncCookiesToLocalStorage, ACCESS_COOKIE, REFRESH_COOKIE, getPostLoginBase } = await import('./authRedirect')
+      // Using direct imports instead of dynamic imports for better reliability
 
       // Wait a moment to ensure session is properly established
       await new Promise(resolve => setTimeout(resolve, 500))

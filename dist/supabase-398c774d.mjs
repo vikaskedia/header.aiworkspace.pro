@@ -1,8 +1,8 @@
-import { createClient as d } from "@supabase/supabase-js";
-import { ensureCrossSubdomainCookies as p, ACCESS_COOKIE as o, REFRESH_COOKIE as t, getCookie as u, syncCookiesToLocalStorage as l, setSessionCookie as a } from "./utils/authRedirect.js";
-async function b() {
+import { createClient as p } from "@supabase/supabase-js";
+import { ensureCrossSubdomainCookies as d, ACCESS_COOKIE as o, REFRESH_COOKIE as t, getCookie as u, syncCookiesToLocalStorage as l, setSessionCookie as a } from "./utils/authRedirect.js";
+async function m() {
   try {
-    p([o, t]);
+    d([o, t]);
     const e = u(o), s = u(t);
     if (e && s) {
       const { data: { session: i } } = await c.auth.getSession();
@@ -37,7 +37,7 @@ function f() {
     }
   });
 }
-async function m() {
+async function b() {
   try {
     const { data: { session: e } } = await c.auth.getSession();
     if (e && e.user)
@@ -59,7 +59,7 @@ async function m() {
     return console.log("[auth][restore] Exception during session restoration:", e), { success: !1, error: e };
   }
 }
-const h = "https://oqdnbpmmgntqtigstaow.supabase.co", g = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xZG5icG1tZ250cXRpZ3N0YW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0NTk2NDYsImV4cCI6MjA1MDAzNTY0Nn0.rn0nRY9xLgLt-ajiSPeG0PcdS9V-549C1yeqhcxxG40", c = d(
+const h = "https://oqdnbpmmgntqtigstaow.supabase.co", g = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xZG5icG1tZ250cXRpZ3N0YW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0NTk2NDYsImV4cCI6MjA1MDAzNTY0Nn0.rn0nRY9xLgLt-ajiSPeG0PcdS9V-549C1yeqhcxxG40", c = p(
   h,
   g,
   {
@@ -82,7 +82,7 @@ const h = "https://oqdnbpmmgntqtigstaow.supabase.co", g = "eyJhbGciOiJIUzI1NiIsI
     }
   }
 );
-typeof window < "u" && (p([o, t]), f());
+typeof window < "u" && (d([o, t]), f());
 console.log("Supabase Configuration:", {
   url: h,
   hasKey: !!g,
@@ -92,14 +92,9 @@ console.log("Supabase Configuration:", {
 console.log("URL:", h.replace(/https:\/\/(.+)\.supabase\.co/, "https://*****.supabase.co"));
 console.log("Key configured:", !g.includes("your-anon-key"));
 console.log("Environment mode:", "production");
-const y = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  supabase: c
-}, Symbol.toStringTag, { value: "Module" }));
 export {
-  b as a,
+  m as a,
   f as b,
-  y as c,
-  m as r,
+  b as r,
   c as s
 };
