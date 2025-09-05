@@ -450,8 +450,8 @@ const currentWorkspace = computed<Workspace | null>(() => {
   return workspaceStore.value.currentWorkspace
 })
 
-// Static secondary nav items 
-const secondaryNavItems = ref<SecondaryNavigationItem[]>([
+// Static secondary nav items for single workspace mode
+const singleWorkspaceNavItems = ref<SecondaryNavigationItem[]>([
   { label: 'Dashboard', key: 'dashboard', url: '/dashboard' },
   { label: 'Goals', key: 'goals', url: '/goals' },
   { label: 'Tasks', key: 'tasks', url: '/tasks' },
@@ -469,6 +469,22 @@ const secondaryNavItems = ref<SecondaryNavigationItem[]>([
   { label: 'Settings', key: 'settings', url: '/settings' }
 ])
 
+// Static secondary nav items for all workspace mode
+const allWorkspaceNavItems = ref<SecondaryNavigationItem[]>([
+  { label: 'Dashboard', key: 'dashboard', url: '/dashboard' },
+  { label: 'All Tasks', key: 'tasks', url: '/tasks' },
+  { label: 'All Goals', key: 'goals', url: '/goals' },
+  { label: 'All Events', key: 'events', url: '/events' },
+  { label: 'All Drive', key: 'files', url: '/files' },
+  { label: 'All Contacts', key: 'contacts', url: '/contacts' },
+  { label: 'All Settings', key: 'settings', url: '/settings' }
+])
+
+// Computed property to get the appropriate secondary nav items based on workspace mode
+const secondaryNavItems = computed(() => {
+  return isInAllWorkspaceMode.value ? allWorkspaceNavItems.value : singleWorkspaceNavItems.value
+})
+
 const currentSectionLabel = computed(() => {
   try {
     // Get current URL path from reactive ref
@@ -477,20 +493,28 @@ const currentSectionLabel = computed(() => {
     // Extract the section from URL patterns like:
     // /single-workspace/3/outlines -> outlines
     // /single-workspace/3/dashboard -> dashboard
+    // /all-workspace/tasks -> tasks
+    // /all-workspace/dashboard -> dashboard
     // /outlines -> outlines
     // /dashboard -> dashboard
     
     let section = ''
     
-    // Check for single-workspace pattern: /single-workspace/{id}/{section}
-    const singleWorkspaceMatch = currentPath.match(/\/single-workspace\/\d+\/([^\/]+)/)
-    if (singleWorkspaceMatch) {
-      section = singleWorkspaceMatch[1]
+    // Check for all-workspace pattern: /all-workspace/{section}
+    const allWorkspaceMatch = currentPath.match(/\/all-workspace\/([^\/]+)/)
+    if (allWorkspaceMatch) {
+      section = allWorkspaceMatch[1]
     } else {
-      // Check for direct pattern: /{section}
-      const directMatch = currentPath.match(/\/([^\/]+)$/)
-      if (directMatch) {
-        section = directMatch[1]
+      // Check for single-workspace pattern: /single-workspace/{id}/{section}
+      const singleWorkspaceMatch = currentPath.match(/\/single-workspace\/\d+\/([^\/]+)/)
+      if (singleWorkspaceMatch) {
+        section = singleWorkspaceMatch[1]
+      } else {
+        // Check for direct pattern: /{section}
+        const directMatch = currentPath.match(/\/([^\/]+)$/)
+        if (directMatch) {
+          section = directMatch[1]
+        }
       }
     }
     
@@ -600,11 +624,13 @@ const handleNavCommand = (command: string) => {
 // Handle secondary navigation clicks
 const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
   const workspace = currentWorkspace.value
+  const isAllWorkspace = isInAllWorkspaceMode.value
   
   switch (item.key) {
     case 'dashboard':
-      // Stay in current app for dashboard
-      if (workspace) {
+      if (isAllWorkspace) {
+        window.location.href = 'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'
+      } else if (workspace) {
         window.location.href = `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${workspace.id}/dashboard`
       } else {
         window.location.href = 'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'
@@ -612,8 +638,9 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       break
 
     case 'outlines':
-      // Redirect to outline.aiworkspace.pro
-      if (workspace) {
+      if (isAllWorkspace) {
+        window.location.href = 'https://outline.aiworkspace.pro/all-workspace/outlines'
+      } else if (workspace) {
         const outlinesUrl = `https://outline.aiworkspace.pro/single-workspace/${workspace.id}/outlines`
         window.location.href = outlinesUrl
       } else {
@@ -622,8 +649,9 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       break
     
     case 'canvas':
-      // Redirect to canvas.aiworkspace.pro
-      if (workspace) {
+      if (isAllWorkspace) {
+        window.location.href = 'https://canvas.aiworkspace.pro/all-workspace/canvas'
+      } else if (workspace) {
         const canvasUrl = `https://canvas.aiworkspace.pro/single-workspace/${workspace.id}/canvas`
         window.location.href = canvasUrl
       } else {
@@ -632,8 +660,9 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       break
 
     case 'files':
-      // Redirect to files.aiworkspace.pro
-      if (workspace) {
+      if (isAllWorkspace) {
+        window.location.href = 'https://drive.aiworkspace.pro/all-workspace/files'
+      } else if (workspace) {
         const filesUrl = `https://drive.aiworkspace.pro/single-workspace/${workspace.id}/files`
         window.location.href = filesUrl
       } else {
@@ -642,8 +671,9 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       break
 
     case 'tasks':
-      // Redirect to tasks.aiworkspace.pro
-      if (workspace) {
+      if (isAllWorkspace) {
+        window.location.href = 'https://tasks.aiworkspace.pro/all-workspace/tasks'
+      } else if (workspace) {
         const tasksUrl = `https://tasks.aiworkspace.pro/single-workspace/${workspace.id}/tasks`
         window.location.href = tasksUrl
       } else {
@@ -651,9 +681,43 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       }
       break
 
+    case 'goals':
+      if (isAllWorkspace) {
+        window.location.href = 'https://app.aiworkspace.pro/all-workspace/goals'
+      } else if (workspace) {
+        const goalsUrl = `https://app.aiworkspace.pro/single-workspace/${workspace.id}/goals`
+        window.location.href = goalsUrl
+      } else {
+        window.location.href = 'https://app.aiworkspace.pro/all-workspace/goals'
+      }
+      break
+
+    case 'events':
+      if (isAllWorkspace) {
+        window.location.href = 'https://app.aiworkspace.pro/all-workspace/events'
+      } else if (workspace) {
+        const eventsUrl = `https://app.aiworkspace.pro/single-workspace/${workspace.id}/events`
+        window.location.href = eventsUrl
+      } else {
+        window.location.href = 'https://app.aiworkspace.pro/all-workspace/events'
+      }
+      break
+
+    case 'contacts':
+      if (isAllWorkspace) {
+        window.location.href = 'https://app.aiworkspace.pro/all-workspace/contacts'
+      } else if (workspace) {
+        const contactsUrl = `https://app.aiworkspace.pro/single-workspace/${workspace.id}/contacts`
+        window.location.href = contactsUrl
+      } else {
+        window.location.href = 'https://app.aiworkspace.pro/all-workspace/contacts'
+      }
+      break
+
     case 'ai-portfolios':
-      // Redirect to ai-portfolios.aiworkspace.pro
-      if (workspace) {
+      if (isAllWorkspace) {
+        window.location.href = 'https://spreadsheet.aiworkspace.pro/all-workspace/ai-portfolios'
+      } else if (workspace) {
         const aiPortfoliosUrl = `https://spreadsheet.aiworkspace.pro/single-workspace/${workspace.id}/ai-portfolios`
         window.location.href = aiPortfoliosUrl
       } else {
@@ -662,8 +726,9 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       break
 
     case 'settings':
-      // Redirect to settings.aiworkspace.pro
-      if (workspace) {
+      if (isAllWorkspace) {
+        window.location.href = 'https://settings.aiworkspace.pro/all-workspace/settings'
+      } else if (workspace) {
         const settingsUrl = `https://settings.aiworkspace.pro/single-workspace/${workspace.id}/settings`
         window.location.href = settingsUrl
       } else {
@@ -673,7 +738,10 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
 
     default:
       // Redirect to main app.aiworkspace.pro for all other items
-      if (workspace) {
+      if (isAllWorkspace) {
+        const mainAppUrl = `https://app.aiworkspace.pro/all-workspace/${item.key}`
+        window.location.href = mainAppUrl
+      } else if (workspace) {
         const mainAppUrl = `https://app.aiworkspace.pro/single-workspace/${workspace.id}/${item.key}`
         window.location.href = mainAppUrl
       } else {
@@ -687,23 +755,97 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
 // Helper to build href for secondary nav items (used in template anchors)
 const secondaryHref = (item: SecondaryNavigationItem) => {
   const workspace = currentWorkspace.value
+  const isAllWorkspace = isInAllWorkspaceMode.value
+  
   switch (item.key) {
     case 'dashboard':
-      return workspace ? `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${workspace.id}/dashboard` : 'https://single-ws-dashboard.aiworkspace.pro'
+      if (isAllWorkspace) {
+        return 'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'
+      } else if (workspace) {
+        return `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${workspace.id}/dashboard`
+      } else {
+        return 'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'
+      }
     case 'ai-portfolios':
-      return workspace ? `https://spreadsheet.aiworkspace.pro/single-workspace/${workspace.id}/ai-portfolios` : 'https://spreadsheet.aiworkspace.pro'
+      if (isAllWorkspace) {
+        return 'https://spreadsheet.aiworkspace.pro/all-workspace/ai-portfolios'
+      } else if (workspace) {
+        return `https://spreadsheet.aiworkspace.pro/single-workspace/${workspace.id}/ai-portfolios`
+      } else {
+        return 'https://spreadsheet.aiworkspace.pro'
+      }
     case 'outlines':
-      return workspace ? `https://outline.aiworkspace.pro/single-workspace/${workspace.id}/outlines` : 'https://outline.aiworkspace.pro'
+      if (isAllWorkspace) {
+        return 'https://outline.aiworkspace.pro/all-workspace/outlines'
+      } else if (workspace) {
+        return `https://outline.aiworkspace.pro/single-workspace/${workspace.id}/outlines`
+      } else {
+        return 'https://outline.aiworkspace.pro'
+      }
     case 'canvas':
-      return workspace ? `https://canvas.aiworkspace.pro/single-workspace/${workspace.id}/canvas` : 'https://canvas.aiworkspace.pro'
+      if (isAllWorkspace) {
+        return 'https://canvas.aiworkspace.pro/all-workspace/canvas'
+      } else if (workspace) {
+        return `https://canvas.aiworkspace.pro/single-workspace/${workspace.id}/canvas`
+      } else {
+        return 'https://canvas.aiworkspace.pro'
+      }
     case 'files':
-      return workspace ? `https://drive.aiworkspace.pro/single-workspace/${workspace.id}/files` : 'https://drive.aiworkspace.pro'
+      if (isAllWorkspace) {
+        return 'https://drive.aiworkspace.pro/all-workspace/files'
+      } else if (workspace) {
+        return `https://drive.aiworkspace.pro/single-workspace/${workspace.id}/files`
+      } else {
+        return 'https://drive.aiworkspace.pro'
+      }
     case 'tasks':
-      return workspace ? `https://tasks.aiworkspace.pro/single-workspace/${workspace.id}/tasks` : 'https://tasks.aiworkspace.pro'
+      if (isAllWorkspace) {
+        return 'https://tasks.aiworkspace.pro/all-workspace/tasks'
+      } else if (workspace) {
+        return `https://tasks.aiworkspace.pro/single-workspace/${workspace.id}/tasks`
+      } else {
+        return 'https://tasks.aiworkspace.pro'
+      }
+    case 'goals':
+      if (isAllWorkspace) {
+        return 'https://app.aiworkspace.pro/all-workspace/goals'
+      } else if (workspace) {
+        return `https://app.aiworkspace.pro/single-workspace/${workspace.id}/goals`
+      } else {
+        return 'https://app.aiworkspace.pro/all-workspace/goals'
+      }
+    case 'events':
+      if (isAllWorkspace) {
+        return 'https://app.aiworkspace.pro/all-workspace/events'
+      } else if (workspace) {
+        return `https://app.aiworkspace.pro/single-workspace/${workspace.id}/events`
+      } else {
+        return 'https://app.aiworkspace.pro/all-workspace/events'
+      }
+    case 'contacts':
+      if (isAllWorkspace) {
+        return 'https://app.aiworkspace.pro/all-workspace/contacts'
+      } else if (workspace) {
+        return `https://app.aiworkspace.pro/single-workspace/${workspace.id}/contacts`
+      } else {
+        return 'https://app.aiworkspace.pro/all-workspace/contacts'
+      }
     case 'settings':
-      return workspace ? `https://settings.aiworkspace.pro/single-workspace/${workspace.id}/settings` : 'https://settings.aiworkspace.pro'
+      if (isAllWorkspace) {
+        return 'https://settings.aiworkspace.pro/all-workspace/settings'
+      } else if (workspace) {
+        return `https://settings.aiworkspace.pro/single-workspace/${workspace.id}/settings`
+      } else {
+        return 'https://settings.aiworkspace.pro'
+      }
     default:
-      return workspace ? `https://app.aiworkspace.pro/single-workspace/${workspace.id}/${item.key}` : `https://app.aiworkspace.pro/${item.key}`
+      if (isAllWorkspace) {
+        return `https://app.aiworkspace.pro/all-workspace/${item.key}`
+      } else if (workspace) {
+        return `https://app.aiworkspace.pro/single-workspace/${workspace.id}/${item.key}`
+      } else {
+        return `https://app.aiworkspace.pro/${item.key}`
+      }
   }
 }
 
