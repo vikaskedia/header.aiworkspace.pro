@@ -11,7 +11,12 @@
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
     },
-    "./style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./utils/*": {
+      "import": "./dist/utils/*.js",
+      "require": "./dist/utils/*.js",
+      "types": "./dist/types/utils/*.d.ts"
+    }
   },
   "files": [
     "dist"

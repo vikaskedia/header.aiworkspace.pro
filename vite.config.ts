@@ -20,12 +20,20 @@ export default defineConfig(({ command }) => {
       plugins: [vue()],
       build: {
         lib: {
-          entry: resolve(__dirname, 'src/index.ts'),
+          entry: {
+            index: resolve(__dirname, 'src/index.ts'),
+            'utils/universalCallback': resolve(__dirname, 'src/utils/universalCallback.ts'),
+            'utils/authRedirect': resolve(__dirname, 'src/utils/authRedirect.ts'),
+            'utils/simpleCallback': resolve(__dirname, 'src/utils/simpleCallback.ts')
+          },
           name: 'AIWorkspaceHeader',
-          fileName: (format) => {
-            if (format === 'es') return 'index.esm.js'
-            if (format === 'cjs') return 'index.js'
-            return `index.${format}.js`
+          fileName: (format, entryName) => {
+            if (entryName === 'index') {
+              if (format === 'es') return 'index.esm.js'
+              if (format === 'cjs') return 'index.js'
+              return `index.${format}.js`
+            }
+            return `${entryName}.js`
           }
         },
         rollupOptions: {
@@ -33,7 +41,10 @@ export default defineConfig(({ command }) => {
           output: [
             {
               format: 'es',
-              entryFileNames: 'index.esm.js',
+              entryFileNames: (chunkInfo) => {
+                if (chunkInfo.name === 'index') return 'index.esm.js'
+                return '[name].js'
+              },
               globals: {
                 vue: 'Vue',
                 pinia: 'Pinia',
@@ -43,7 +54,10 @@ export default defineConfig(({ command }) => {
             },
             {
               format: 'cjs',
-              entryFileNames: 'index.js',
+              entryFileNames: (chunkInfo) => {
+                if (chunkInfo.name === 'index') return 'index.js'
+                return '[name].js'
+              },
               globals: {
                 vue: 'Vue',
                 pinia: 'Pinia',
