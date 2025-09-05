@@ -17,6 +17,8 @@ import { setSessionCookie, syncCookiesToLocalStorage, ACCESS_COOKIE, REFRESH_COO
 
 onMounted(async () => {
   console.log('[AuthCallback] Component mounted, starting callback processing...')
+  console.log('[AuthCallback] Current URL:', window.location.href)
+  console.log('[AuthCallback] Current hash:', window.location.hash)
   try {
     // Wait a moment to ensure session is properly established
     await new Promise(resolve => setTimeout(resolve, 500))

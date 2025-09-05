@@ -36,9 +36,13 @@ import { useAuth } from './composables/useAuth'
 
 const { isAuthenticated, user } = useAuth()
 
-// Check if we're on the callback route
+// Check if we're on the callback route (support both path and hash)
 const isCallbackRoute = computed(() => {
-  return window.location.pathname === '/auth/callback'
+  return window.location.pathname === '/auth/callback' || 
+         window.location.hash === '#/auth/callback' ||
+         window.location.hash.startsWith('#/auth/callback') ||
+         window.location.hash.includes('access_token=') ||
+         window.location.search.includes('access_token=')
 })
 
 const handleLogin = () => {

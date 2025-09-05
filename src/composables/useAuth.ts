@@ -189,9 +189,9 @@ export function useAuth() {
       }
 
       // Clear auth state
-      authState.value = {
-        user: null,
-        isAuthenticated: false,
+    authState.value = {
+      user: null,
+      isAuthenticated: false,
         isLoading: false,
         error: null
       }

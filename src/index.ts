@@ -14,6 +14,7 @@ export { useWorkspaceStore } from './store/workspace'
 
 // Utilities
 export * from './utils/authRedirect'
+export * from './utils/universalCallback'
 
 // Plugins
 export * from './plugins/crossSubdomainAuth'

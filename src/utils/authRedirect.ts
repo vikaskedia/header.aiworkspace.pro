@@ -76,7 +76,7 @@ export function ensureCrossSubdomainCookies(names: string[]) {
 }
 
 export function buildOAuthRedirectUrl() {
-  return `${window.location.origin}/callback`
+  return `${window.location.origin}/auth/callback`
 }
 
 export function getPostLoginBase(): string {
