@@ -199,11 +199,34 @@ export function clearLocalStorageTokens() {
 
 // Make functions available globally for fallback access
 if (typeof window !== 'undefined') {
-  (window as any).ensureCrossSubdomainCookies = ensureCrossSubdomainCookies
-  (window as any).ACCESS_COOKIE = ACCESS_COOKIE
-  (window as any).REFRESH_COOKIE = REFRESH_COOKIE
-  (window as any).setSessionCookie = setSessionCookie
-  (window as any).getCookie = getCookie
-  (window as any).clearSessionCookie = clearSessionCookie
-  console.log('[auth][authRedirect] Functions made available globally for fallback access')
+  try {
+    // Create a global object to avoid minification issues with individual assignments
+    const authRedirectGlobal = {
+      ensureCrossSubdomainCookies,
+      ACCESS_COOKIE,
+      REFRESH_COOKIE,
+      setSessionCookie,
+      getCookie,
+      clearSessionCookie,
+      syncCookiesToLocalStorage,
+      clearLocalStorageTokens,
+      buildOAuthRedirectUrl,
+      getPostLoginBase
+    }
+    
+    // Assign the object to window
+    ;(window as any).authRedirectGlobal = authRedirectGlobal
+    
+    // Also assign individual functions for backward compatibility
+    ;(window as any).ensureCrossSubdomainCookies = ensureCrossSubdomainCookies
+    ;(window as any).ACCESS_COOKIE = ACCESS_COOKIE
+    ;(window as any).REFRESH_COOKIE = REFRESH_COOKIE
+    ;(window as any).setSessionCookie = setSessionCookie
+    ;(window as any).getCookie = getCookie
+    ;(window as any).clearSessionCookie = clearSessionCookie
+    
+    console.log('[auth][authRedirect] Functions made available globally for fallback access')
+  } catch (globalError) {
+    console.warn('[auth][authRedirect] Failed to assign functions globally:', globalError)
+  }
 }
