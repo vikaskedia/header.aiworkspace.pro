@@ -1,14 +1,15 @@
-import { ref, computed, onMounted, watch } from 'vue'
-import { supabase } from '../lib/supabase'
+import { ref, computed, onMounted } from 'vue'
+import { getSupabase } from '../lib/supabase'
 import { restoreSessionWithRetry, initializeCrossSubdomainAuth } from '../plugins/crossSubdomainAuth'
 import { clearSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE, clearLocalStorageTokens } from '../utils/authRedirect'
-import type { User, AuthState, Session, AuthResult } from '../types'
+import type { AuthState, Session, AuthResult } from '../types'
 
 export function useEnhancedAuth() {
   const authState = ref<AuthState>({
     user: null,
     isAuthenticated: false,
-    isLoading: true
+    isLoading: true,
+    error: null
   })
 
   const currentSession = ref<Session | null>(null)
@@ -32,6 +33,7 @@ export function useEnhancedAuth() {
       // First check Supabase session (highest priority)
       let session = null
       try {
+        const supabase = await getSupabase()
         const result = await supabase.auth.getSession()
         session = result?.data?.session
       } catch (error) {
@@ -52,7 +54,8 @@ export function useEnhancedAuth() {
         authState.value = {
           user: userData,
           isAuthenticated: true,
-          isLoading: false
+          isLoading: false,
+          error: null
         }
         
         currentSession.value = {
@@ -61,7 +64,7 @@ export function useEnhancedAuth() {
           refresh_token: session.refresh_token
         }
         
-        return { success: true, session: currentSession.value }
+        return { user: userData, session: currentSession.value, error: null }
       }
       
       // If no active session, try to restore from cookies with retry mechanism
@@ -82,11 +85,12 @@ export function useEnhancedAuth() {
         authState.value = {
           user: userData,
           isAuthenticated: true,
-          isLoading: false
+          isLoading: false,
+          error: null
         }
         
         currentSession.value = restoreResult.session
-        return { success: true, session: currentSession.value }
+        return { user: userData, session: currentSession.value, error: null }
       } else {
         console.log('[auth][enhanced] Failed to restore session:', restoreResult.error)
         
@@ -110,11 +114,12 @@ export function useEnhancedAuth() {
           authState.value = {
             user: userData,
             isAuthenticated: true,
-            isLoading: false
+            isLoading: false,
+            error: null
           }
           
           currentSession.value = retryResult.session
-          return { success: true, session: currentSession.value }
+          return { user: userData, session: currentSession.value, error: null }
         }
       }
       
@@ -137,11 +142,12 @@ export function useEnhancedAuth() {
           authState.value = {
             user: userData,
             isAuthenticated: true,
-            isLoading: false
+            isLoading: false,
+            error: null
           }
           
           currentSession.value = restoreResult.session
-          return { success: true, session: currentSession.value }
+          return { user: userData, session: currentSession.value, error: null }
         }
       } catch (restoreError) {
         console.error('Error restoring session:', restoreError)
@@ -153,17 +159,19 @@ export function useEnhancedAuth() {
     authState.value = {
       user: null,
       isAuthenticated: false,
-      isLoading: false
+      isLoading: false,
+      error: 'No valid session found'
     }
     
     currentSession.value = null
-    return { success: false, error: 'No valid session found' }
+    return { user: null, session: null, error: 'No valid session found' }
   }
 
   // Sign out user
   const logout = async (): Promise<void> => {
     try {
       // Clear Supabase session
+      const supabase = await getSupabase()
       await supabase.auth.signOut()
       
       // Clear cookies
@@ -177,7 +185,8 @@ export function useEnhancedAuth() {
       authState.value = {
         user: null,
         isAuthenticated: false,
-        isLoading: false
+        isLoading: false,
+        error: null
       }
       
       currentSession.value = null
@@ -189,7 +198,8 @@ export function useEnhancedAuth() {
       authState.value = {
         user: null,
         isAuthenticated: false,
-        isLoading: false
+        isLoading: false,
+        error: null
       }
       currentSession.value = null
     }
@@ -200,6 +210,7 @@ export function useEnhancedAuth() {
     try {
       authState.value.isLoading = true
       
+      const supabase = await getSupabase()
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -220,7 +231,8 @@ export function useEnhancedAuth() {
         authState.value = {
           user: userData,
           isAuthenticated: true,
-          isLoading: false
+          isLoading: false,
+          error: null
         }
         
         currentSession.value = {
@@ -229,14 +241,14 @@ export function useEnhancedAuth() {
           refresh_token: data.session.refresh_token
         }
         
-        return { success: true, session: currentSession.value }
+        return { user: userData, session: currentSession.value, error: null }
       }
       
-      return { success: false, error: 'No session returned' }
+      return { user: null, session: null, error: 'No session returned' }
     } catch (error) {
       console.error('Sign in error:', error)
       authState.value.isLoading = false
-      return { success: false, error }
+      return { user: null, session: null, error: String(error) }
     }
   }
 
@@ -245,6 +257,7 @@ export function useEnhancedAuth() {
     try {
       authState.value.isLoading = true
       
+      const supabase = await getSupabase()
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -268,7 +281,8 @@ export function useEnhancedAuth() {
         authState.value = {
           user: userData,
           isAuthenticated: true,
-          isLoading: false
+          isLoading: false,
+          error: null
         }
         
         currentSession.value = {
@@ -277,14 +291,14 @@ export function useEnhancedAuth() {
           refresh_token: data.session.refresh_token
         }
         
-        return { success: true, session: currentSession.value }
+        return { user: userData, session: currentSession.value, error: null }
       }
       
-      return { success: false, error: 'No session returned' }
+      return { user: null, session: null, error: 'No session returned' }
     } catch (error) {
       console.error('Sign up error:', error)
       authState.value.isLoading = false
-      return { success: false, error }
+      return { user: null, session: null, error: String(error) }
     }
   }
 

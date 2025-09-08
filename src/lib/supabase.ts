@@ -1,6 +1,32 @@
-import { createClient } from '@supabase/supabase-js'
 import { ensureCrossSubdomainCookies, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
 import { setupAuthStateListener } from '../plugins/crossSubdomainAuth'
+
+// Safe Supabase client creation function
+async function createSupabaseClient() {
+  try {
+    // Try to import Supabase client
+    const { createClient } = await import('@supabase/supabase-js')
+    return createClient
+  } catch (importError) {
+    console.warn('[Supabase] Failed to import @supabase/supabase-js:', importError)
+    
+    // Fallback: try to access from global scope
+    if (typeof window !== 'undefined' && (window as any).supabase?.createClient) {
+      return (window as any).supabase.createClient
+    }
+    
+    // Last resort: return a mock function
+    console.error('[Supabase] No Supabase client available, using mock')
+    return () => ({
+      auth: {
+        getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+        setSession: () => Promise.resolve({ data: { session: null }, error: null }),
+        signOut: () => Promise.resolve({ error: null }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+      }
+    })
+  }
+}
 
 // Type the environment variables
 declare global {
@@ -26,44 +52,78 @@ if (!supabaseUrl || !supabaseAnonKey) {
   })
 }
 
-// Create Supabase client with error handling
+// Create Supabase client with error handling and singleton pattern
 let supabase: any = null
+let initializationPromise: Promise<any> | null = null
 
-try {
-  supabase = createClient(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      db: {
-        schema: 'public'
-      },
-      auth: {
-        storageKey: 'sb-auth-token',
-        storage: typeof window !== 'undefined' ? localStorage : undefined,
-        autoRefreshToken: true,
-        persistSession: true
+// Initialize Supabase client asynchronously with singleton pattern
+async function initializeSupabase() {
+  // Return existing promise if already initializing
+  if (initializationPromise) {
+    return initializationPromise
+  }
+  
+  initializationPromise = (async () => {
+    try {
+      const createClientFn = await createSupabaseClient()
+      
+      if (supabaseUrl && supabaseAnonKey) {
+        supabase = createClientFn(
+          supabaseUrl,
+          supabaseAnonKey,
+          {
+            db: {
+              schema: 'public'
+            },
+            auth: {
+              storageKey: 'sb-auth-token-shared', // Use unique storage key to avoid conflicts
+              storage: typeof window !== 'undefined' ? localStorage : undefined,
+              autoRefreshToken: true,
+              persistSession: true
+            }
+          }
+        )
+        console.log('[Supabase] Client initialized successfully')
+      } else {
+        console.warn('[Supabase] Missing configuration, using fallback client')
+        supabase = createClientFn('https://placeholder.supabase.co', 'placeholder-key')
       }
+      return supabase
+    } catch (error) {
+      console.error('[Supabase] Failed to initialize client:', error)
+      // Create a fallback client
+      const createClientFn = await createSupabaseClient()
+      supabase = createClientFn('https://placeholder.supabase.co', 'placeholder-key')
+      return supabase
     }
-  )
-} catch (error) {
-  console.error('[Supabase] Failed to create client:', error)
-  // Create a fallback client with minimal configuration
-  supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder-key')
+  })()
+  
+  return initializationPromise
 }
 
+// Initialize immediately
+initializeSupabase()
+
+// Export a getter that ensures client is initialized (singleton pattern)
+export const getSupabase = async () => {
+  if (!supabase) {
+    await initializeSupabase()
+  }
+  return supabase
+}
+
+// For backward compatibility, export supabase directly
 export { supabase }
 
 // Setup cross-subdomain authentication with error handling
-if (typeof window !== 'undefined' && supabase) {
-  try {
-    // Ensure cookies are set for cross-subdomain access
-    ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
-    
-    // Setup auth state listener
-    setupAuthStateListener()
-  } catch (error) {
-    console.warn('[Supabase] Error setting up cross-subdomain authentication:', error)
-  }
+if (typeof window !== 'undefined') {
+  // Ensure cookies are set for cross-subdomain access
+  ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+  
+  // Setup auth state listener asynchronously
+  setupAuthStateListener().catch(error => {
+    console.warn('[Supabase] Error setting up auth state listener:', error)
+  })
 }
 
 // Log configuration status (remove in production)

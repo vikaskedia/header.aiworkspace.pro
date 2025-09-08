@@ -1,5 +1,5 @@
 import { ref, computed, onMounted, watch } from 'vue'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import { setSessionCookie, clearSessionCookie, syncCookiesToLocalStorage, clearLocalStorageTokens, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
 import type { AuthState } from '../types'
 
@@ -18,6 +18,7 @@ export function useAuth() {
     try {
       authState.value.isLoading = true
       
+      const supabase = await getSupabase()
       const { data: { session }, error } = await supabase.auth.getSession()
       
       if (error) {
@@ -85,6 +86,7 @@ export function useAuth() {
   // Login with email and password
   const loginWithEmail = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
+      const supabase = await getSupabase()
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -110,6 +112,7 @@ export function useAuth() {
   // Signup with email and password
   const signupWithEmail = async (email: string, password: string): Promise<{ success: boolean; error?: string; needsConfirmation?: boolean }> => {
     try {
+      const supabase = await getSupabase()
       const { data, error } = await supabase.auth.signUp({
         email,
         password
@@ -150,6 +153,7 @@ export function useAuth() {
       console.log('[OAuth] Current URL:', currentUrl.value)
       console.log('[OAuth] Current origin:', window.location.origin)
       
+      const supabase = await getSupabase()
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
@@ -183,6 +187,7 @@ export function useAuth() {
   // Logout
   const logout = async (): Promise<void> => {
     try {
+      const supabase = await getSupabase()
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Logout error:', error)
@@ -208,6 +213,7 @@ export function useAuth() {
   // Reset password
   const resetPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
     try {
+      const supabase = await getSupabase()
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`
       })
@@ -224,8 +230,10 @@ export function useAuth() {
   }
 
   // Setup auth state listener
-  const setupAuthListener = () => {
-    supabase.auth.onAuthStateChange((event, session) => {
+  const setupAuthListener = async () => {
+    try {
+      const supabase = await getSupabase()
+      supabase.auth.onAuthStateChange((event: any, session: any) => {
       console.log('Auth state changed:', event, session?.user?.email)
       
       switch (event) {
@@ -266,6 +274,9 @@ export function useAuth() {
           break
       }
     })
+    } catch (error) {
+      console.warn('Failed to setup auth listener:', error)
+    }
   }
 
   // Initialize auth on mount

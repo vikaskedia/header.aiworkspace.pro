@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import { ensureCrossSubdomainCookies, getCookie, syncCookiesToLocalStorage, setSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
 
 // Immediate cross-subdomain authentication initialization
@@ -34,6 +34,7 @@ export async function restoreCrossSubdomainSession() {
     const at = getCookie(ACCESS_COOKIE)
     const rt = getCookie(REFRESH_COOKIE)
     if (at && rt) {
+      const supabase = await getSupabase()
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
         const { data, error } = await supabase.auth.setSession({ access_token: at, refresh_token: rt })
@@ -50,10 +51,20 @@ export async function restoreCrossSubdomainSession() {
 }
 
 // Set up automatic token refresh and auth state management
-export function setupAuthStateListener() {
+let authListenerSetup = false
+
+export async function setupAuthStateListener() {
+  // Prevent multiple listeners from being set up
+  if (authListenerSetup) {
+    console.log('[auth][listener] Auth state listener already set up, skipping...')
+    return
+  }
+  
   console.log('[auth][listener] Setting up auth state listener...')
   
-  supabase.auth.onAuthStateChange(async (event, session) => {
+  try {
+    const supabase = await getSupabase()
+    supabase.auth.onAuthStateChange(async (event: any, session: any) => {
     console.log('[auth][listener] Auth state changed:', event, !!session)
     
     switch (event) {
@@ -90,6 +101,12 @@ export function setupAuthStateListener() {
         console.log('[auth][listener] Unhandled auth event:', event)
     }
   })
+  
+  authListenerSetup = true
+  console.log('[auth][listener] Auth state listener set up successfully')
+  } catch (error) {
+    console.warn('[auth][listener] Failed to setup auth state listener:', error)
+  }
 }
 
 // Enhanced session restoration with automatic retry and cross-subdomain sync
@@ -101,6 +118,7 @@ export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
       // First, try to get existing session
       let session = null
       try {
+        const supabase = await getSupabase()
         const result = await supabase.auth.getSession()
         session = result?.data?.session
       } catch (error) {
@@ -129,6 +147,7 @@ export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
       if (at && rt) {
         console.log('[auth][restore] Attempting to restore session from cookies...')
         try {
+          const supabase = await getSupabase()
           const { data, error } = await supabase.auth.setSession({ 
             access_token: at, 
             refresh_token: rt 
