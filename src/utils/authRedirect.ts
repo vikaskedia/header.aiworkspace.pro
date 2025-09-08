@@ -196,3 +196,14 @@ export function clearLocalStorageTokens() {
     console.log('[auth][cookie->ls] clear error', e)
   }
 }
+
+// Make functions available globally for fallback access
+if (typeof window !== 'undefined') {
+  (window as any).ensureCrossSubdomainCookies = ensureCrossSubdomainCookies
+  (window as any).ACCESS_COOKIE = ACCESS_COOKIE
+  (window as any).REFRESH_COOKIE = REFRESH_COOKIE
+  (window as any).setSessionCookie = setSessionCookie
+  (window as any).getCookie = getCookie
+  (window as any).clearSessionCookie = clearSessionCookie
+  console.log('[auth][authRedirect] Functions made available globally for fallback access')
+}

@@ -22,10 +22,39 @@ export function useEnhancedAuth() {
   // Load user info from Supabase session with enhanced cross-subdomain sync
   const loadUserInfo = async (): Promise<AuthResult> => {
     try {
+      console.log('[auth][enhanced] Starting loadUserInfo...')
       // First, ensure cross-subdomain cookies are synchronized
       console.log('[auth][enhanced] Ensuring cross-subdomain cookie synchronization...')
-      const { ensureCrossSubdomainCookies, ACCESS_COOKIE, REFRESH_COOKIE } = await import('../utils/authRedirect')
-      ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+      
+      // Use multiple import strategies to ensure the function is available
+      let ensureCrossSubdomainCookies: any = null
+      let ACCESS_COOKIE: string = 'sb-access-token'
+      let REFRESH_COOKIE: string = 'sb-refresh-token'
+      
+      try {
+        // Strategy 1: Direct import
+        const authRedirectModule = await import('../utils/authRedirect')
+        ensureCrossSubdomainCookies = authRedirectModule.ensureCrossSubdomainCookies
+        ACCESS_COOKIE = authRedirectModule.ACCESS_COOKIE || 'sb-access-token'
+        REFRESH_COOKIE = authRedirectModule.REFRESH_COOKIE || 'sb-refresh-token'
+        console.log('[auth][enhanced] Successfully imported authRedirect module')
+      } catch (importError) {
+        console.warn('[auth][enhanced] Failed to import authRedirect module:', importError)
+        
+        // Strategy 2: Try to access from global scope
+        if (typeof window !== 'undefined' && (window as any).ensureCrossSubdomainCookies) {
+          ensureCrossSubdomainCookies = (window as any).ensureCrossSubdomainCookies
+          console.log('[auth][enhanced] Using global ensureCrossSubdomainCookies')
+        }
+      }
+      
+      // If we have the function, call it
+      if (ensureCrossSubdomainCookies && typeof ensureCrossSubdomainCookies === 'function') {
+        ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+        console.log('[auth][enhanced] Cross-subdomain cookies synchronized')
+      } else {
+        console.warn('[auth][enhanced] ensureCrossSubdomainCookies not available, skipping cookie sync')
+      }
       
       // Add a small delay to ensure cookies are properly set
       await new Promise(resolve => setTimeout(resolve, 100))
@@ -125,6 +154,14 @@ export function useEnhancedAuth() {
       
     } catch (e) { 
       console.error('Error getting Supabase session:', e)
+      
+      // Check if this is the specific "ne is not a function" error
+      if (e && typeof e === 'object' && 'message' in e && 
+          typeof e.message === 'string' && e.message.includes('ne is not a function')) {
+        console.warn('[auth][enhanced] Caught "ne is not a function" error - this is handled gracefully')
+        console.warn('[auth][enhanced] The ensureCrossSubdomainCookies function import failed, but continuing...')
+      }
+      
       // Try to restore session even if getSession fails
       try {
         const restoreResult = await restoreSessionWithRetry()
