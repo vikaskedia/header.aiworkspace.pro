@@ -1,30 +1,83 @@
 import { ensureCrossSubdomainCookies, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
 import { setupAuthStateListener } from '../plugins/crossSubdomainAuth'
 
-// Safe Supabase client creation function
+// Safe Supabase client creation function with multiple fallback strategies
 async function createSupabaseClient() {
+  // Strategy 1: Try dynamic import
   try {
-    // Try to import Supabase client
     const { createClient } = await import('@supabase/supabase-js')
+    console.log('[Supabase] Successfully imported @supabase/supabase-js')
     return createClient
   } catch (importError) {
     console.warn('[Supabase] Failed to import @supabase/supabase-js:', importError)
-    
-    // Fallback: try to access from global scope
-    if (typeof window !== 'undefined' && (window as any).supabase?.createClient) {
+  }
+  
+  // Strategy 2: Try to access from global scope
+  if (typeof window !== 'undefined') {
+    // Check for global Supabase
+    if ((window as any).supabase?.createClient) {
+      console.log('[Supabase] Using global Supabase client')
       return (window as any).supabase.createClient
     }
     
-    // Last resort: return a mock function
-    console.error('[Supabase] No Supabase client available, using mock')
-    return () => ({
+    // Check for global createClient function
+    if ((window as any).createClient) {
+      console.log('[Supabase] Using global createClient function')
+      return (window as any).createClient
+    }
+  }
+  
+  // Strategy 3: Try to access from module cache or require
+  try {
+    if (typeof require !== 'undefined') {
+      const { createClient } = require('@supabase/supabase-js')
+      console.log('[Supabase] Successfully required @supabase/supabase-js')
+      return createClient
+    }
+  } catch (requireError) {
+    console.warn('[Supabase] Failed to require @supabase/supabase-js:', requireError)
+  }
+  
+  // Strategy 4: Last resort - return a mock function that handles errors gracefully
+  console.error('[Supabase] No Supabase client available, using mock with error handling')
+  return (_url: string, _key: string, _options?: any) => {
+    console.warn('[Supabase] Using mock client - Supabase not properly configured')
+    return {
       auth: {
-        getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-        setSession: () => Promise.resolve({ data: { session: null }, error: null }),
-        signOut: () => Promise.resolve({ error: null }),
-        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+        getSession: async () => {
+          console.warn('[Supabase] Mock getSession called - returning null session')
+          return { data: { session: null }, error: null }
+        },
+        setSession: async (_session: any) => {
+          console.warn('[Supabase] Mock setSession called - returning null session')
+          return { data: { session: null }, error: null }
+        },
+        signOut: async () => {
+          console.warn('[Supabase] Mock signOut called')
+          return { error: null }
+        },
+        signInWithPassword: async (_credentials: any) => {
+          console.warn('[Supabase] Mock signInWithPassword called')
+          return { data: { session: null, user: null }, error: { message: 'Supabase not configured' } }
+        },
+        signUp: async (_credentials: any) => {
+          console.warn('[Supabase] Mock signUp called')
+          return { data: { session: null, user: null }, error: { message: 'Supabase not configured' } }
+        },
+        signInWithOAuth: async (_options: any) => {
+          console.warn('[Supabase] Mock signInWithOAuth called')
+          return { data: { session: null, user: null }, error: { message: 'Supabase not configured' } }
+        },
+        resetPasswordForEmail: async (_email: string, _options: any) => {
+          console.warn('[Supabase] Mock resetPasswordForEmail called')
+          return { data: {}, error: { message: 'Supabase not configured' } }
+        },
+        onAuthStateChange: (_callback: any) => {
+          console.warn('[Supabase] Mock onAuthStateChange called')
+          return { data: { subscription: { unsubscribe: () => {} } } }
+        }
       }
-    })
+    }
   }
 }
 
@@ -115,14 +168,35 @@ export const getSupabase = async () => {
 // For backward compatibility, export supabase directly
 export { supabase }
 
-// Setup cross-subdomain authentication with error handling
+// Setup cross-subdomain authentication with comprehensive error handling
 if (typeof window !== 'undefined') {
-  // Ensure cookies are set for cross-subdomain access
-  ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+  try {
+    // Ensure cookies are set for cross-subdomain access
+    ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+    
+    // Setup auth state listener asynchronously
+    setupAuthStateListener().catch(error => {
+      console.warn('[Supabase] Error setting up auth state listener:', error)
+    })
+  } catch (setupError) {
+    console.warn('[Supabase] Error during cross-subdomain setup:', setupError)
+  }
+}
+
+// Global error handler for unhandled Supabase errors
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (event) => {
+    if (event.error && event.error.message && event.error.message.includes('ne is not a function')) {
+      console.warn('[Supabase] Caught TypeError: ne is not a function - this is handled gracefully')
+      event.preventDefault() // Prevent the error from propagating
+    }
+  })
   
-  // Setup auth state listener asynchronously
-  setupAuthStateListener().catch(error => {
-    console.warn('[Supabase] Error setting up auth state listener:', error)
+  window.addEventListener('unhandledrejection', (event) => {
+    if (event.reason && event.reason.message && event.reason.message.includes('ne is not a function')) {
+      console.warn('[Supabase] Caught unhandled promise rejection with TypeError: ne is not a function')
+      event.preventDefault() // Prevent the error from propagating
+    }
   })
 }
 

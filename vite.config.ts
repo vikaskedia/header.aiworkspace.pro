@@ -50,6 +50,12 @@ export default defineConfig(({ command }) => {
                 pinia: 'Pinia',
                 'element-plus': 'ElementPlus',
                 '@supabase/supabase-js': 'Supabase'
+              },
+              // Add manual chunks to better handle Supabase
+              manualChunks: (id) => {
+                if (id.includes('@supabase/supabase-js')) {
+                  return 'supabase'
+                }
               }
             },
             {
@@ -63,6 +69,12 @@ export default defineConfig(({ command }) => {
                 pinia: 'Pinia',
                 'element-plus': 'ElementPlus',
                 '@supabase/supabase-js': 'Supabase'
+              },
+              // Add manual chunks to better handle Supabase
+              manualChunks: (id) => {
+                if (id.includes('@supabase/supabase-js')) {
+                  return 'supabase'
+                }
               }
             }
           ]
