@@ -1,6 +1,33 @@
 import { supabase } from '../lib/supabase'
 import { ensureCrossSubdomainCookies, getCookie, syncCookiesToLocalStorage, setSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
 
+// Immediate cross-subdomain authentication initialization
+export async function initializeCrossSubdomainAuth() {
+  try {
+    console.log('[auth][init] Starting cross-subdomain authentication initialization...')
+    
+    // Immediately ensure cross-subdomain cookies are synchronized
+    ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+    
+    // Set up auth state listener
+    setupAuthStateListener()
+    
+    // Try to restore session immediately
+    const restoreResult = await restoreSessionWithRetry(2, 100) // Quick retry with shorter delays
+    
+    if (restoreResult.success) {
+      console.log('[auth][init] Cross-subdomain authentication initialized successfully')
+      return { success: true, session: restoreResult.session }
+    } else {
+      console.log('[auth][init] Cross-subdomain authentication initialization completed (no active session)')
+      return { success: false, error: restoreResult.error }
+    }
+  } catch (error) {
+    console.error('[auth][init] Error during cross-subdomain authentication initialization:', error)
+    return { success: false, error }
+  }
+}
+
 export async function restoreCrossSubdomainSession() {
   try {
     ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
@@ -65,47 +92,75 @@ export function setupAuthStateListener() {
   })
 }
 
-// Enhanced session restoration with automatic retry
-export async function restoreSessionWithRetry() {
-  try {
-    // First, try to get existing session
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session && session.user) {
-      console.log('[auth][restore] Active session found')
-      return { success: true, session }
-    }
-    
-    // If no active session, try to restore from cookies
-    const at = getCookie(ACCESS_COOKIE)
-    const rt = getCookie(REFRESH_COOKIE)
-    
-    if (at && rt) {
-      console.log('[auth][restore] Attempting to restore session from cookies...')
-      const { data, error } = await supabase.auth.setSession({ 
-        access_token: at, 
-        refresh_token: rt 
-      })
+// Enhanced session restoration with automatic retry and cross-subdomain sync
+export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`[auth][restore] Attempt ${attempt}/${maxRetries}`)
       
-      if (error) {
-        console.log('[auth][restore] Failed to restore session:', error.message)
-        return { success: false, error }
+      // First, try to get existing session
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session && session.user) {
+        console.log('[auth][restore] Active session found')
+        return { success: true, session }
       }
       
-      if (data.session) {
-        console.log('[auth][restore] Session restored successfully')
-        // Update cookies with fresh tokens
-        setSessionCookie(ACCESS_COOKIE, data.session.access_token, 60 * 60 * 24 * 365)
-        setSessionCookie(REFRESH_COOKIE, data.session.refresh_token, 60 * 60 * 24 * 365)
-        syncCookiesToLocalStorage()
-        return { success: true, session: data.session }
+      // Ensure cross-subdomain cookies are synchronized before each attempt
+      if (attempt > 1) {
+        console.log('[auth][restore] Re-syncing cross-subdomain cookies...')
+        ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+        await new Promise(resolve => setTimeout(resolve, delayMs * attempt))
+      }
+      
+      // Try to restore from cookies
+      const at = getCookie(ACCESS_COOKIE)
+      const rt = getCookie(REFRESH_COOKIE)
+      
+      console.log(`[auth][restore] Cookie check - Access: ${!!at}, Refresh: ${!!rt}`)
+      
+      if (at && rt) {
+        console.log('[auth][restore] Attempting to restore session from cookies...')
+        const { data, error } = await supabase.auth.setSession({ 
+          access_token: at, 
+          refresh_token: rt 
+        })
+        
+        if (error) {
+          console.log(`[auth][restore] Attempt ${attempt} failed:`, error.message)
+          if (attempt === maxRetries) {
+            return { success: false, error }
+          }
+          continue
+        }
+        
+        if (data.session) {
+          console.log('[auth][restore] Session restored successfully')
+          // Update cookies with fresh tokens
+          setSessionCookie(ACCESS_COOKIE, data.session.access_token, 60 * 60 * 24 * 365)
+          setSessionCookie(REFRESH_COOKIE, data.session.refresh_token, 60 * 60 * 24 * 365)
+          syncCookiesToLocalStorage()
+          return { success: true, session: data.session }
+        }
+      } else {
+        console.log(`[auth][restore] Attempt ${attempt} - No cookies found`)
+        if (attempt === maxRetries) {
+          return { success: false, error: 'No valid session or cookies' }
+        }
+      }
+      
+      // Wait before next attempt
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, delayMs * attempt))
+      }
+      
+    } catch (e) {
+      console.log(`[auth][restore] Attempt ${attempt} exception:`, e)
+      if (attempt === maxRetries) {
+        return { success: false, error: e }
       }
     }
-    
-    console.log('[auth][restore] No valid session or cookies found')
-    return { success: false, error: 'No valid session or cookies' }
-    
-  } catch (e) {
-    console.log('[auth][restore] Exception during session restoration:', e)
-    return { success: false, error: e }
   }
+  
+  console.log('[auth][restore] All attempts failed')
+  return { success: false, error: 'All restoration attempts failed' }
 }

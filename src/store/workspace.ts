@@ -56,7 +56,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       let query = supabase
         .from('workspaces')
         .select(`
-          id, title, description, parent_workspace_id, created_by, archived, created_at,
+          id, title, description, parent_workspace_id, created_by, archived, created_at, git_repo, 
           workspace_access!inner ( access_type, shared_with_user_id ),
           workspace_activities!left ( updated_at )
         `)

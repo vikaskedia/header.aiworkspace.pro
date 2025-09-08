@@ -1,7 +1,7 @@
 <template>
   <header class="aiworkspace-header">
-    <!-- Show loading state if Pinia is not ready -->
-    <div v-if="!isPiniaReady && piniaRetryCount < maxPiniaRetries" class="header-content header-loading">
+    <!-- Show loading state if Pinia is not ready or auth is loading -->
+    <div v-if="(!isPiniaReady && piniaRetryCount < maxPiniaRetries) || isLoading" class="header-content header-loading">
       <div class="header-left">
         <div class="logo-section">
           <a href="/" class="logo">
@@ -12,7 +12,10 @@
         </div>
       </div>
       <div class="header-center">
-        <span class="loading-text">Initializing...</span>
+        <span class="loading-text">
+          <span v-if="isLoading">Syncing authentication...</span>
+          <span v-else>Initializing...</span>
+        </span>
       </div>
     </div>
     
@@ -262,7 +265,7 @@ const emit = defineEmits<{
 }>()
 
 // Composables
-const { authState, logout: authLogout } = useEnhancedAuth()
+const { authState, logout: authLogout, isLoading } = useEnhancedAuth()
 
 // Lazy Pinia store initialization to prevent errors before Pinia is ready
 const getWorkspaceStore = () => {

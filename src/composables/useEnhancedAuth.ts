@@ -1,6 +1,6 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { supabase } from '../lib/supabase'
-import { restoreSessionWithRetry } from '../plugins/crossSubdomainAuth'
+import { restoreSessionWithRetry, initializeCrossSubdomainAuth } from '../plugins/crossSubdomainAuth'
 import { clearSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE, clearLocalStorageTokens } from '../utils/authRedirect'
 import type { User, AuthState, Session, AuthResult } from '../types'
 
@@ -18,12 +18,21 @@ export function useEnhancedAuth() {
   const currentUser = computed(() => authState.value.user)
   const isLoading = computed(() => authState.value.isLoading)
 
-  // Load user info from Supabase session
+  // Load user info from Supabase session with enhanced cross-subdomain sync
   const loadUserInfo = async (): Promise<AuthResult> => {
     try {
+      // First, ensure cross-subdomain cookies are synchronized
+      console.log('[auth][enhanced] Ensuring cross-subdomain cookie synchronization...')
+      const { ensureCrossSubdomainCookies, ACCESS_COOKIE, REFRESH_COOKIE } = await import('../utils/authRedirect')
+      ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+      
+      // Add a small delay to ensure cookies are properly set
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       // First check Supabase session (highest priority)
       const { data: { session } } = await supabase.auth.getSession()
       if (session && session.user) {
+        console.log('[auth][enhanced] Active Supabase session found')
         const user = session.user
         const userData = {
           id: user.id,
@@ -48,12 +57,12 @@ export function useEnhancedAuth() {
         return { success: true, session: currentSession.value }
       }
       
-      // If no active session, try to restore from cookies
+      // If no active session, try to restore from cookies with retry mechanism
       console.log('[auth][enhanced] No active session, attempting to restore from cookies...')
       const restoreResult = await restoreSessionWithRetry()
       
       if (restoreResult.success && restoreResult.session) {
-        console.log('[auth][enhanced] Session restored successfully')
+        console.log('[auth][enhanced] Session restored successfully from cookies')
         const user = restoreResult.session.user
         const userData = {
           id: user.id,
@@ -73,6 +82,33 @@ export function useEnhancedAuth() {
         return { success: true, session: currentSession.value }
       } else {
         console.log('[auth][enhanced] Failed to restore session:', restoreResult.error)
+        
+        // Try one more time with a longer delay for cross-subdomain sync
+        console.log('[auth][enhanced] Retrying session restoration with extended delay...')
+        await new Promise(resolve => setTimeout(resolve, 500))
+        ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+        
+        const retryResult = await restoreSessionWithRetry()
+        if (retryResult.success && retryResult.session) {
+          console.log('[auth][enhanced] Session restored on retry')
+          const user = retryResult.session.user
+          const userData = {
+            id: user.id,
+            name: user.user_metadata?.name || user.user_metadata?.user_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            email: user.email,
+            avatar_url: user.user_metadata?.avatar_url || null,
+            user_metadata: user.user_metadata
+          }
+          
+          authState.value = {
+            user: userData,
+            isAuthenticated: true,
+            isLoading: false
+          }
+          
+          currentSession.value = retryResult.session
+          return { success: true, session: currentSession.value }
+        }
       }
       
     } catch (e) { 
@@ -106,6 +142,7 @@ export function useEnhancedAuth() {
     }
 
     // No valid authentication found
+    console.log('[auth][enhanced] No valid authentication found')
     authState.value = {
       user: null,
       isAuthenticated: false,
@@ -249,9 +286,13 @@ export function useEnhancedAuth() {
     await loadUserInfo()
   }
 
-  // Initialize auth on mount
-  onMounted(() => {
-    checkAuth()
+  // Initialize auth on mount with enhanced cross-subdomain sync
+  onMounted(async () => {
+    // First, initialize cross-subdomain authentication
+    await initializeCrossSubdomainAuth()
+    
+    // Then check auth status
+    await checkAuth()
   })
 
   return {

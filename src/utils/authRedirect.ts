@@ -64,8 +64,27 @@ export function ensureCrossSubdomainCookies(names: string[]) {
     return
   }
   console.log('[auth][cookie][promote] start', { host, apex: APEX_DOMAIN, names })
+  
+  // First, try to get cookies from localStorage as backup
+  const localStorageBackup = new Map()
   names.forEach(n => {
-    const v = getCookie(n)
+    const lsKey = n === ACCESS_COOKIE ? LS_ACCESS_KEY : LS_REFRESH_KEY
+    const lsValue = localStorage.getItem(lsKey)
+    if (lsValue) {
+      localStorageBackup.set(n, lsValue)
+      console.log('[auth][cookie][promote] found in localStorage', n)
+    }
+  })
+  
+  names.forEach(n => {
+    let v = getCookie(n)
+    
+    // If cookie not found, try localStorage backup
+    if (!v && localStorageBackup.has(n)) {
+      v = localStorageBackup.get(n)
+      console.log('[auth][cookie][promote] using localStorage backup for', n)
+    }
+    
     if (v) {
       setSessionCookie(n, v, 60 * 60 * 24 * 365) // Use 1 year expiration instead of default 7 days
     } else {
