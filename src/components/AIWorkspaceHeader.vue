@@ -46,8 +46,33 @@
       </div>
     </div>
     
+    <!-- Show restricted header when session is lost -->
+    <div v-else-if="isAuthenticated && !isSessionValid" class="header-content header-restricted">
+      <div class="header-left">
+        <div class="logo-section">
+          <a href="/" class="logo">
+            <div class="text-logo">
+              <span class="logo-text">AI Workspace</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header-center">
+        <span class="restricted-text">
+          <el-icon><Warning /></el-icon>
+          Session expired - Please log in again
+        </span>
+      </div>
+      <div class="header-right">
+        <el-button type="primary" @click="showLoginModal = true">
+          <el-icon><User /></el-icon>
+          Log In
+        </el-button>
+      </div>
+    </div>
+    
     <!-- Show full header when Pinia is ready -->
-    <div v-else-if="isAuthenticated" class="header-content">
+    <div v-else-if="isAuthenticated && isSessionValid" class="header-content">
       <!-- Left side - Logo and Workspace -->
       <div class="header-left">
         <div class="logo-section">
@@ -235,16 +260,28 @@
       v-model="showLoginModal"
       @login-success="handleLoginSuccess"
     />
+
+    <!-- Session Loss Modal -->
+    <SessionLossModal
+      v-model="showSessionLossModal"
+      :session-loss-event="sessionLossEvent"
+      :can-retry-session="canRetrySession || false"
+      @retry="handleSessionRetry"
+      @login="handleSessionLogin"
+      @refresh="handleSessionRefresh"
+    />
   </header>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Check, User } from '@element-plus/icons-vue'
+import { ArrowDown, Check, User, Warning } from '@element-plus/icons-vue'
 import { useEnhancedAuth } from '../composables/useEnhancedAuth'
+import { useSessionMonitor } from '../composables/useSessionMonitor'
 import { useWorkspaceStore } from '../store/workspace'
 import LoginModal from './LoginModal.vue'
+import SessionLossModal from './SessionLossModal.vue'
 import type { HeaderProps, Workspace, SecondaryNavigationItem } from '../types'
 
 const props = withDefaults(defineProps<HeaderProps>(), {
@@ -266,6 +303,14 @@ const emit = defineEmits<{
 
 // Composables
 const { authState, logout: authLogout, isLoading } = useEnhancedAuth()
+const { 
+  isSessionValid, 
+  sessionLossEvent, 
+  hasSessionLoss, 
+  canRetrySession, 
+  retrySession, 
+  clearSessionLoss
+} = useSessionMonitor()
 
 // Lazy Pinia store initialization to prevent errors before Pinia is ready
 const getWorkspaceStore = () => {
@@ -327,6 +372,7 @@ onMounted(() => {
 // Local state
 const workspaceSwitcherVisible = ref(false)
 const showLoginModal = ref(false)
+const showSessionLossModal = ref(false)
 const availableWorkspaces = ref<Workspace[]>([])
 const assignedWorkspaces = ref<Workspace[]>([])
 const userInfo = ref<{ name: string; email: string; avatar_url: string | null; initials: string }>({ 
@@ -929,6 +975,13 @@ const handleLogout = () => {
     // Call auth logout
     await authLogout()
     
+    // Trigger immediate session loss detection
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('session-logout-detected', {
+        detail: { timestamp: new Date(), source: 'manual-logout' }
+      }))
+    }
+    
     // Emit logout event
     emit('logout')
     
@@ -968,6 +1021,14 @@ watch(() => authState.value.user, (newUser) => {
   }
 })
 
+// Watch for session loss events
+watch(hasSessionLoss, (hasLoss) => {
+  if (hasLoss && isAuthenticated.value) {
+    console.log('[AIWorkspaceHeader] Session loss detected, showing modal')
+    showSessionLossModal.value = true
+  }
+})
+
 // Watch for current workspace changes
 watch(() => props.currentWorkspaceId, (newId) => {
   if (newId && flattenedWorkspaces.value.length) {
@@ -995,6 +1056,30 @@ const handleLoginSuccess = async (user: any) => {
   emit('login')
   
   ElMessage.success('Welcome back!')
+}
+
+// Session loss handlers
+const handleSessionRetry = async () => {
+  console.log('[AIWorkspaceHeader] Retrying session...')
+  const success = await retrySession()
+  if (success) {
+    showSessionLossModal.value = false
+    clearSessionLoss()
+    ElMessage.success('Session restored successfully!')
+  } else {
+    ElMessage.error('Failed to restore session. Please log in again.')
+  }
+}
+
+const handleSessionLogin = () => {
+  console.log('[AIWorkspaceHeader] Opening login modal from session loss')
+  showSessionLossModal.value = false
+  showLoginModal.value = true
+}
+
+const handleSessionRefresh = () => {
+  console.log('[AIWorkspaceHeader] Refreshing page due to session loss')
+  window.location.reload()
 }
 
 // Manual retry function for fallback state
@@ -1025,6 +1110,41 @@ const manualRetry = () => {
   justify-content: space-between;
   padding: 0 2rem;
   height: 60px;
+}
+
+.header-restricted {
+  background: linear-gradient(135deg, #fff5f5, #fef2f2);
+  border-bottom: 2px solid #fecaca;
+  position: relative;
+}
+
+.header-restricted::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #f56c6c, #e74c3c, #f56c6c);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.restricted-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #dc2626;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 16px;
+  background: rgba(220, 38, 38, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .header-loading {

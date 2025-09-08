@@ -42,7 +42,9 @@ async function I() {
           console.log("[auth][listener] User signed in"), n && (l(r, n.access_token, 60 * 60 * 24 * 365), l(i, n.refresh_token, 60 * 60 * 24 * 365), g());
           break;
         case "SIGNED_OUT":
-          console.log("[auth][listener] User signed out");
+          console.log("[auth][listener] User signed out"), typeof window < "u" && window.dispatchEvent(new CustomEvent("session-logout-detected", {
+            detail: { timestamp: /* @__PURE__ */ new Date() }
+          }));
           break;
         case "USER_UPDATED":
           console.log("[auth][listener] User updated");
@@ -70,17 +72,17 @@ async function _(e = 3, s = 200) {
       if (t && t.user)
         return console.log("[auth][restore] Active session found"), { success: !0, session: t };
       o > 1 && (console.log("[auth][restore] Re-syncing cross-subdomain cookies..."), w([r, i]), await new Promise((a) => setTimeout(a, s * o)));
-      const u = h(r), y = h(i);
-      if (console.log(`[auth][restore] Cookie check - Access: ${!!u}, Refresh: ${!!y}`), u && y) {
+      const u = h(r), m = h(i);
+      if (console.log(`[auth][restore] Cookie check - Access: ${!!u}, Refresh: ${!!m}`), u && m) {
         console.log("[auth][restore] Attempting to restore session from cookies...");
         try {
-          const a = await b(), { data: c, error: m } = await a.auth.setSession({
+          const a = await b(), { data: c, error: y } = await a.auth.setSession({
             access_token: u,
-            refresh_token: y
+            refresh_token: m
           });
-          if (m) {
-            if (console.log(`[auth][restore] Attempt ${o} failed:`, m.message), o === e)
-              return { success: !1, error: m };
+          if (y) {
+            if (console.log(`[auth][restore] Attempt ${o} failed:`, y.message), o === e)
+              return { success: !1, error: y };
             continue;
           }
           if (c.session)
@@ -135,15 +137,15 @@ async function k() {
     }
   });
 }
-const S = "https://oqdnbpmmgntqtigstaow.supabase.co", f = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xZG5icG1tZ250cXRpZ3N0YW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0NTk2NDYsImV4cCI6MjA1MDAzNTY0Nn0.rn0nRY9xLgLt-ajiSPeG0PcdS9V-549C1yeqhcxxG40";
+const f = "https://oqdnbpmmgntqtigstaow.supabase.co", S = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xZG5icG1tZ250cXRpZ3N0YW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0NTk2NDYsImV4cCI6MjA1MDAzNTY0Nn0.rn0nRY9xLgLt-ajiSPeG0PcdS9V-549C1yeqhcxxG40";
 let p = null, d = null;
 async function A() {
   return d || (d = (async () => {
     try {
       const e = await k();
-      return S && f && (p = e(
-        S,
+      return f && S && (p = e(
         f,
+        S,
         {
           db: {
             schema: "public"
@@ -178,13 +180,13 @@ typeof window < "u" && (window.addEventListener("error", (e) => {
   e.reason && e.reason.message && e.reason.message.includes("ne is not a function") && (console.warn("[Supabase] Caught unhandled promise rejection with TypeError: ne is not a function"), e.preventDefault());
 }));
 console.log("Supabase Configuration:", {
-  url: S,
-  hasKey: !!f,
+  url: f,
+  hasKey: !!S,
   autoRefreshToken: !0,
   persistSession: !0
 });
-console.log("URL:", S.replace(/https:\/\/(.+)\.supabase\.co/, "https://*****.supabase.co"));
-console.log("Key configured:", !f.includes("your-anon-key"));
+console.log("URL:", f.replace(/https:\/\/(.+)\.supabase\.co/, "https://*****.supabase.co"));
+console.log("Key configured:", !S.includes("your-anon-key"));
 console.log("Environment mode:", "production");
 export {
   U as a,

@@ -91,6 +91,13 @@ export async function setupAuthStateListener() {
       case 'SIGNED_OUT':
         console.log('[auth][listener] User signed out')
         // Don't clear cookies here - let the logout handler do it
+        
+        // Trigger immediate session loss detection
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('session-logout-detected', {
+            detail: { timestamp: new Date() }
+          }))
+        }
         break
         
       case 'USER_UPDATED':
