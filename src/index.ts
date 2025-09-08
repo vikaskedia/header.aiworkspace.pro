@@ -18,6 +18,7 @@ export { useWorkspaceStore } from './store/workspace'
 export * from './utils/authRedirect'
 export * from './utils/universalCallback'
 export * from './utils/sessionValidator'
+export * from './utils/errorHandler'
 
 // Configuration
 export * from './config/sessionConfig'

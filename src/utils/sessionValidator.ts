@@ -1,5 +1,4 @@
 import { getSupabase } from '../lib/supabase'
-import { ACCESS_COOKIE, REFRESH_COOKIE, getCookie } from './authRedirect'
 import { getSessionConfig } from '../config/sessionConfig'
 
 export interface SessionValidationResult {
@@ -17,6 +16,17 @@ export class SessionValidator {
   private static instance: SessionValidator
   private validationCache = new Map<string, { result: SessionValidationResult; timestamp: number }>()
   private readonly CACHE_DURATION = getSessionConfig().validationCacheDuration
+
+  // Helper function to get cookie value
+  private getCookieValue(name: string): string | null {
+    if (typeof document === 'undefined') return null
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) {
+      return parts.pop()?.split(';').shift() || null
+    }
+    return null
+  }
 
   static getInstance(): SessionValidator {
     if (!SessionValidator.instance) {
@@ -44,8 +54,8 @@ export class SessionValidator {
     
     try {
       // Check if we have tokens
-      const accessToken = getCookie(ACCESS_COOKIE)
-      const refreshToken = getCookie(REFRESH_COOKIE)
+      const accessToken = this.getCookieValue('sb-access-token')
+      const refreshToken = this.getCookieValue('sb-refresh-token')
       
       if (!accessToken || !refreshToken) {
         const result: SessionValidationResult = {
@@ -129,8 +139,8 @@ export class SessionValidator {
     console.log('[SessionValidator] Attempting to restore session...')
     
     try {
-      const accessToken = getCookie(ACCESS_COOKIE)
-      const refreshToken = getCookie(REFRESH_COOKIE)
+      const accessToken = this.getCookieValue('sb-access-token')
+      const refreshToken = this.getCookieValue('sb-refresh-token')
       
       if (!accessToken || !refreshToken) {
         return {

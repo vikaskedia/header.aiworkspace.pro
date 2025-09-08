@@ -2,6 +2,7 @@ import { ref, computed, onMounted } from 'vue'
 import { getSupabase } from '../lib/supabase'
 import { restoreSessionWithRetry, initializeCrossSubdomainAuth } from '../plugins/crossSubdomainAuth'
 import { clearSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE, clearLocalStorageTokens } from '../utils/authRedirect'
+import { handleBundlingError } from '../utils/errorHandler'
 import type { AuthState, Session, AuthResult } from '../types'
 
 export function useEnhancedAuth() {
@@ -26,88 +27,46 @@ export function useEnhancedAuth() {
       // First, ensure cross-subdomain cookies are synchronized
       console.log('[auth][enhanced] Ensuring cross-subdomain cookie synchronization...')
       
-      // Use multiple import strategies to ensure the function is available
-      let ensureCrossSubdomainCookies: any = null
-      let ACCESS_COOKIE: string = 'sb-access-token'
-      let REFRESH_COOKIE: string = 'sb-refresh-token'
+      // Simplified cookie synchronization approach
+      const ACCESS_COOKIE = 'sb-access-token'
+      const REFRESH_COOKIE = 'sb-refresh-token'
       
-      // Inline fallback function for cookie synchronization
-      const fallbackCookieSync = (cookieNames: string[]) => {
+      // Inline cookie synchronization function to avoid import issues
+      const performCookieSync = (cookieNames: string[]) => {
         try {
           const host = location.hostname
           if (host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) {
-            console.log('[auth][enhanced][fallback] Skipping cookie sync for localhost')
+            console.log('[auth][enhanced] Skipping cookie sync for localhost')
             return
           }
           
           const apexDomain = 'aiworkspace.pro'
           if (!host.endsWith(`.${apexDomain}`) && host !== apexDomain) {
-            console.log('[auth][enhanced][fallback] Skipping cookie sync - not under apex domain')
+            console.log('[auth][enhanced] Skipping cookie sync - not under apex domain')
             return
           }
           
-          console.log('[auth][enhanced][fallback] Performing basic cookie synchronization')
-          // Basic cookie sync logic here - just log for now
+          console.log('[auth][enhanced] Performing cookie synchronization')
+          
+          // Basic cookie synchronization logic
           cookieNames.forEach(name => {
             const cookie = document.cookie.split(';').find(c => c.trim().startsWith(name + '='))
             if (cookie) {
-              console.log(`[auth][enhanced][fallback] Found cookie: ${name}`)
+              console.log(`[auth][enhanced] Found cookie: ${name}`)
+              // Set cookie for apex domain
+              const cookieValue = cookie.split('=')[1]
+              if (cookieValue) {
+                document.cookie = `${name}=${cookieValue}; domain=.${apexDomain}; path=/; secure; samesite=lax`
+              }
             }
           })
         } catch (error) {
-          console.warn('[auth][enhanced][fallback] Error in fallback cookie sync:', error)
+          console.warn('[auth][enhanced] Error in cookie sync:', error)
         }
       }
       
-      try {
-        // Strategy 1: Direct import
-        const authRedirectModule = await import('../utils/authRedirect')
-        ensureCrossSubdomainCookies = authRedirectModule.ensureCrossSubdomainCookies
-        ACCESS_COOKIE = authRedirectModule.ACCESS_COOKIE || 'sb-access-token'
-        REFRESH_COOKIE = authRedirectModule.REFRESH_COOKIE || 'sb-refresh-token'
-        console.log('[auth][enhanced] Successfully imported authRedirect module')
-      } catch (importError) {
-        console.warn('[auth][enhanced] Failed to import authRedirect module:', importError)
-        
-        // Strategy 2: Try to access from global scope
-        if (typeof window !== 'undefined') {
-          // Try the global object first
-          if ((window as any).authRedirectGlobal?.ensureCrossSubdomainCookies) {
-            ensureCrossSubdomainCookies = (window as any).authRedirectGlobal.ensureCrossSubdomainCookies
-            ACCESS_COOKIE = (window as any).authRedirectGlobal.ACCESS_COOKIE || 'sb-access-token'
-            REFRESH_COOKIE = (window as any).authRedirectGlobal.REFRESH_COOKIE || 'sb-refresh-token'
-            console.log('[auth][enhanced] Using global authRedirectGlobal object')
-          }
-          // Fallback to individual global assignments
-          else if ((window as any).ensureCrossSubdomainCookies) {
-            ensureCrossSubdomainCookies = (window as any).ensureCrossSubdomainCookies
-            ACCESS_COOKIE = (window as any).ACCESS_COOKIE || 'sb-access-token'
-            REFRESH_COOKIE = (window as any).REFRESH_COOKIE || 'sb-refresh-token'
-            console.log('[auth][enhanced] Using individual global ensureCrossSubdomainCookies')
-          }
-        }
-      }
-      
-      // If we have the function, call it
-      if (ensureCrossSubdomainCookies && typeof ensureCrossSubdomainCookies === 'function') {
-        try {
-          ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
-          console.log('[auth][enhanced] Cross-subdomain cookies synchronized')
-        } catch (cookieError) {
-          console.warn('[auth][enhanced] Error calling ensureCrossSubdomainCookies:', cookieError)
-          console.warn('[auth][enhanced] Continuing without cookie synchronization...')
-        }
-      } else {
-        console.warn('[auth][enhanced] ensureCrossSubdomainCookies not available, using fallback cookie sync')
-        console.warn('[auth][enhanced] This is expected in some bundling scenarios and will not affect core functionality')
-        
-        // Use the inline fallback function
-        try {
-          fallbackCookieSync([ACCESS_COOKIE, REFRESH_COOKIE])
-        } catch (fallbackError) {
-          console.warn('[auth][enhanced] Fallback cookie sync also failed:', fallbackError)
-        }
-      }
+      // Perform cookie synchronization
+      performCookieSync([ACCESS_COOKIE, REFRESH_COOKIE])
       
       // Add a small delay to ensure cookies are properly set
       await new Promise(resolve => setTimeout(resolve, 100))
@@ -179,7 +138,7 @@ export function useEnhancedAuth() {
         // Try one more time with a longer delay for cross-subdomain sync
         console.log('[auth][enhanced] Retrying session restoration with extended delay...')
         await new Promise(resolve => setTimeout(resolve, 500))
-        ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+        performCookieSync([ACCESS_COOKIE, REFRESH_COOKIE])
         
         const retryResult = await restoreSessionWithRetry()
         if (retryResult.success && retryResult.session) {
@@ -208,11 +167,13 @@ export function useEnhancedAuth() {
     } catch (e) { 
       console.error('Error getting Supabase session:', e)
       
-      // Check if this is the specific "ne is not a function" error
-      if (e && typeof e === 'object' && 'message' in e && 
-          typeof e.message === 'string' && e.message.includes('ne is not a function')) {
-        console.warn('[auth][enhanced] Caught "ne is not a function" error - this is handled gracefully')
-        console.warn('[auth][enhanced] The ensureCrossSubdomainCookies function import failed, but continuing...')
+      // Handle bundling errors gracefully
+      if (e instanceof Error) {
+        handleBundlingError(e, {
+          component: 'useEnhancedAuth',
+          function: 'loadUserInfo',
+          operation: 'session_validation'
+        })
       }
       
       // Try to restore session even if getSession fails

@@ -1,6 +1,5 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { getSupabase } from '../lib/supabase'
-import { ACCESS_COOKIE, REFRESH_COOKIE, getCookie } from '../utils/authRedirect'
 import { getSessionConfig, type SessionConfig } from '../config/sessionConfig'
 
 export interface SessionLossEvent {
@@ -34,14 +33,25 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
     sessionLossEvent.value?.type !== 'manual_check_failed'
   )
 
+  // Helper function to get cookie value
+  const getCookieValue = (name: string): string | null => {
+    if (typeof document === 'undefined') return null
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) {
+      return parts.pop()?.split(';').shift() || null
+    }
+    return null
+  }
+
   // Check if current session is valid
   const validateSession = async (): Promise<boolean> => {
     try {
       console.log('[SessionMonitor] Validating session...')
       
       // Check if we have cookies
-      const accessToken = getCookie(ACCESS_COOKIE)
-      const refreshToken = getCookie(REFRESH_COOKIE)
+      const accessToken = getCookieValue('sb-access-token')
+      const refreshToken = getCookieValue('sb-refresh-token')
       
       if (!accessToken || !refreshToken) {
         console.log('[SessionMonitor] No tokens found in cookies')
@@ -87,8 +97,8 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
     try {
       console.log('[SessionMonitor] Attempting to restore session...')
       
-      const accessToken = getCookie(ACCESS_COOKIE)
-      const refreshToken = getCookie(REFRESH_COOKIE)
+      const accessToken = getCookieValue('sb-access-token')
+      const refreshToken = getCookieValue('sb-refresh-token')
       
       if (!accessToken || !refreshToken) {
         console.log('[SessionMonitor] No tokens available for restoration')
