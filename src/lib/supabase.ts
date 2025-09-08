@@ -13,39 +13,57 @@ declare global {
   }
 }
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Safe environment variable access with fallbacks
+const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || (typeof window !== 'undefined' ? (window as any).__SUPABASE_URL__ : '')
+const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || (typeof window !== 'undefined' ? (window as any).__SUPABASE_ANON_KEY__ : '')
 
-export const supabase = createClient(
-  supabaseUrl,
-  supabaseAnonKey,
-  {
-    db: {
-      schema: 'public'
-    },
-    auth: {
-      storageKey: 'sb-auth-token',
-      storage: localStorage,
-      autoRefreshToken: true,
-      persistSession: true,
-      cookieOptions: {
-        domain: window.location.hostname === 'localhost' ? 'localhost' : '.aiworkspace.pro',
-        path: '/',
-        sameSite: 'Lax',
-        secure: window.location.protocol === 'https:',
-        maxAge: 365 * 24 * 60 * 60 // 1 year in seconds
+// Validate configuration
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('[Supabase] Missing required environment variables:', {
+    hasUrl: !!supabaseUrl,
+    hasKey: !!supabaseAnonKey,
+    env: import.meta.env
+  })
+}
+
+// Create Supabase client with error handling
+let supabase: any = null
+
+try {
+  supabase = createClient(
+    supabaseUrl,
+    supabaseAnonKey,
+    {
+      db: {
+        schema: 'public'
+      },
+      auth: {
+        storageKey: 'sb-auth-token',
+        storage: typeof window !== 'undefined' ? localStorage : undefined,
+        autoRefreshToken: true,
+        persistSession: true
       }
     }
-  }
-)
+  )
+} catch (error) {
+  console.error('[Supabase] Failed to create client:', error)
+  // Create a fallback client with minimal configuration
+  supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder-key')
+}
 
-// Setup cross-subdomain authentication
-if (typeof window !== 'undefined') {
-  // Ensure cookies are set for cross-subdomain access
-  ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
-  
-  // Setup auth state listener
-  setupAuthStateListener()
+export { supabase }
+
+// Setup cross-subdomain authentication with error handling
+if (typeof window !== 'undefined' && supabase) {
+  try {
+    // Ensure cookies are set for cross-subdomain access
+    ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+    
+    // Setup auth state listener
+    setupAuthStateListener()
+  } catch (error) {
+    console.warn('[Supabase] Error setting up cross-subdomain authentication:', error)
+  }
 }
 
 // Log configuration status (remove in production)

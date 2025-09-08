@@ -30,7 +30,14 @@ export function useEnhancedAuth() {
       await new Promise(resolve => setTimeout(resolve, 100))
       
       // First check Supabase session (highest priority)
-      const { data: { session } } = await supabase.auth.getSession()
+      let session = null
+      try {
+        const result = await supabase.auth.getSession()
+        session = result?.data?.session
+      } catch (error) {
+        console.warn('[auth][enhanced] Error getting Supabase session:', error)
+        // Continue with cookie restoration attempt
+      }
       if (session && session.user) {
         console.log('[auth][enhanced] Active Supabase session found')
         const user = session.user

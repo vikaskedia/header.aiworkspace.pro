@@ -99,7 +99,15 @@ export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
       console.log(`[auth][restore] Attempt ${attempt}/${maxRetries}`)
       
       // First, try to get existing session
-      const { data: { session } } = await supabase.auth.getSession()
+      let session = null
+      try {
+        const result = await supabase.auth.getSession()
+        session = result?.data?.session
+      } catch (error) {
+        console.warn('[auth][restore] Error getting Supabase session:', error)
+        // Continue with cookie restoration attempt
+      }
+      
       if (session && session.user) {
         console.log('[auth][restore] Active session found')
         return { success: true, session }
@@ -120,26 +128,34 @@ export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
       
       if (at && rt) {
         console.log('[auth][restore] Attempting to restore session from cookies...')
-        const { data, error } = await supabase.auth.setSession({ 
-          access_token: at, 
-          refresh_token: rt 
-        })
-        
-        if (error) {
-          console.log(`[auth][restore] Attempt ${attempt} failed:`, error.message)
+        try {
+          const { data, error } = await supabase.auth.setSession({ 
+            access_token: at, 
+            refresh_token: rt 
+          })
+          
+          if (error) {
+            console.log(`[auth][restore] Attempt ${attempt} failed:`, error.message)
+            if (attempt === maxRetries) {
+              return { success: false, error }
+            }
+            continue
+          }
+          
+          if (data.session) {
+            console.log('[auth][restore] Session restored successfully')
+            // Update cookies with fresh tokens
+            setSessionCookie(ACCESS_COOKIE, data.session.access_token, 60 * 60 * 24 * 365)
+            setSessionCookie(REFRESH_COOKIE, data.session.refresh_token, 60 * 60 * 24 * 365)
+            syncCookiesToLocalStorage()
+            return { success: true, session: data.session }
+          }
+        } catch (setSessionError) {
+          console.warn(`[auth][restore] setSession error on attempt ${attempt}:`, setSessionError)
           if (attempt === maxRetries) {
-            return { success: false, error }
+            return { success: false, error: setSessionError }
           }
           continue
-        }
-        
-        if (data.session) {
-          console.log('[auth][restore] Session restored successfully')
-          // Update cookies with fresh tokens
-          setSessionCookie(ACCESS_COOKIE, data.session.access_token, 60 * 60 * 24 * 365)
-          setSessionCookie(REFRESH_COOKIE, data.session.refresh_token, 60 * 60 * 24 * 365)
-          syncCookiesToLocalStorage()
-          return { success: true, session: data.session }
         }
       } else {
         console.log(`[auth][restore] Attempt ${attempt} - No cookies found`)
