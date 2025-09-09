@@ -166,6 +166,14 @@ async function initializeSupabase() {
           }
         )
         console.log('[Supabase] Client initialized successfully')
+        // After client init, setup auth state listener (browser only)
+        if (typeof window !== 'undefined') {
+          try {
+            await setupAuthStateListener()
+          } catch (err) {
+            console.warn('[Supabase] Error setting up auth state listener after init:', err)
+          }
+        }
       } else {
         console.warn('[Supabase] Missing configuration, using fallback client')
         supabase = createClientFn('https://placeholder.supabase.co', 'placeholder-key')
@@ -208,10 +216,7 @@ if (typeof window !== 'undefined') {
     // Ensure cookies are set for cross-subdomain access
     ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
     
-    // Setup auth state listener asynchronously
-    setupAuthStateListener().catch(error => {
-      console.warn('[Supabase] Error setting up auth state listener:', error)
-    })
+    // Removed eager setupAuthStateListener; it is now invoked after successful initialization
   } catch (setupError) {
     console.warn('[Supabase] Error during cross-subdomain setup:', setupError)
   }

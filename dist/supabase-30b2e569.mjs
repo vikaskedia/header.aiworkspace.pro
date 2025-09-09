@@ -13,10 +13,10 @@ async function N() {
     S([i, u]);
     const e = h(i), s = h(u);
     if (e && s) {
-      const a = await b(), { data: { session: o } } = await a.auth.getSession();
+      const n = await b(), { data: { session: o } } = await n.auth.getSession();
       if (!o) {
-        const { data: n, error: c } = await a.auth.setSession({ access_token: e, refresh_token: s });
-        c ? console.log("[auth][restore] error", c) : console.log("[auth][restore] done", !!n.session);
+        const { data: t, error: c } = await n.auth.setSession({ access_token: e, refresh_token: s });
+        c ? console.log("[auth][restore] error", c) : console.log("[auth][restore] done", !!t.session);
       }
     } else
       console.log("[auth][restore] no cookies present");
@@ -33,13 +33,13 @@ async function A() {
   }
   console.log("[auth][listener] Setting up auth state listener...");
   try {
-    (await b()).auth.onAuthStateChange(async (s, a) => {
-      switch (console.log("[auth][listener] Auth state changed:", s, !!a), s) {
+    (await b()).auth.onAuthStateChange(async (s, n) => {
+      switch (console.log("[auth][listener] Auth state changed:", s, !!n), s) {
         case "TOKEN_REFRESHED":
-          console.log("[auth][listener] Token refreshed successfully"), a && (p(i, a.access_token, 60 * 60 * 24 * 365), p(u, a.refresh_token, 60 * 60 * 24 * 365), g());
+          console.log("[auth][listener] Token refreshed successfully"), n && (p(i, n.access_token, 60 * 60 * 24 * 365), p(u, n.refresh_token, 60 * 60 * 24 * 365), g());
           break;
         case "SIGNED_IN":
-          console.log("[auth][listener] User signed in"), a && (p(i, a.access_token, 60 * 60 * 24 * 365), p(u, a.refresh_token, 60 * 60 * 24 * 365), g());
+          console.log("[auth][listener] User signed in"), n && (p(i, n.access_token, 60 * 60 * 24 * 365), p(u, n.refresh_token, 60 * 60 * 24 * 365), g());
           break;
         case "SIGNED_OUT":
           console.log("[auth][listener] User signed out"), typeof window < "u" && window.dispatchEvent(new CustomEvent("session-logout-detected", {
@@ -58,19 +58,19 @@ async function A() {
   }
 }
 async function U(e = 3, s = 200) {
-  var a;
+  var n;
   for (let o = 1; o <= e; o++)
     try {
       console.log(`[auth][restore] Attempt ${o}/${e}`);
-      let n = null;
+      let t = null;
       try {
         const l = await (await b()).auth.getSession();
-        n = (a = l == null ? void 0 : l.data) == null ? void 0 : a.session;
+        t = (n = l == null ? void 0 : l.data) == null ? void 0 : n.session;
       } catch (r) {
         console.warn("[auth][restore] Error getting Supabase session:", r);
       }
-      if (n && n.user)
-        return console.log("[auth][restore] Active session found"), { success: !0, session: n };
+      if (t && t.user)
+        return console.log("[auth][restore] Active session found"), { success: !0, session: t };
       o > 1 && (console.log("[auth][restore] Re-syncing cross-subdomain cookies..."), S([i, u]), await new Promise((r) => setTimeout(r, s * o)));
       const c = h(i), y = h(u);
       if (console.log(`[auth][restore] Cookie check - Access: ${!!c}, Refresh: ${!!y}`), c && y) {
@@ -95,9 +95,9 @@ async function U(e = 3, s = 200) {
       } else if (console.log(`[auth][restore] Attempt ${o} - No cookies found`), o === e)
         return { success: !1, error: "No valid session or cookies" };
       o < e && await new Promise((r) => setTimeout(r, s * o));
-    } catch (n) {
-      if (console.log(`[auth][restore] Attempt ${o} exception:`, n), o === e)
-        return { success: !1, error: n };
+    } catch (t) {
+      if (console.log(`[auth][restore] Attempt ${o} exception:`, t), o === e)
+        return { success: !1, error: t };
     }
   return console.log("[auth][restore] All attempts failed"), { success: !1, error: "All restoration attempts failed" };
 }
@@ -123,16 +123,16 @@ async function _() {
   } catch (s) {
     console.warn("[Supabase] Failed to require @supabase/supabase-js:", s);
   }
-  return console.error("[Supabase] No Supabase client available, using mock with error handling"), (s, a, o) => (console.warn("[Supabase] Using mock client - Supabase not properly configured"), {
+  return console.error("[Supabase] No Supabase client available, using mock with error handling"), (s, n, o) => (console.warn("[Supabase] Using mock client - Supabase not properly configured"), {
     auth: {
       getSession: async () => (console.warn("[Supabase] Mock getSession called - returning null session"), { data: { session: null }, error: null }),
-      setSession: async (n) => (console.warn("[Supabase] Mock setSession called - returning null session"), { data: { session: null }, error: null }),
+      setSession: async (t) => (console.warn("[Supabase] Mock setSession called - returning null session"), { data: { session: null }, error: null }),
       signOut: async () => (console.warn("[Supabase] Mock signOut called"), { error: null }),
-      signInWithPassword: async (n) => (console.warn("[Supabase] Mock signInWithPassword called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
-      signUp: async (n) => (console.warn("[Supabase] Mock signUp called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
-      signInWithOAuth: async (n) => (console.warn("[Supabase] Mock signInWithOAuth called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
-      resetPasswordForEmail: async (n, c) => (console.warn("[Supabase] Mock resetPasswordForEmail called"), { data: {}, error: { message: "Supabase not configured" } }),
-      onAuthStateChange: (n) => (console.warn("[Supabase] Mock onAuthStateChange called"), { data: { subscription: { unsubscribe: () => {
+      signInWithPassword: async (t) => (console.warn("[Supabase] Mock signInWithPassword called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
+      signUp: async (t) => (console.warn("[Supabase] Mock signUp called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
+      signInWithOAuth: async (t) => (console.warn("[Supabase] Mock signInWithOAuth called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
+      resetPasswordForEmail: async (t, c) => (console.warn("[Supabase] Mock resetPasswordForEmail called"), { data: {}, error: { message: "Supabase not configured" } }),
+      onAuthStateChange: (t) => (console.warn("[Supabase] Mock onAuthStateChange called"), { data: { subscription: { unsubscribe: () => {
       } } } })
     }
   });
@@ -158,22 +158,31 @@ async function C() {
   return f || (f = (async () => {
     try {
       const e = await _(), s = w();
-      return s && s.url && s.anonKey ? (d = e(
-        s.url,
-        s.anonKey,
-        {
-          db: {
-            schema: "public"
-          },
-          auth: {
-            storageKey: "sb-auth-token-shared",
-            // Use unique storage key to avoid conflicts
-            storage: typeof window < "u" ? localStorage : void 0,
-            autoRefreshToken: !0,
-            persistSession: !0
+      if (s && s.url && s.anonKey) {
+        if (d = e(
+          s.url,
+          s.anonKey,
+          {
+            db: {
+              schema: "public"
+            },
+            auth: {
+              storageKey: "sb-auth-token-shared",
+              // Use unique storage key to avoid conflicts
+              storage: typeof window < "u" ? localStorage : void 0,
+              autoRefreshToken: !0,
+              persistSession: !0
+            }
           }
-        }
-      ), console.log("[Supabase] Client initialized successfully")) : (console.warn("[Supabase] Missing configuration, using fallback client"), d = e("https://placeholder.supabase.co", "placeholder-key")), d;
+        ), console.log("[Supabase] Client initialized successfully"), typeof window < "u")
+          try {
+            await A();
+          } catch (n) {
+            console.warn("[Supabase] Error setting up auth state listener after init:", n);
+          }
+      } else
+        console.warn("[Supabase] Missing configuration, using fallback client"), d = e("https://placeholder.supabase.co", "placeholder-key");
+      return d;
     } catch (e) {
       return console.error("[Supabase] Failed to initialize client:", e), d = (await _())("https://placeholder.supabase.co", "placeholder-key"), d;
     }
@@ -189,9 +198,7 @@ const b = async () => {
 };
 if (typeof window < "u")
   try {
-    S([i, u]), A().catch((e) => {
-      console.warn("[Supabase] Error setting up auth state listener:", e);
-    });
+    S([i, u]);
   } catch (e) {
     console.warn("[Supabase] Error during cross-subdomain setup:", e);
   }
@@ -200,15 +207,15 @@ typeof window < "u" && (window.addEventListener("error", (e) => {
 }), window.addEventListener("unhandledrejection", (e) => {
   e.reason && e.reason.message && e.reason.message.includes("ne is not a function") && (console.warn("[Supabase] Caught unhandled promise rejection with TypeError: ne is not a function"), e.preventDefault());
 }));
-const t = w();
+const a = w();
 console.log("Supabase Configuration:", {
-  url: (t == null ? void 0 : t.url) || "Not configured",
-  hasKey: !!(t != null && t.anonKey),
+  url: (a == null ? void 0 : a.url) || "Not configured",
+  hasKey: !!(a != null && a.anonKey),
   autoRefreshToken: !0,
   persistSession: !0
 });
-t != null && t.url && console.log("URL:", t.url.replace(/https:\/\/(.+)\.supabase\.co/, "https://*****.supabase.co"));
-console.log("Key configured:", !!(t != null && t.anonKey) && !t.anonKey.includes("your-anon-key"));
+a != null && a.url && console.log("URL:", a.url.replace(/https:\/\/(.+)\.supabase\.co/, "https://*****.supabase.co"));
+console.log("Key configured:", !!(a != null && a.anonKey) && !a.anonKey.includes("your-anon-key"));
 console.log("Environment mode:", "production");
 export {
   N as a,
