@@ -26,11 +26,11 @@ export * from './config/sessionConfig'
 // Plugins
 export * from './plugins/crossSubdomainAuth'
 
-// Supabase client
-export { supabase } from './lib/supabase'
+// Supabase client and configuration
+export { supabase, configureSupabase, type SupabaseConfig } from './lib/supabase'
 
 // Types
 export * from './types'
 
 // Default export for convenience
-export { AIWorkspaceHeader as default }
+export { default } from './components/AIWorkspaceHeader.vue'

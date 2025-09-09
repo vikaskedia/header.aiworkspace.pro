@@ -36,6 +36,22 @@ This package requires the following peer dependencies in your app:
 npm install vue@^3.0.0 element-plus@^2.0.0 pinia@^2.0.0 @supabase/supabase-js@^2.0.0
 ```
 
+## Configuration
+
+**Important**: This package requires Supabase configuration from your application. See the [Supabase Configuration Guide](./SUPABASE_CONFIGURATION.md) for detailed setup instructions.
+
+### Quick Setup
+
+```javascript
+import { configureSupabase } from '@aiworkspace/shared-header'
+
+// Configure Supabase with your credentials
+configureSupabase({
+  url: 'https://your-project.supabase.co',
+  anonKey: 'your-anon-key-here'
+})
+```
+
 ## Troubleshooting
 
 ### Pinia Version Conflicts

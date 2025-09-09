@@ -81,28 +81,51 @@ async function createSupabaseClient() {
   }
 }
 
-// Type the environment variables
-declare global {
-  interface ImportMeta {
-    env: {
-      VITE_SUPABASE_URL: string
-      VITE_SUPABASE_ANON_KEY: string
-      MODE: string
-    }
-  }
+// Configuration interface for Supabase
+export interface SupabaseConfig {
+  url: string
+  anonKey: string
 }
 
-// Safe environment variable access with fallbacks
-const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || (typeof window !== 'undefined' ? (window as any).__SUPABASE_URL__ : '')
-const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || (typeof window !== 'undefined' ? (window as any).__SUPABASE_ANON_KEY__ : '')
+// Global configuration storage
+let globalSupabaseConfig: SupabaseConfig | null = null
+
+// Function to set Supabase configuration from consuming app
+export function configureSupabase(config: SupabaseConfig) {
+  globalSupabaseConfig = config
+  console.log('[Supabase] Configuration set by consuming app')
+}
+
+// Safe configuration access with multiple fallback strategies
+function getSupabaseConfig(): SupabaseConfig | null {
+  // Strategy 1: Use configuration set by consuming app
+  if (globalSupabaseConfig) {
+    return globalSupabaseConfig
+  }
+  
+  // Strategy 2: Try environment variables (for development/demo)
+  const envUrl = (import.meta as any).env?.VITE_SUPABASE_URL
+  const envKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY
+  if (envUrl && envKey) {
+    return { url: envUrl, anonKey: envKey }
+  }
+  
+  // Strategy 3: Try global window variables (for runtime configuration)
+  if (typeof window !== 'undefined') {
+    const windowUrl = (window as any).__SUPABASE_URL__
+    const windowKey = (window as any).__SUPABASE_ANON_KEY__
+    if (windowUrl && windowKey) {
+      return { url: windowUrl, anonKey: windowKey }
+    }
+  }
+  
+  return null
+}
 
 // Validate configuration
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('[Supabase] Missing required environment variables:', {
-    hasUrl: !!supabaseUrl,
-    hasKey: !!supabaseAnonKey,
-    env: import.meta.env
-  })
+const config = getSupabaseConfig()
+if (!config) {
+  console.warn('[Supabase] No configuration found. Please call configureSupabase() with your credentials.')
 }
 
 // Create Supabase client with error handling and singleton pattern
@@ -119,11 +142,12 @@ async function initializeSupabase() {
   initializationPromise = (async () => {
     try {
       const createClientFn = await createSupabaseClient()
+      const config = getSupabaseConfig()
       
-      if (supabaseUrl && supabaseAnonKey) {
+      if (config && config.url && config.anonKey) {
         supabase = createClientFn(
-          supabaseUrl,
-          supabaseAnonKey,
+          config.url,
+          config.anonKey,
           {
             db: {
               schema: 'public'
@@ -201,15 +225,18 @@ if (typeof window !== 'undefined') {
 }
 
 // Log configuration status (remove in production)
+const currentConfig = getSupabaseConfig()
 console.log('Supabase Configuration:', {
-  url: supabaseUrl,
-  hasKey: !!supabaseAnonKey,
+  url: currentConfig?.url || 'Not configured',
+  hasKey: !!currentConfig?.anonKey,
   autoRefreshToken: true,
   persistSession: true
 })
-console.log('URL:', supabaseUrl.replace(/https:\/\/(.+)\.supabase\.co/, 'https://*****.supabase.co'))
-console.log('Key configured:', !!supabaseAnonKey && !supabaseAnonKey.includes('your-anon-key'))
-console.log('Environment mode:', import.meta.env.MODE)
+if (currentConfig?.url) {
+  console.log('URL:', currentConfig.url.replace(/https:\/\/(.+)\.supabase\.co/, 'https://*****.supabase.co'))
+}
+console.log('Key configured:', !!currentConfig?.anonKey && !currentConfig.anonKey.includes('your-anon-key'))
+console.log('Environment mode:', (import.meta as any).env?.MODE || 'unknown')
 
 // TODO: Required database tables for workspace functionality:
 // 
