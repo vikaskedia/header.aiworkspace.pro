@@ -94,6 +94,11 @@ let globalSupabaseConfig: SupabaseConfig | null = null
 export function configureSupabase(config: SupabaseConfig) {
   globalSupabaseConfig = config
   console.log('[Supabase] Configuration set by consuming app')
+  // Kick off initialization now that we have a valid configuration
+  if (!initializationPromise) {
+    // Fire and forget; callers can still await getSupabase()
+    void initializeSupabase()
+  }
 }
 
 // Safe configuration access with multiple fallback strategies
@@ -179,11 +184,16 @@ async function initializeSupabase() {
 }
 
 // Initialize immediately
-initializeSupabase()
+// Do NOT initialize immediately. We wait until the consuming app provides
+// configuration via configureSupabase(), or until a consumer calls getSupabase().
 
 // Export a getter that ensures client is initialized (singleton pattern)
 export const getSupabase = async () => {
   if (!supabase) {
+    // If there is still no configuration, fail fast with a helpful message
+    if (!getSupabaseConfig()) {
+      throw new Error('[Supabase] Missing configuration. Call configureSupabase({ url, anonKey }) before using the header package.')
+    }
     await initializeSupabase()
   }
   return supabase
