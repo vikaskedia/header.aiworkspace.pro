@@ -1216,6 +1216,13 @@ const checkForUpdates = async () => {
       throw new Error('Failed to fetch version info')
     }
     
+    // Check content type before parsing JSON
+    const contentType = response.headers.get('content-type')
+    if (!contentType || !contentType.includes('application/json')) {
+      console.warn('Version check skipped: version.json not properly configured')
+      return
+    }
+    
     const versionData = await response.json()
     latestCommitHash.value = versionData.fullCommitHash
     
