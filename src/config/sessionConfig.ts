@@ -22,19 +22,19 @@ export interface SessionConfig {
   enableNetworkAwareness: boolean   // Enable network-aware monitoring
 }
 
-// Default configuration
+// Default configuration with improved reliability
 export const defaultSessionConfig: SessionConfig = {
-  // Monitoring intervals
-  normalCheckInterval: 30000,      // 30 seconds - normal monitoring
-  fastCheckInterval: 5000,         // 5 seconds - fast monitoring for immediate detection
-  fastMonitoringDuration: 120000,  // 2 minutes - how long to run fast monitoring
+  // Monitoring intervals - less aggressive to reduce false positives
+  normalCheckInterval: 45000,      // 45 seconds - normal monitoring (increased from 30s)
+  fastCheckInterval: 8000,         // 8 seconds - fast monitoring (increased from 5s)
+  fastMonitoringDuration: 180000,  // 3 minutes - how long to run fast monitoring (increased from 2m)
   
   // Retry configuration
   maxRetryAttempts: 3,             // 3 retry attempts
   retryDelay: 2000,               // 2 seconds between retries
   
-  // Cache configuration
-  validationCacheDuration: 5000,   // 5 seconds cache duration
+  // Cache configuration - longer cache to reduce API calls
+  validationCacheDuration: 10000,  // 10 seconds cache duration (increased from 5s)
   
   // Detection modes
   enableImmediateDetection: true,  // Enable immediate detection on logout

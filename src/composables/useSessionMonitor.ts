@@ -44,12 +44,12 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
     return null
   }
 
-  // Check if current session is valid
+  // Check if current session is valid with improved reliability
   const validateSession = async (): Promise<boolean> => {
     try {
       console.log('[SessionMonitor] Validating session...')
       
-      // Check if we have cookies
+      // Check if we have cookies first
       const accessToken = getCookieValue('sb-access-token')
       const refreshToken = getCookieValue('sb-refresh-token')
       
@@ -58,13 +58,40 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
         return false
       }
 
-      // Check Supabase session
+      // Check Supabase session with retry logic for network issues
       const supabase = await getSupabase()
-      const { data: { session }, error } = await supabase.auth.getSession()
+      let session = null
+      let error = null
+      
+      // Try to get session with retry for network issues
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const result = await supabase.auth.getSession()
+          session = result.data.session
+          error = result.error
+          break // Success, exit retry loop
+        } catch (networkError) {
+          console.warn(`[SessionMonitor] Network error on attempt ${attempt}:`, networkError)
+          if (attempt === 2) {
+            // On final attempt, if we still have network issues, 
+            // don't trigger session loss - just return current state
+            console.log('[SessionMonitor] Network issues detected, maintaining current session state')
+            return isSessionValid.value
+          }
+          // Wait before retry
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+      }
       
       if (error) {
         console.warn('[SessionMonitor] Error getting session:', error)
-        return false
+        // Don't immediately fail on session errors - they might be temporary
+        // Only fail if it's a clear authentication error
+        if (error.message?.includes('Invalid JWT') || error.message?.includes('JWT expired')) {
+          return false
+        }
+        // For other errors, maintain current state
+        return isSessionValid.value
       }
 
       if (!session || !session.user) {
@@ -72,12 +99,13 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
         return false
       }
 
-      // Check if session is expired
+      // Check if session is expired with buffer time
       const now = new Date()
       const expiresAt = new Date(session.expires_at! * 1000)
+      const bufferTime = 5 * 60 * 1000 // 5 minutes buffer
       
-      if (now >= expiresAt) {
-        console.log('[SessionMonitor] Session has expired')
+      if (now >= new Date(expiresAt.getTime() - bufferTime)) {
+        console.log('[SessionMonitor] Session is close to expiry or expired')
         return false
       }
 
@@ -88,7 +116,8 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
       
     } catch (error) {
       console.error('[SessionMonitor] Error validating session:', error)
-      return false
+      // On unexpected errors, maintain current state rather than failing
+      return isSessionValid.value
     }
   }
 
@@ -189,7 +218,7 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
     sessionLossEvent.value = null
   }
 
-  // Start monitoring session
+  // Start monitoring session with improved initialization
   const startMonitoring = () => {
     if (isMonitoring.value) {
       console.log('[SessionMonitor] Already monitoring, skipping start')
@@ -199,12 +228,25 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
     console.log('[SessionMonitor] Starting session monitoring...')
     isMonitoring.value = true
     
-    // Initial validation
-    validateSession().then(isValid => {
+    // Delayed initial validation to allow for proper initialization
+    setTimeout(async () => {
+      console.log('[SessionMonitor] Performing initial session validation...')
+      const isValid = await validateSession()
       if (!isValid) {
-        handleSessionLoss('session_expired', 'Your session has expired. Please log in again.', true)
+        // Only trigger session loss if we're sure the session is actually invalid
+        // and not just a temporary initialization issue
+        console.log('[SessionMonitor] Initial validation failed, but waiting for confirmation...')
+        // Wait a bit more and try again before showing alert
+        setTimeout(async () => {
+          const retryValid = await validateSession()
+          if (!retryValid) {
+            handleSessionLoss('session_expired', 'Your session has expired. Please log in again.', true)
+          }
+        }, 3000) // Wait 3 seconds before final check
+      } else {
+        console.log('[SessionMonitor] Initial validation successful')
       }
-    })
+    }, 2000) // Wait 2 seconds before initial validation
     
     // Set up periodic monitoring
     monitoringInterval.value = setInterval(async () => {
@@ -212,8 +254,14 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
       
       const isValid = await validateSession()
       if (!isValid && isSessionValid.value) {
-        // Session was valid but now it's not
-        handleSessionLoss('session_expired', 'Your session has expired. Please log in again.', true)
+        // Session was valid but now it's not - but add a confirmation check
+        console.log('[SessionMonitor] Session validation failed, performing confirmation check...')
+        setTimeout(async () => {
+          const confirmValid = await validateSession()
+          if (!confirmValid) {
+            handleSessionLoss('session_expired', 'Your session has expired. Please log in again.', true)
+          }
+        }, 2000) // Wait 2 seconds before confirming session loss
       } else if (isValid && !isSessionValid.value) {
         // Session was invalid but now it's valid (recovered)
         console.log('[SessionMonitor] Session recovered')
@@ -222,7 +270,7 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
     }, CHECK_INTERVAL)
   }
 
-  // Start fast monitoring (for immediate detection after logout)
+  // Start fast monitoring (for immediate detection after logout) with improved reliability
   const startFastMonitoring = () => {
     if (isFastMonitoring.value) {
       console.log('[SessionMonitor] Fast monitoring already active')
@@ -237,16 +285,22 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
       clearInterval(fastMonitoringInterval.value)
     }
     
-    // Set up fast monitoring
+    // Set up fast monitoring with confirmation logic
     fastMonitoringInterval.value = setInterval(async () => {
       console.log('[SessionMonitor] Fast session check...')
       
       const isValid = await validateSession()
       if (!isValid && isSessionValid.value) {
-        // Session was valid but now it's not
-        handleSessionLoss('session_expired', 'Your session has expired. Please log in again.', true)
-        // Stop fast monitoring once session loss is detected
-        stopFastMonitoring()
+        // Session was valid but now it's not - add confirmation
+        console.log('[SessionMonitor] Fast monitoring detected potential session loss, confirming...')
+        setTimeout(async () => {
+          const confirmValid = await validateSession()
+          if (!confirmValid) {
+            handleSessionLoss('session_expired', 'Your session has expired. Please log in again.', true)
+            // Stop fast monitoring once session loss is confirmed
+            stopFastMonitoring()
+          }
+        }, 1000) // Wait 1 second for confirmation
       } else if (isValid && !isSessionValid.value) {
         // Session was invalid but now it's valid (recovered)
         console.log('[SessionMonitor] Session recovered')
@@ -314,9 +368,15 @@ export function useSessionMonitor(config?: Partial<SessionConfig>) {
     return isValid
   }
 
-  // Handle network errors
+  // Handle network errors with improved logic
   const handleNetworkError = () => {
-    handleSessionLoss('network_error', 'Network connection lost. Please check your internet connection and try again.', true)
+    // Don't immediately trigger session loss on network errors
+    // Instead, just log the issue and let the normal monitoring handle it
+    console.log('[SessionMonitor] Network error detected, but not triggering immediate session loss')
+    // Only trigger if we're already in a session loss state
+    if (!isSessionValid.value) {
+      handleSessionLoss('network_error', 'Network connection lost. Please check your internet connection and try again.', true)
+    }
   }
 
   // Listen for network events and logout events

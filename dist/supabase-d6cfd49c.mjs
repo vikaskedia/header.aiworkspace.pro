@@ -1,8 +1,15 @@
-import { ensureCrossSubdomainCookies as S, ACCESS_COOKIE as i, REFRESH_COOKIE as u, getCookie as h, syncCookiesToLocalStorage as g, setSessionCookie as p } from "./utils/authRedirect.js";
+import { ensureCrossSubdomainCookies as p, ACCESS_COOKIE as i, REFRESH_COOKIE as u, getCookie as f, syncCookiesToLocalStorage as b, setSessionCookie as h } from "./utils/authRedirect.js";
+function D() {
+  try {
+    return console.log("[auth][immediate] Setting up immediate cross-subdomain authentication..."), p([i, u]), w(), console.log("[auth][immediate] Immediate cross-subdomain authentication setup completed"), !0;
+  } catch (e) {
+    return console.error("[auth][immediate] Error during immediate cross-subdomain authentication setup:", e), !1;
+  }
+}
 async function P() {
   try {
-    console.log("[auth][init] Starting cross-subdomain authentication initialization..."), S([i, u]), A();
-    const e = await U(2, 100);
+    console.log("[auth][init] Starting cross-subdomain authentication initialization..."), p([i, u]), w();
+    const e = await C(5, 50);
     return e.success ? (console.log("[auth][init] Cross-subdomain authentication initialized successfully"), { success: !0, session: e.session }) : (console.log("[auth][init] Cross-subdomain authentication initialization completed (no active session)"), { success: !1, error: e.error });
   } catch (e) {
     return console.error("[auth][init] Error during cross-subdomain authentication initialization:", e), { success: !1, error: e };
@@ -10,36 +17,36 @@ async function P() {
 }
 async function N() {
   try {
-    S([i, u]);
-    const e = h(i), s = h(u);
+    p([i, u]);
+    const e = f(i), s = f(u);
     if (e && s) {
-      const n = await b(), { data: { session: o } } = await n.auth.getSession();
+      const n = await S(), { data: { session: o } } = await n.auth.getSession();
       if (!o) {
-        const { data: t, error: c } = await n.auth.setSession({ access_token: e, refresh_token: s });
-        c ? console.log("[auth][restore] error", c) : console.log("[auth][restore] done", !!t.session);
+        const { data: a, error: l } = await n.auth.setSession({ access_token: e, refresh_token: s });
+        l ? console.log("[auth][restore] error", l) : console.log("[auth][restore] done", !!a.session);
       }
     } else
       console.log("[auth][restore] no cookies present");
-    g();
+    b();
   } catch (e) {
     console.log("[auth][restore] exception", e);
   }
 }
-let E = !1;
-async function A() {
-  if (E) {
+let _ = !1;
+async function w() {
+  if (_) {
     console.log("[auth][listener] Auth state listener already set up, skipping...");
     return;
   }
   console.log("[auth][listener] Setting up auth state listener...");
   try {
-    (await b()).auth.onAuthStateChange(async (s, n) => {
+    (await S()).auth.onAuthStateChange(async (s, n) => {
       switch (console.log("[auth][listener] Auth state changed:", s, !!n), s) {
         case "TOKEN_REFRESHED":
-          console.log("[auth][listener] Token refreshed successfully"), n && (p(i, n.access_token, 60 * 60 * 24 * 365), p(u, n.refresh_token, 60 * 60 * 24 * 365), g());
+          console.log("[auth][listener] Token refreshed successfully"), n && (h(i, n.access_token, 60 * 60 * 24 * 365), h(u, n.refresh_token, 60 * 60 * 24 * 365), b());
           break;
         case "SIGNED_IN":
-          console.log("[auth][listener] User signed in"), n && (p(i, n.access_token, 60 * 60 * 24 * 365), p(u, n.refresh_token, 60 * 60 * 24 * 365), g());
+          console.log("[auth][listener] User signed in"), n && (h(i, n.access_token, 60 * 60 * 24 * 365), h(u, n.refresh_token, 60 * 60 * 24 * 365), b());
           break;
         case "SIGNED_OUT":
           console.log("[auth][listener] User signed out"), typeof window < "u" && window.dispatchEvent(new CustomEvent("session-logout-detected", {
@@ -52,32 +59,32 @@ async function A() {
         default:
           console.log("[auth][listener] Unhandled auth event:", s);
       }
-    }), E = !0, console.log("[auth][listener] Auth state listener set up successfully");
+    }), _ = !0, console.log("[auth][listener] Auth state listener set up successfully");
   } catch (e) {
     console.warn("[auth][listener] Failed to setup auth state listener:", e);
   }
 }
-async function U(e = 3, s = 200) {
+async function C(e = 5, s = 100) {
   var n;
   for (let o = 1; o <= e; o++)
     try {
       console.log(`[auth][restore] Attempt ${o}/${e}`);
-      let t = null;
+      let a = null;
       try {
-        const l = await (await b()).auth.getSession();
-        t = (n = l == null ? void 0 : l.data) == null ? void 0 : n.session;
+        const c = await (await S()).auth.getSession();
+        a = (n = c == null ? void 0 : c.data) == null ? void 0 : n.session;
       } catch (r) {
         console.warn("[auth][restore] Error getting Supabase session:", r);
       }
-      if (t && t.user)
-        return console.log("[auth][restore] Active session found"), { success: !0, session: t };
-      o > 1 && (console.log("[auth][restore] Re-syncing cross-subdomain cookies..."), S([i, u]), await new Promise((r) => setTimeout(r, s * o)));
-      const c = h(i), y = h(u);
-      if (console.log(`[auth][restore] Cookie check - Access: ${!!c}, Refresh: ${!!y}`), c && y) {
+      if (a && a.user)
+        return console.log("[auth][restore] Active session found"), { success: !0, session: a };
+      o > 1 && (console.log("[auth][restore] Re-syncing cross-subdomain cookies..."), p([i, u]), await new Promise((r) => setTimeout(r, s * o)));
+      const l = f(i), y = f(u);
+      if (console.log(`[auth][restore] Cookie check - Access: ${!!l}, Refresh: ${!!y}`), l && y) {
         console.log("[auth][restore] Attempting to restore session from cookies...");
         try {
-          const r = await b(), { data: l, error: k } = await r.auth.setSession({
-            access_token: c,
+          const r = await S(), { data: c, error: k } = await r.auth.setSession({
+            access_token: l,
             refresh_token: y
           });
           if (k) {
@@ -85,8 +92,8 @@ async function U(e = 3, s = 200) {
               return { success: !1, error: k };
             continue;
           }
-          if (l.session)
-            return console.log("[auth][restore] Session restored successfully"), p(i, l.session.access_token, 60 * 60 * 24 * 365), p(u, l.session.refresh_token, 60 * 60 * 24 * 365), g(), { success: !0, session: l.session };
+          if (c.session)
+            return console.log("[auth][restore] Session restored successfully"), h(i, c.session.access_token, 60 * 60 * 24 * 365), h(u, c.session.refresh_token, 60 * 60 * 24 * 365), b(), { success: !0, session: c.session };
         } catch (r) {
           if (console.warn(`[auth][restore] setSession error on attempt ${o}:`, r), o === e)
             return { success: !1, error: r };
@@ -95,13 +102,24 @@ async function U(e = 3, s = 200) {
       } else if (console.log(`[auth][restore] Attempt ${o} - No cookies found`), o === e)
         return { success: !1, error: "No valid session or cookies" };
       o < e && await new Promise((r) => setTimeout(r, s * o));
-    } catch (t) {
-      if (console.log(`[auth][restore] Attempt ${o} exception:`, t), o === e)
-        return { success: !1, error: t };
+    } catch (a) {
+      if (console.log(`[auth][restore] Attempt ${o} exception:`, a), o === e)
+        return { success: !1, error: a };
     }
   return console.log("[auth][restore] All attempts failed"), { success: !1, error: "All restoration attempts failed" };
 }
-async function _() {
+function K() {
+  try {
+    return console.log("[auth][domain-change] Handling domain change authentication..."), p([i, u]), w(), C(7, 25).then((e) => {
+      e.success ? console.log("[auth][domain-change] Domain change authentication successful") : console.log("[auth][domain-change] Domain change authentication failed:", e.error);
+    }).catch((e) => {
+      console.error("[auth][domain-change] Domain change authentication error:", e);
+    }), console.log("[auth][domain-change] Domain change authentication setup completed"), !0;
+  } catch (e) {
+    return console.error("[auth][domain-change] Error during domain change authentication setup:", e), !1;
+  }
+}
+async function A() {
   var e;
   try {
     const { createClient: s } = await import("@supabase/supabase-js");
@@ -126,24 +144,24 @@ async function _() {
   return console.error("[Supabase] No Supabase client available, using mock with error handling"), (s, n, o) => (console.warn("[Supabase] Using mock client - Supabase not properly configured"), {
     auth: {
       getSession: async () => (console.warn("[Supabase] Mock getSession called - returning null session"), { data: { session: null }, error: null }),
-      setSession: async (t) => (console.warn("[Supabase] Mock setSession called - returning null session"), { data: { session: null }, error: null }),
+      setSession: async (a) => (console.warn("[Supabase] Mock setSession called - returning null session"), { data: { session: null }, error: null }),
       signOut: async () => (console.warn("[Supabase] Mock signOut called"), { error: null }),
-      signInWithPassword: async (t) => (console.warn("[Supabase] Mock signInWithPassword called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
-      signUp: async (t) => (console.warn("[Supabase] Mock signUp called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
-      signInWithOAuth: async (t) => (console.warn("[Supabase] Mock signInWithOAuth called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
-      resetPasswordForEmail: async (t, c) => (console.warn("[Supabase] Mock resetPasswordForEmail called"), { data: {}, error: { message: "Supabase not configured" } }),
-      onAuthStateChange: (t) => (console.warn("[Supabase] Mock onAuthStateChange called"), { data: { subscription: { unsubscribe: () => {
+      signInWithPassword: async (a) => (console.warn("[Supabase] Mock signInWithPassword called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
+      signUp: async (a) => (console.warn("[Supabase] Mock signUp called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
+      signInWithOAuth: async (a) => (console.warn("[Supabase] Mock signInWithOAuth called"), { data: { session: null, user: null }, error: { message: "Supabase not configured" } }),
+      resetPasswordForEmail: async (a, l) => (console.warn("[Supabase] Mock resetPasswordForEmail called"), { data: {}, error: { message: "Supabase not configured" } }),
+      onAuthStateChange: (a) => (console.warn("[Supabase] Mock onAuthStateChange called"), { data: { subscription: { unsubscribe: () => {
       } } } })
     }
   });
 }
-let m = null;
+let E = null;
 function T(e) {
-  m = e, console.log("[Supabase] Configuration set by consuming app"), f || C();
+  E = e, console.log("[Supabase] Configuration set by consuming app"), g || U();
 }
-function w() {
-  if (m)
-    return m;
+function m() {
+  if (E)
+    return E;
   if (typeof window < "u") {
     const e = window.__SUPABASE_URL__, s = window.__SUPABASE_ANON_KEY__;
     if (e && s)
@@ -151,13 +169,13 @@ function w() {
   }
   return null;
 }
-const K = w();
-K || console.warn("[Supabase] No configuration found. Please call configureSupabase() with your credentials.");
-let d = null, f = null;
-async function C() {
-  return f || (f = (async () => {
+const O = m();
+O || console.warn("[Supabase] No configuration found. Please call configureSupabase() with your credentials.");
+let d = null, g = null;
+async function U() {
+  return g || (g = (async () => {
     try {
-      const e = await _(), s = w();
+      const e = await A(), s = m();
       if (s && s.url && s.anonKey) {
         if (d = e(
           s.url,
@@ -176,7 +194,7 @@ async function C() {
           }
         ), console.log("[Supabase] Client initialized successfully"), typeof window < "u")
           try {
-            await A();
+            await w();
           } catch (n) {
             console.warn("[Supabase] Error setting up auth state listener after init:", n);
           }
@@ -184,21 +202,21 @@ async function C() {
         console.warn("[Supabase] Missing configuration, using fallback client"), d = e("https://placeholder.supabase.co", "placeholder-key");
       return d;
     } catch (e) {
-      return console.error("[Supabase] Failed to initialize client:", e), d = (await _())("https://placeholder.supabase.co", "placeholder-key"), d;
+      return console.error("[Supabase] Failed to initialize client:", e), d = (await A())("https://placeholder.supabase.co", "placeholder-key"), d;
     }
-  })(), f);
+  })(), g);
 }
-const b = async () => {
+const S = async () => {
   if (!d) {
-    if (!w())
+    if (!m())
       throw new Error("[Supabase] Missing configuration. Call configureSupabase({ url, anonKey }) before using the header package.");
-    await C();
+    await U();
   }
   return d;
 };
 if (typeof window < "u")
   try {
-    S([i, u]);
+    K(), D(), p([i, u]);
   } catch (e) {
     console.warn("[Supabase] Error during cross-subdomain setup:", e);
   }
@@ -207,22 +225,24 @@ typeof window < "u" && (window.addEventListener("error", (e) => {
 }), window.addEventListener("unhandledrejection", (e) => {
   e.reason && e.reason.message && e.reason.message.includes("ne is not a function") && (console.warn("[Supabase] Caught unhandled promise rejection with TypeError: ne is not a function"), e.preventDefault());
 }));
-const a = w();
+const t = m();
 console.log("Supabase Configuration:", {
-  url: (a == null ? void 0 : a.url) || "Not configured",
-  hasKey: !!(a != null && a.anonKey),
+  url: (t == null ? void 0 : t.url) || "Not configured",
+  hasKey: !!(t != null && t.anonKey),
   autoRefreshToken: !0,
   persistSession: !0
 });
-a != null && a.url && console.log("URL:", a.url.replace(/https:\/\/(.+)\.supabase\.co/, "https://*****.supabase.co"));
-console.log("Key configured:", !!(a != null && a.anonKey) && !a.anonKey.includes("your-anon-key"));
+t != null && t.url && console.log("URL:", t.url.replace(/https:\/\/(.+)\.supabase\.co/, "https://*****.supabase.co"));
+console.log("Key configured:", !!(t != null && t.anonKey) && !t.anonKey.includes("your-anon-key"));
 console.log("Environment mode:", "production");
 export {
-  N as a,
-  A as b,
+  D as a,
+  N as b,
   T as c,
-  b as g,
+  w as d,
+  S as g,
+  K as h,
   P as i,
-  U as r,
+  C as r,
   d as s
 };

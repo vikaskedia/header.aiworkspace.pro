@@ -36,7 +36,7 @@ export class SessionValidator {
   }
 
   /**
-   * Validate current session with caching
+   * Validate current session with caching and improved reliability
    */
   async validateSession(forceRefresh = false): Promise<SessionValidationResult> {
     const cacheKey = 'session_validation'
@@ -68,15 +68,43 @@ export class SessionValidator {
         return result
       }
 
-      // Check Supabase session
+      // Check Supabase session with retry logic
       const supabase = await getSupabase()
-      const { data: { session }, error } = await supabase.auth.getSession()
+      let session = null
+      let error = null
+      
+      // Try to get session with retry for network issues
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const result = await supabase.auth.getSession()
+          session = result.data.session
+          error = result.error
+          break // Success, exit retry loop
+        } catch (networkError) {
+          console.warn(`[SessionValidator] Network error on attempt ${attempt}:`, networkError)
+          if (attempt === 2) {
+            // On final attempt, return a retry-able error instead of failing
+            const result: SessionValidationResult = {
+              isValid: false,
+              needsLogin: false, // Don't force login on network issues
+              error: 'Network error during validation',
+              canRetry: true
+            }
+            this.cacheResult(cacheKey, result)
+            return result
+          }
+          // Wait before retry
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+      }
       
       if (error) {
         console.warn('[SessionValidator] Error getting session:', error)
+        // Only treat as login required if it's a clear auth error
+        const needsLogin = error.message?.includes('Invalid JWT') || error.message?.includes('JWT expired')
         const result: SessionValidationResult = {
           isValid: false,
-          needsLogin: true,
+          needsLogin,
           error: `Session error: ${error.message}`,
           canRetry: true
         }
@@ -95,15 +123,16 @@ export class SessionValidator {
         return result
       }
 
-      // Check if session is expired
+      // Check if session is expired with buffer time
       const now = new Date()
       const expiresAt = new Date(session.expires_at! * 1000)
+      const bufferTime = 5 * 60 * 1000 // 5 minutes buffer
       
-      if (now >= expiresAt) {
+      if (now >= new Date(expiresAt.getTime() - bufferTime)) {
         const result: SessionValidationResult = {
           isValid: false,
           needsLogin: true,
-          error: 'Session has expired',
+          error: 'Session is close to expiry or expired',
           canRetry: true
         }
         this.cacheResult(cacheKey, result)
@@ -123,7 +152,7 @@ export class SessionValidator {
       console.error('[SessionValidator] Error validating session:', error)
       const result: SessionValidationResult = {
         isValid: false,
-        needsLogin: true,
+        needsLogin: false, // Don't force login on unexpected errors
         error: `Validation error: ${error}`,
         canRetry: true
       }
