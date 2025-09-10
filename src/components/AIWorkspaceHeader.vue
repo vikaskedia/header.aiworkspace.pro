@@ -302,34 +302,6 @@
       </template>
     </el-alert>
 
-    <!-- Version Setup Alert -->
-    <el-alert
-      v-if="commitHash === 'setup-required' || commitHash === 'not-found' || commitHash === 'error' || commitHash === 'parse-error'"
-      title="Version Setup Required"
-      type="error"
-      :closable="false"
-      show-icon
-      class="version-setup-alert"
-    >
-      <template #default>
-        <div class="setup-content">
-          <p><strong>The header package needs version.json to be set up in your app.</strong></p>
-          <p>This allows the header to display your app's commit hash instead of "setup-required".</p>
-          <div class="setup-actions">
-            <el-button type="primary" size="small" @click="copySetupCommand">
-              Copy Fix Command
-            </el-button>
-            <el-button size="small" @click="openSetupGuide">
-              View Setup Guide
-            </el-button>
-          </div>
-          <div class="setup-command">
-            <p><strong>Quick Fix:</strong> Run this command in your app's terminal:</p>
-            <pre>{{ setupCommand }}</pre>
-          </div>
-        </div>
-      </template>
-    </el-alert>
   </header>
 </template>
 
@@ -450,8 +422,6 @@ const latestCommitHash = ref<string | null>(null)
 const versionCheckInterval = ref<NodeJS.Timeout | null>(null)
 const checkingVersion = ref(false)
 
-// Setup command for easy copying
-const setupCommand = `node -e "const fs=require('fs');const{execSync}=require('child_process');const hash=execSync('git rev-parse HEAD').toString().trim();const data={fullCommitHash:hash,shortCommitHash:hash.substring(0,7),timestamp:new Date().toISOString(),buildTime:new Date().toISOString()};fs.mkdirSync('public',{recursive:true});fs.writeFileSync('public/version.json',JSON.stringify(data,null,2));console.log('✅ Created version.json with hash:',hash.substring(0,7));"`
 const workspaceTree = ref<Workspace[]>([])
 const flattenedWorkspaces = ref<Workspace[]>([])
 const isInAllWorkspaceMode = ref(false)
@@ -1167,12 +1137,11 @@ const manualRetry = () => {
   ElMessage.success('Manual Pinia retry initiated.')
 }
 
-// Load commit hash from consuming app's version.json
+// Load commit hash with automatic fallback methods
 const loadCommitHash = async () => {
   try {
+    // First try to get from version.json (if available)
     const response = await fetch('/version.json')
-    console.log('Version.json response status:', response.status, 'Content-Type:', response.headers.get('content-type'))
-    
     if (response.ok) {
       const contentType = response.headers.get('content-type')
       if (contentType && contentType.includes('application/json')) {
@@ -1181,58 +1150,162 @@ const loadCommitHash = async () => {
           console.log('Version data received:', versionData)
           commitHash.value = versionData.shortCommitHash || 'unknown'
           fullCommitHash.value = versionData.fullCommitHash || 'unknown'
-          console.log('✅ Loaded commit hash from consuming app:', commitHash.value)
+          console.log('✅ Loaded commit hash from version.json:', commitHash.value)
+          return
         } catch (parseError) {
-          console.error('Failed to parse version.json:', parseError)
-          commitHash.value = 'parse-error'
-          fullCommitHash.value = 'parse-error'
+          console.log('Failed to parse version.json, trying fallback methods...')
         }
-      } else {
-        console.warn('❌ version.json returned non-JSON content type:', contentType)
-        console.warn('📋 This means the consuming app has not set up version.json generation')
-        console.warn('🔧 The server is returning HTML instead of JSON - likely a 404 page or index.html')
-        console.warn('📖 Please follow the setup guide: QUICK_FIX_VERSION.md')
-        console.warn('🚀 Quick fix: Create a version.json file in your app\'s public directory')
-        console.warn('')
-        console.warn('🔧 IMMEDIATE FIX: Copy and run this in your app\'s terminal:')
-        console.warn('   node -e "const fs=require(\'fs\');const{execSync}=require(\'child_process\');const path=require(\'path\');const hash=execSync(\'git rev-parse HEAD\').toString().trim();const data={fullCommitHash:hash,shortCommitHash:hash.substring(0,7),timestamp:new Date().toISOString(),buildTime:new Date().toISOString()};fs.mkdirSync(\'public\',{recursive:true});fs.writeFileSync(\'public/version.json\',JSON.stringify(data,null,2));console.log(\'✅ Created version.json with hash:\',hash.substring(0,7));"')
-        console.warn('')
-        console.warn('📁 Or manually create public/version.json with your git commit hash')
-        commitHash.value = 'setup-required'
-        fullCommitHash.value = 'setup-required'
       }
-    } else {
-      console.warn('❌ Could not load version.json from consuming app - Status:', response.status)
-      console.warn('📋 This usually means the consuming app has not set up version.json generation')
-      console.warn('📖 Please follow the setup guide: QUICK_FIX_VERSION.md')
-      commitHash.value = 'not-found'
-      fullCommitHash.value = 'not-found'
+    }
+    
+    // Fallback: Try to get commit hash automatically
+    console.log('🔄 version.json not available, trying automatic detection...')
+    await loadCommitHashAuto()
+    
+  } catch (error) {
+    console.log('Error loading version.json, trying automatic detection...', error)
+    await loadCommitHashAuto()
+  }
+}
+
+// Automatic commit hash detection without manual setup
+const loadCommitHashAuto = async () => {
+  try {
+    // Method 1: Try to get from GitHub API if we can determine the repo
+    const repoInfo = await getRepoInfoFromPackage()
+    if (repoInfo) {
+      const latestCommit = await getLatestCommitFromGitHub(repoInfo)
+      if (latestCommit) {
+        commitHash.value = latestCommit.substring(0, 7)
+        fullCommitHash.value = latestCommit
+        console.log('✅ Loaded commit hash from GitHub API:', commitHash.value)
+        return
+      }
+    }
+    
+    // Method 2: Try to get from package.json version
+    const packageInfo = await getPackageInfo()
+    if (packageInfo && packageInfo.version) {
+      commitHash.value = packageInfo.version
+      fullCommitHash.value = packageInfo.version
+      console.log('✅ Loaded version from package.json:', commitHash.value)
+      return
+    }
+    
+    // Method 3: Try to get from build info or other sources
+    const buildInfo = await getBuildInfo()
+    if (buildInfo) {
+      commitHash.value = buildInfo
+      fullCommitHash.value = buildInfo
+      console.log('✅ Loaded version from build info:', commitHash.value)
+      return
+    }
+    
+    // Final fallback: Use timestamp-based version
+    const timestamp = Date.now().toString(36)
+    commitHash.value = timestamp.substring(0, 7)
+    fullCommitHash.value = timestamp
+    console.log('✅ Using timestamp-based version:', commitHash.value)
+    
+  } catch (error) {
+    console.warn('❌ All automatic detection methods failed:', error)
+    commitHash.value = 'unknown'
+    fullCommitHash.value = 'unknown'
+  }
+}
+
+// Try to get repository information from package.json
+const getRepoInfoFromPackage = async () => {
+  try {
+    const response = await fetch('/package.json')
+    if (response.ok) {
+      const packageData = await response.json()
+      if (packageData.repository && packageData.repository.url) {
+        const url = packageData.repository.url
+        const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/)
+        if (match) {
+          return { owner: match[1], repo: match[2].replace('.git', '') }
+        }
+      }
     }
   } catch (error) {
-    console.warn('❌ Error loading commit hash from consuming app:', error)
-    console.warn('📖 Please follow the setup guide: QUICK_FIX_VERSION.md')
-    commitHash.value = 'error'
-    fullCommitHash.value = 'error'
+    console.log('Could not get repo info from package.json:', error)
   }
+  return null
+}
+
+// Get latest commit from GitHub API
+const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string }) => {
+  try {
+    // Try main branch first, then master
+    const branches = ['main', 'master']
+    for (const branch of branches) {
+      try {
+        const response = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/commits/${branch}`)
+        if (response.ok) {
+          const commitData = await response.json()
+          return commitData.sha
+        }
+      } catch (error) {
+        console.log(`Could not get commit from ${branch} branch:`, error)
+      }
+    }
+  } catch (error) {
+    console.log('Could not get commit from GitHub API:', error)
+  }
+  return null
+}
+
+// Get package info
+const getPackageInfo = async () => {
+  try {
+    const response = await fetch('/package.json')
+    if (response.ok) {
+      return await response.json()
+    }
+  } catch (error) {
+    console.log('Could not get package.json:', error)
+  }
+  return null
+}
+
+// Try to get build info from other sources
+const getBuildInfo = async () => {
+  try {
+    // Try to get from build manifest or other build files
+    const buildFiles = ['/build-manifest.json', '/build-info.json', '/.next/build-manifest.json']
+    for (const file of buildFiles) {
+      try {
+        const response = await fetch(file)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.version || data.commitHash || data.buildId) {
+            return data.version || data.commitHash || data.buildId
+          }
+        }
+      } catch (error) {
+        // Continue to next file
+      }
+    }
+  } catch (error) {
+    console.log('Could not get build info:', error)
+  }
+  return null
 }
 
 // Version checking functions
 const copyCommitHash = async () => {
   try {
-    if (fullCommitHash.value === 'setup-required') {
-      ElMessage.warning('Version setup required - see console for details')
-      return
-    }
-    if (fullCommitHash.value === 'not-found' || fullCommitHash.value === 'error' || fullCommitHash.value === 'parse-error') {
+    if (fullCommitHash.value === 'unknown') {
       ElMessage.warning('Version information not available')
       return
     }
     
     await navigator.clipboard.writeText(fullCommitHash.value)
-    ElMessage.success('Commit hash copied to clipboard!')
+    ElMessage.success('Version information copied to clipboard!')
   } catch (error) {
-    console.error('Failed to copy commit hash:', error)
-    ElMessage.error('Failed to copy commit hash')
+    console.error('Failed to copy version info:', error)
+    ElMessage.error('Failed to copy version info')
   }
 }
 
@@ -1298,21 +1371,6 @@ const dismissUpdateAlert = () => {
   })
 }
 
-// Setup alert functions
-const copySetupCommand = async () => {
-  try {
-    await navigator.clipboard.writeText(setupCommand)
-    ElMessage.success('Setup command copied to clipboard!')
-  } catch (error) {
-    console.error('Failed to copy setup command:', error)
-    ElMessage.error('Failed to copy setup command')
-  }
-}
-
-const openSetupGuide = () => {
-  // Open the setup guide in a new tab
-  window.open('https://github.com/aiworkspace/header-package/blob/main/README_VERSION_SETUP.md', '_blank')
-}
 
 // Cleanup on unmount
 onUnmounted(() => {
@@ -1839,61 +1897,6 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
-/* Version Setup Alert Styles */
-.version-setup-alert {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  margin: 0;
-  border-radius: 0;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  background: linear-gradient(135deg, #fff5f5, #fef2f2);
-  border-bottom: 2px solid #fecaca;
-}
-
-.setup-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.setup-content p {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.setup-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.setup-command {
-  background: rgba(0, 0, 0, 0.05);
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.setup-command p {
-  margin: 0 0 8px 0;
-  font-weight: 600;
-  color: #dc2626;
-}
-
-.setup-command pre {
-  margin: 0;
-  font-size: 0.8rem;
-  background: rgba(0, 0, 0, 0.1);
-  padding: 8px;
-  border-radius: 4px;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
 
 @media (max-width: 768px) {
   .update-content {
