@@ -1333,7 +1333,23 @@ const resetGitHubCallCounter = () => {
   }
 }
 
-// Get latest commit from GitHub API with rate limiting
+// Get GitHub token from environment or localStorage
+const getGitHubToken = () => {
+  // Try to get from environment variables first
+  if (import.meta.env.VITE_GITHUB_TOKEN) {
+    return import.meta.env.VITE_GITHUB_TOKEN
+  }
+  
+  // Try to get from localStorage (for manual configuration)
+  const storedToken = localStorage.getItem('github_token')
+  if (storedToken) {
+    return storedToken
+  }
+  
+  return null
+}
+
+// Get latest commit from GitHub API with rate limiting and authentication
 const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string }) => {
   try {
     const now = Date.now()
@@ -1352,11 +1368,28 @@ const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string
       return null
     }
     
+    // Get GitHub token for authentication
+    const githubToken = getGitHubToken()
+    const headers: HeadersInit = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'AIWorkspace-Header/1.0'
+    }
+    
+    // Add authentication header if token is available
+    if (githubToken) {
+      headers['Authorization'] = `token ${githubToken}`
+      console.log('🔑 Using GitHub token for authentication')
+    } else {
+      console.log('⚠️ No GitHub token found, trying unauthenticated request')
+    }
+    
     // Try main branch first, then master
     const branches = ['main', 'master']
     for (const branch of branches) {
       try {
-        const response = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/commits/${branch}`)
+        const response = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/commits/${branch}`, {
+          headers
+        })
         
         // Update rate limiting counters
         lastGitHubCall.value = now
@@ -1372,6 +1405,12 @@ const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string
             console.log('🚫 GitHub API rate limit exceeded, will retry later')
             return null
           }
+        } else if (response.status === 404) {
+          console.log('🚫 Repository not found or private (404). Consider adding a GitHub token.')
+          return null
+        } else if (response.status === 401) {
+          console.log('🚫 Unauthorized (401). GitHub token may be invalid or expired.')
+          return null
         }
       } catch (error) {
         console.log(`Failed to get commit from ${branch} branch:`, error)
