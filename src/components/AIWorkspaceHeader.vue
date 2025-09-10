@@ -286,31 +286,6 @@
       @refresh="handleSessionRefresh"
     />
 
-    <!-- Update Alert -->
-    <el-alert
-      v-if="showUpdateAlert"
-      title="New Version Available!"
-      type="warning"
-      :closable="true"
-      @close="dismissUpdateAlert"
-      show-icon
-      class="update-alert"
-    >
-      <template #default>
-        <div class="update-content">
-          <p>A new version of the application is available. Please reload to get the latest updates and features.</p>
-          <div class="update-actions">
-            <el-button type="primary" size="small" @click="reloadPage">
-              Reload Now
-            </el-button>
-            <el-button size="small" @click="dismissUpdateAlert">
-              Dismiss
-            </el-button>
-          </div>
-        </div>
-      </template>
-    </el-alert>
-
   </header>
 
   <!-- Update Alert -->
