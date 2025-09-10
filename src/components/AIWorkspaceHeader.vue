@@ -1149,28 +1149,31 @@ const loadCommitHash = async () => {
           console.log('Version data received:', versionData)
           commitHash.value = versionData.shortCommitHash || 'unknown'
           fullCommitHash.value = versionData.fullCommitHash || 'unknown'
-          console.log('Loaded commit hash from consuming app:', commitHash.value)
+          console.log('✅ Loaded commit hash from consuming app:', commitHash.value)
         } catch (parseError) {
           console.error('Failed to parse version.json:', parseError)
           commitHash.value = 'parse-error'
           fullCommitHash.value = 'parse-error'
         }
       } else {
-        console.warn('version.json returned non-JSON content type:', contentType)
-        console.warn('This usually means the consuming app has not set up version.json generation')
-        console.warn('The server is returning HTML instead of JSON - likely a 404 page or index.html')
-        console.warn('Please set up version.json generation in your app\'s build process')
+        console.warn('❌ version.json returned non-JSON content type:', contentType)
+        console.warn('📋 This means the consuming app has not set up version.json generation')
+        console.warn('🔧 The server is returning HTML instead of JSON - likely a 404 page or index.html')
+        console.warn('📖 Please follow the setup guide: QUICK_FIX_VERSION.md')
+        console.warn('🚀 Quick fix: Create a version.json file in your app\'s public directory')
         commitHash.value = 'setup-required'
         fullCommitHash.value = 'setup-required'
       }
     } else {
-      console.warn('Could not load version.json from consuming app - Status:', response.status)
-      console.warn('This usually means the consuming app has not set up version.json generation')
+      console.warn('❌ Could not load version.json from consuming app - Status:', response.status)
+      console.warn('📋 This usually means the consuming app has not set up version.json generation')
+      console.warn('📖 Please follow the setup guide: QUICK_FIX_VERSION.md')
       commitHash.value = 'not-found'
       fullCommitHash.value = 'not-found'
     }
   } catch (error) {
-    console.warn('Error loading commit hash from consuming app:', error)
+    console.warn('❌ Error loading commit hash from consuming app:', error)
+    console.warn('📖 Please follow the setup guide: QUICK_FIX_VERSION.md')
     commitHash.value = 'error'
     fullCommitHash.value = 'error'
   }
