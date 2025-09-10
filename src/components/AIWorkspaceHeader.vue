@@ -1144,14 +1144,22 @@ const loadCommitHash = async () => {
     if (response.ok) {
       const contentType = response.headers.get('content-type')
       if (contentType && contentType.includes('application/json')) {
-        const versionData = await response.json()
-        console.log('Version data received:', versionData)
-        commitHash.value = versionData.shortCommitHash || 'unknown'
-        fullCommitHash.value = versionData.fullCommitHash || 'unknown'
-        console.log('Loaded commit hash from consuming app:', commitHash.value)
+        try {
+          const versionData = await response.json()
+          console.log('Version data received:', versionData)
+          commitHash.value = versionData.shortCommitHash || 'unknown'
+          fullCommitHash.value = versionData.fullCommitHash || 'unknown'
+          console.log('Loaded commit hash from consuming app:', commitHash.value)
+        } catch (parseError) {
+          console.error('Failed to parse version.json:', parseError)
+          commitHash.value = 'parse-error'
+          fullCommitHash.value = 'parse-error'
+        }
       } else {
         console.warn('version.json returned non-JSON content type:', contentType)
         console.warn('This usually means the consuming app has not set up version.json generation')
+        console.warn('The server is returning HTML instead of JSON - likely a 404 page or index.html')
+        console.warn('Please set up version.json generation in your app\'s build process')
         commitHash.value = 'setup-required'
         fullCommitHash.value = 'setup-required'
       }
@@ -1175,7 +1183,7 @@ const copyCommitHash = async () => {
       ElMessage.warning('Version setup required - see console for details')
       return
     }
-    if (fullCommitHash.value === 'not-found' || fullCommitHash.value === 'error') {
+    if (fullCommitHash.value === 'not-found' || fullCommitHash.value === 'error' || fullCommitHash.value === 'parse-error') {
       ElMessage.warning('Version information not available')
       return
     }
