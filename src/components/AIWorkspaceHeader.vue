@@ -1161,6 +1161,11 @@ const loadCommitHash = async () => {
         console.warn('🔧 The server is returning HTML instead of JSON - likely a 404 page or index.html')
         console.warn('📖 Please follow the setup guide: QUICK_FIX_VERSION.md')
         console.warn('🚀 Quick fix: Create a version.json file in your app\'s public directory')
+        console.warn('')
+        console.warn('🔧 IMMEDIATE FIX: Copy and run this in your app\'s terminal:')
+        console.warn('   node -e "const fs=require(\'fs\');const{execSync}=require(\'child_process\');const path=require(\'path\');const hash=execSync(\'git rev-parse HEAD\').toString().trim();const data={fullCommitHash:hash,shortCommitHash:hash.substring(0,7),timestamp:new Date().toISOString(),buildTime:new Date().toISOString()};fs.mkdirSync(\'public\',{recursive:true});fs.writeFileSync(\'public/version.json\',JSON.stringify(data,null,2));console.log(\'✅ Created version.json with hash:\',hash.substring(0,7));"')
+        console.warn('')
+        console.warn('📁 Or manually create public/version.json with your git commit hash')
         commitHash.value = 'setup-required'
         fullCommitHash.value = 'setup-required'
       }

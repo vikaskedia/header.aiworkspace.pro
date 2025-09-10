@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version.json Test - AIWorkspace Header</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #e9ecef;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .step {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Version.json Test for AIWorkspace Header</h1>
+    
+    <p>This page helps you test if your <code>version.json</code> file is set up correctly for the AIWorkspace header package.</p>
+    
+    <div class="step">
+        <h3>Step 1: Test Current Setup</h3>
+        <button onclick="testVersionJson()">Test version.json</button>
+        <div id="testResult"></div>
+    </div>
+    
+    <div class="step">
+        <h3>Step 2: Quick Fix (if needed)</h3>
+        <p>If the test fails, run this command in your app's terminal:</p>
+        <pre id="fixCommand"></pre>
+        <button onclick="copyFixCommand()">Copy Command</button>
+    </div>
+    
+    <div class="step">
+        <h3>Step 3: Manual Setup (alternative)</h3>
+        <p>Create a file called <code>version.json</code> in your app's <code>public</code> directory with this content:</p>
+        <pre id="manualContent"></pre>
+        <button onclick="copyManualContent()">Copy Content</button>
+    </div>
+
+    <script>
+        // Generate the fix command
+        const fixCommand = `node -e "const fs=require('fs');const{execSync}=require('child_process');const hash=execSync('git rev-parse HEAD').toString().trim();const data={fullCommitHash:hash,shortCommitHash:hash.substring(0,7),timestamp:new Date().toISOString(),buildTime:new Date().toISOString()};fs.mkdirSync('public',{recursive:true});fs.writeFileSync('public/version.json',JSON.stringify(data,null,2));console.log('✅ Created version.json with hash:',hash.substring(0,7));"`;
+        
+        document.getElementById('fixCommand').textContent = fixCommand;
+        
+        // Generate manual content
+        const manualContent = {
+            "fullCommitHash": "YOUR_GIT_COMMIT_HASH_HERE",
+            "shortCommitHash": "YOUR_SHORT_HASH_HERE",
+            "timestamp": new Date().toISOString(),
+            "buildTime": new Date().toISOString()
+        };
+        
+        document.getElementById('manualContent').textContent = JSON.stringify(manualContent, null, 2);
+        
+        async function testVersionJson() {
+            const resultDiv = document.getElementById('testResult');
+            resultDiv.innerHTML = '<div class="info">🔄 Testing version.json...</div>';
+            
+            try {
+                const response = await fetch('/version.json');
+                const contentType = response.headers.get('content-type');
+                
+                if (response.ok) {
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        resultDiv.innerHTML = `
+                            <div class="success">
+                                ✅ <strong>Success!</strong> version.json is working correctly.<br>
+                                <strong>Short Hash:</strong> ${data.shortCommitHash || 'N/A'}<br>
+                                <strong>Full Hash:</strong> ${data.fullCommitHash || 'N/A'}<br>
+                                <strong>Build Time:</strong> ${data.buildTime || 'N/A'}
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="error">
+                                ❌ <strong>Error:</strong> version.json returned HTML instead of JSON.<br>
+                                <strong>Content-Type:</strong> ${contentType}<br>
+                                This usually means the file doesn't exist and the server is returning a 404 page.
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ❌ <strong>Error:</strong> Could not load version.json<br>
+                            <strong>Status:</strong> ${response.status} ${response.statusText}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ <strong>Error:</strong> ${error.message}<br>
+                        This usually means the file doesn't exist or there's a network issue.
+                    </div>
+                `;
+            }
+        }
+        
+        function copyFixCommand() {
+            navigator.clipboard.writeText(fixCommand).then(() => {
+                alert('Command copied to clipboard!');
+            });
+        }
+        
+        function copyManualContent() {
+            navigator.clipboard.writeText(JSON.stringify(manualContent, null, 2)).then(() => {
+                alert('Content copied to clipboard!');
+            });
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            testVersionJson();
+        };
+    </script>
+</body>
+</html>
