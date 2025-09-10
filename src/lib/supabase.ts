@@ -1,5 +1,5 @@
 import { ensureCrossSubdomainCookies, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
-import { setupAuthStateListener } from '../plugins/crossSubdomainAuth'
+import { setupAuthStateListener, setupImmediateCrossSubdomainAuth, handleDomainChangeAuth } from '../plugins/crossSubdomainAuth'
 
 // Safe Supabase client creation function with multiple fallback strategies
 async function createSupabaseClient() {
@@ -213,6 +213,12 @@ export { supabase }
 // Setup cross-subdomain authentication with comprehensive error handling
 if (typeof window !== 'undefined') {
   try {
+    // Immediately handle domain change authentication
+    handleDomainChangeAuth()
+    
+    // Also set up immediate cross-subdomain authentication
+    setupImmediateCrossSubdomainAuth()
+    
     // Ensure cookies are set for cross-subdomain access
     ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
     

@@ -1,6 +1,26 @@
 import { getSupabase } from '../lib/supabase'
 import { ensureCrossSubdomainCookies, getCookie, syncCookiesToLocalStorage, setSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
 
+// Ultra-early cross-subdomain authentication setup for domain changes
+// This should be called as early as possible in the page lifecycle
+export function setupImmediateCrossSubdomainAuth() {
+  try {
+    console.log('[auth][immediate] Setting up immediate cross-subdomain authentication...')
+    
+    // Immediately ensure cross-subdomain cookies are synchronized
+    ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+    
+    // Set up auth state listener immediately
+    setupAuthStateListener()
+    
+    console.log('[auth][immediate] Immediate cross-subdomain authentication setup completed')
+    return true
+  } catch (error) {
+    console.error('[auth][immediate] Error during immediate cross-subdomain authentication setup:', error)
+    return false
+  }
+}
+
 // Immediate cross-subdomain authentication initialization
 export async function initializeCrossSubdomainAuth() {
   try {
@@ -12,8 +32,8 @@ export async function initializeCrossSubdomainAuth() {
     // Set up auth state listener
     setupAuthStateListener()
     
-    // Try to restore session immediately
-    const restoreResult = await restoreSessionWithRetry(2, 100) // Quick retry with shorter delays
+    // Try to restore session immediately with more aggressive retry
+    const restoreResult = await restoreSessionWithRetry(5, 50) // More attempts with shorter delays
     
     if (restoreResult.success) {
       console.log('[auth][init] Cross-subdomain authentication initialized successfully')
@@ -117,7 +137,7 @@ export async function setupAuthStateListener() {
 }
 
 // Enhanced session restoration with automatic retry and cross-subdomain sync
-export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
+export async function restoreSessionWithRetry(maxRetries = 5, delayMs = 100) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`[auth][restore] Attempt ${attempt}/${maxRetries}`)
@@ -190,7 +210,7 @@ export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
         }
       }
       
-      // Wait before next attempt
+      // Wait before next attempt with shorter delays for domain changes
       if (attempt < maxRetries) {
         await new Promise(resolve => setTimeout(resolve, delayMs * attempt))
       }
@@ -205,4 +225,35 @@ export async function restoreSessionWithRetry(maxRetries = 3, delayMs = 200) {
   
   console.log('[auth][restore] All attempts failed')
   return { success: false, error: 'All restoration attempts failed' }
+}
+
+// Ultra-fast cross-subdomain authentication for domain changes
+// This function should be called immediately when the page loads
+export function handleDomainChangeAuth() {
+  try {
+    console.log('[auth][domain-change] Handling domain change authentication...')
+    
+    // Immediately ensure cross-subdomain cookies are synchronized
+    ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
+    
+    // Set up auth state listener immediately
+    setupAuthStateListener()
+    
+    // Start immediate session restoration with very aggressive retry
+    restoreSessionWithRetry(7, 25).then(result => {
+      if (result.success) {
+        console.log('[auth][domain-change] Domain change authentication successful')
+      } else {
+        console.log('[auth][domain-change] Domain change authentication failed:', result.error)
+      }
+    }).catch(error => {
+      console.error('[auth][domain-change] Domain change authentication error:', error)
+    })
+    
+    console.log('[auth][domain-change] Domain change authentication setup completed')
+    return true
+  } catch (error) {
+    console.error('[auth][domain-change] Error during domain change authentication setup:', error)
+    return false
+  }
 }

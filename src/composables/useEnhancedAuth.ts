@@ -65,11 +65,17 @@ export function useEnhancedAuth() {
         }
       }
       
-      // Perform cookie synchronization
+      // Perform cookie synchronization multiple times for domain changes
       performCookieSync([ACCESS_COOKIE, REFRESH_COOKIE])
       
       // Add a small delay to ensure cookies are properly set
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise(resolve => setTimeout(resolve, 50))
+      
+      // Perform additional cookie sync for domain changes
+      performCookieSync([ACCESS_COOKIE, REFRESH_COOKIE])
+      
+      // Add another small delay
+      await new Promise(resolve => setTimeout(resolve, 50))
       
       // First check Supabase session (highest priority)
       let session = null
