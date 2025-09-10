@@ -3,8 +3,8 @@ var cs = (a, s, o) => s in a ? ls(a, s, { enumerable: !0, configurable: !0, writ
 var we = (a, s, o) => (cs(a, typeof s != "symbol" ? s + "" : s, o), o);
 import { defineComponent as ie, openBlock as S, createElementBlock as x, createElementVNode as r, ref as W, computed as Y, onMounted as Se, onUnmounted as us, watch as ue, reactive as ds, resolveComponent as re, createBlock as ee, withCtx as v, toDisplayString as G, createVNode as k, unref as T, withModifiers as ge, createCommentVNode as j, createTextVNode as J, createStaticVNode as Ae, normalizeClass as $e, Fragment as Re, renderList as Ue, normalizeStyle as ps } from "vue";
 import { ElForm as fs, ElMessage as K, ElDialog as gs, ElIcon as Ee, ElButton as Pe, ElProgress as hs, ElMessageBox as Be } from "element-plus";
-import { i as vs, g as se, r as xe, s as Ie } from "./supabase-d6cfd49c.mjs";
-import { c as La, h as Ma, b as Wa, d as Va, a as $a } from "./supabase-d6cfd49c.mjs";
+import { i as vs, g as se, r as xe, s as Ie } from "./supabase-7523f80a.mjs";
+import { c as La, h as Ma, b as Wa, d as Va, a as $a } from "./supabase-7523f80a.mjs";
 import { clearSessionCookie as me, ACCESS_COOKIE as ke, REFRESH_COOKIE as _e, clearLocalStorageTokens as Te, setSessionCookie as ye, syncCookiesToLocalStorage as De, getPostLoginBase as ws } from "./utils/authRedirect.js";
 import { LS_ACCESS_KEY as Ua, LS_REFRESH_KEY as Pa, buildOAuthRedirectUrl as xa, ensureCrossSubdomainCookies as Ta, getCookie as Da } from "./utils/authRedirect.js";
 import { defineStore as ms } from "pinia";
@@ -2572,6 +2572,7 @@ export {
   Da as getCookie,
   ws as getPostLoginBase,
   Xe as getSessionConfig,
+  se as getSupabase,
   Ls as handleBundlingError,
   Ma as handleDomainChangeAuth,
   vs as initializeCrossSubdomainAuth,

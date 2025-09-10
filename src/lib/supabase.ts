@@ -166,12 +166,18 @@ async function initializeSupabase() {
           }
         )
         console.log('[Supabase] Client initialized successfully')
-        // After client init, setup auth state listener (browser only)
+        // After client init, setup auth state listener and cross-subdomain auth (browser only)
         if (typeof window !== 'undefined') {
           try {
+            // Setup auth state listener
             await setupAuthStateListener()
+            
+            // Setup cross-subdomain authentication
+            handleDomainChangeAuth()
+            setupImmediateCrossSubdomainAuth()
+            ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
           } catch (err) {
-            console.warn('[Supabase] Error setting up auth state listener after init:', err)
+            console.warn('[Supabase] Error setting up auth components after init:', err)
           }
         }
       } else {
@@ -211,22 +217,7 @@ export const getSupabase = async () => {
 export { supabase }
 
 // Setup cross-subdomain authentication with comprehensive error handling
-if (typeof window !== 'undefined') {
-  try {
-    // Immediately handle domain change authentication
-    handleDomainChangeAuth()
-    
-    // Also set up immediate cross-subdomain authentication
-    setupImmediateCrossSubdomainAuth()
-    
-    // Ensure cookies are set for cross-subdomain access
-    ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
-    
-    // Removed eager setupAuthStateListener; it is now invoked after successful initialization
-  } catch (setupError) {
-    console.warn('[Supabase] Error during cross-subdomain setup:', setupError)
-  }
-}
+// This is now done lazily when getSupabase() is called, not immediately on module load
 
 // Global error handler for unhandled Supabase errors
 if (typeof window !== 'undefined') {

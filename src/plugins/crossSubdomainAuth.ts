@@ -10,8 +10,10 @@ export function setupImmediateCrossSubdomainAuth() {
     // Immediately ensure cross-subdomain cookies are synchronized
     ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
     
-    // Set up auth state listener immediately
-    setupAuthStateListener()
+    // Set up auth state listener immediately (will retry if Supabase not configured)
+    setupAuthStateListener().catch(error => {
+      console.log('[auth][immediate] Auth state listener setup deferred:', error.message)
+    })
     
     console.log('[auth][immediate] Immediate cross-subdomain authentication setup completed')
     return true
@@ -133,6 +135,11 @@ export async function setupAuthStateListener() {
   console.log('[auth][listener] Auth state listener set up successfully')
   } catch (error) {
     console.warn('[auth][listener] Failed to setup auth state listener:', error)
+    // If it's a configuration error, we'll retry when Supabase is properly configured
+    if (error.message && error.message.includes('Missing configuration')) {
+      console.log('[auth][listener] Supabase not configured yet, will retry when configured')
+      authListenerSetup = false // Allow retry when configuration is available
+    }
   }
 }
 
@@ -150,7 +157,12 @@ export async function restoreSessionWithRetry(maxRetries = 5, delayMs = 100) {
         session = result?.data?.session
       } catch (error) {
         console.warn('[auth][restore] Error getting Supabase session:', error)
-        // Continue with cookie restoration attempt
+        // If it's a configuration error, return early - we'll retry when configured
+        if (error.message && error.message.includes('Missing configuration')) {
+          console.log('[auth][restore] Supabase not configured yet, skipping restoration')
+          return { success: false, error: 'Supabase not configured' }
+        }
+        // Continue with cookie restoration attempt for other errors
       }
       
       if (session && session.user) {
@@ -198,6 +210,11 @@ export async function restoreSessionWithRetry(maxRetries = 5, delayMs = 100) {
           }
         } catch (setSessionError) {
           console.warn(`[auth][restore] setSession error on attempt ${attempt}:`, setSessionError)
+          // If it's a configuration error, return early - we'll retry when configured
+          if (setSessionError.message && setSessionError.message.includes('Missing configuration')) {
+            console.log('[auth][restore] Supabase not configured yet, skipping restoration')
+            return { success: false, error: 'Supabase not configured' }
+          }
           if (attempt === maxRetries) {
             return { success: false, error: setSessionError }
           }
@@ -236,10 +253,12 @@ export function handleDomainChangeAuth() {
     // Immediately ensure cross-subdomain cookies are synchronized
     ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
     
-    // Set up auth state listener immediately
-    setupAuthStateListener()
+    // Set up auth state listener immediately (will retry if Supabase not configured)
+    setupAuthStateListener().catch(error => {
+      console.log('[auth][domain-change] Auth state listener setup deferred:', error.message)
+    })
     
-    // Start immediate session restoration with very aggressive retry
+    // Start immediate session restoration with very aggressive retry (will also retry if Supabase not configured)
     restoreSessionWithRetry(7, 25).then(result => {
       if (result.success) {
         console.log('[auth][domain-change] Domain change authentication successful')

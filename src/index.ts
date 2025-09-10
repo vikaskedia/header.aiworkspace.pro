@@ -27,7 +27,7 @@ export * from './config/sessionConfig'
 export * from './plugins/crossSubdomainAuth'
 
 // Supabase client and configuration
-export { supabase, configureSupabase, type SupabaseConfig } from './lib/supabase'
+export { supabase, configureSupabase, getSupabase, type SupabaseConfig } from './lib/supabase'
 
 // Types
 export * from './types'
