@@ -1316,20 +1316,65 @@ const getRepoInfoFromPackage = async () => {
   }
 }
 
-// Get latest commit from GitHub API
+// Rate limiting for GitHub API calls
+const lastGitHubCall = ref(0)
+const githubCallCount = ref(0)
+const githubCallResetTime = ref(Date.now())
+const GITHUB_RATE_LIMIT_DELAY = 60000 // 1 minute between calls
+const MAX_GITHUB_CALLS_PER_HOUR = 30 // Conservative limit
+
+// Reset GitHub call counter every hour
+const resetGitHubCallCounter = () => {
+  const now = Date.now()
+  if (now - githubCallResetTime.value > 60 * 60 * 1000) { // 1 hour
+    githubCallCount.value = 0
+    githubCallResetTime.value = now
+    console.log('🔄 GitHub API call counter reset')
+  }
+}
+
+// Get latest commit from GitHub API with rate limiting
 const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string }) => {
   try {
+    const now = Date.now()
+    
+    // Reset counter if needed
+    resetGitHubCallCounter()
+    
+    // Check rate limiting
+    if (now - lastGitHubCall.value < GITHUB_RATE_LIMIT_DELAY) {
+      console.log('⏳ GitHub API rate limit: waiting before next call')
+      return null
+    }
+    
+    if (githubCallCount.value >= MAX_GITHUB_CALLS_PER_HOUR) {
+      console.log('🚫 GitHub API hourly limit reached, skipping call')
+      return null
+    }
+    
     // Try main branch first, then master
     const branches = ['main', 'master']
     for (const branch of branches) {
       try {
         const response = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/commits/${branch}`)
+        
+        // Update rate limiting counters
+        lastGitHubCall.value = now
+        githubCallCount.value++
+        
         if (response.ok) {
           const commitData = await response.json()
+          console.log('✅ GitHub API call successful:', commitData.sha.substring(0, 7))
           return commitData.sha
+        } else if (response.status === 403) {
+          const errorData = await response.json()
+          if (errorData.message?.includes('rate limit')) {
+            console.log('🚫 GitHub API rate limit exceeded, will retry later')
+            return null
+          }
         }
       } catch (error) {
-        console.log(`Could not get commit from ${branch} branch:`, error)
+        console.log(`Failed to get commit from ${branch} branch:`, error)
       }
     }
   } catch (error) {
@@ -1444,12 +1489,12 @@ const checkForUpdates = async () => {
 }
 
 const startVersionChecking = () => {
-  // Check for updates every 30 seconds
+  // Check for updates every 5 minutes to avoid GitHub API rate limits
   versionCheckInterval.value = setInterval(() => {
     checkForUpdates()
     // Check for new commits without updating current version
     checkForNewCommits()
-  }, 30 * 1000) // 30 seconds
+  }, 5 * 60 * 1000) // 5 minutes
 }
 
 const reloadPage = () => {
