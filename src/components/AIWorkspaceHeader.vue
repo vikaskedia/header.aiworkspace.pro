@@ -176,6 +176,12 @@
               <el-dropdown-item v-if="showWorkspaceSelector">
                 <a href="#switch-workspace" class="nav-link" @click.prevent="handleUserCommand('workspaces')">Switch Workspace</a>
               </el-dropdown-item>
+              <el-dropdown-item @click="copyCommitHash" class="version-item">
+                <div class="version-info">
+                  <span class="version-label">Version:</span>
+                  <span class="version-hash">{{ commitHash }}</span>
+                </div>
+              </el-dropdown-item>
               <el-dropdown-item divided>
                 <a href="#signout" class="nav-link" @click.prevent="handleUserCommand('logout')">Sign Out</a>
               </el-dropdown-item>
@@ -270,11 +276,36 @@
       @login="handleSessionLogin"
       @refresh="handleSessionRefresh"
     />
+
+    <!-- Update Alert -->
+    <el-alert
+      v-if="showUpdateAlert"
+      title="New Version Available!"
+      type="warning"
+      :closable="true"
+      @close="dismissUpdateAlert"
+      show-icon
+      class="update-alert"
+    >
+      <template #default>
+        <div class="update-content">
+          <p>A new version of the application is available. Please reload to get the latest updates and features.</p>
+          <div class="update-actions">
+            <el-button type="primary" size="small" @click="reloadPage">
+              Reload Now
+            </el-button>
+            <el-button size="small" @click="dismissUpdateAlert">
+              Dismiss
+            </el-button>
+          </div>
+        </div>
+      </template>
+    </el-alert>
   </header>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown, Check, User, Warning } from '@element-plus/icons-vue'
 import { useEnhancedAuth } from '../composables/useEnhancedAuth'
@@ -381,6 +412,14 @@ const userInfo = ref<{ name: string; email: string; avatar_url: string | null; i
   avatar_url: null, 
   initials: '' 
 })
+
+// Version tracking
+const commitHash = ref(__SHORT_COMMIT_HASH__ || 'unknown')
+const fullCommitHash = ref(__COMMIT_HASH__ || 'unknown')
+const showUpdateAlert = ref(false)
+const latestCommitHash = ref<string | null>(null)
+const versionCheckInterval = ref<NodeJS.Timeout | null>(null)
+const checkingVersion = ref(false)
 const workspaceTree = ref<Workspace[]>([])
 const flattenedWorkspaces = ref<Workspace[]>([])
 const isInAllWorkspaceMode = ref(false)
@@ -1042,6 +1081,10 @@ onMounted(async () => {
     await loadUserInfo()
     await autoSelectWorkspaceFromUrl() // Auto-select workspace from URL on mount
   }
+  
+  // Start version checking
+  checkForUpdates()
+  startVersionChecking()
 })
 
 // Handle successful login
@@ -1088,6 +1131,79 @@ const manualRetry = () => {
   retryPiniaStore()
   ElMessage.success('Manual Pinia retry initiated.')
 }
+
+// Version checking functions
+const copyCommitHash = async () => {
+  try {
+    await navigator.clipboard.writeText(fullCommitHash.value)
+    ElMessage.success('Commit hash copied to clipboard!')
+  } catch (error) {
+    console.error('Failed to copy commit hash:', error)
+    ElMessage.error('Failed to copy commit hash')
+  }
+}
+
+const checkForUpdates = async () => {
+  if (checkingVersion.value) return
+  
+  checkingVersion.value = true
+  try {
+    // Add cache busting parameter to ensure we get the latest version
+    const cacheBuster = Date.now()
+    const response = await fetch(`/version.json?t=${cacheBuster}`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch version info')
+    }
+    
+    const versionData = await response.json()
+    latestCommitHash.value = versionData.fullCommitHash
+    
+    // Compare current hash with latest hash
+    if (fullCommitHash.value !== latestCommitHash.value) {
+      showUpdateAlert.value = true
+      console.log('Version mismatch detected:', {
+        currentVersion: fullCommitHash.value,
+        latestVersion: latestCommitHash.value,
+        serverBuildTime: versionData.buildTime
+      })
+    }
+  } catch (error) {
+    console.error('Error checking for updates:', error)
+    // Silently fail version checks to not disturb user experience
+  } finally {
+    checkingVersion.value = false
+  }
+}
+
+const startVersionChecking = () => {
+  // Check for updates every 30 seconds
+  versionCheckInterval.value = setInterval(() => {
+    checkForUpdates()
+  }, 30 * 1000) // 30 seconds
+}
+
+const reloadPage = () => {
+  console.log('User reloaded for update:', {
+    currentVersion: fullCommitHash.value,
+    latestVersion: latestCommitHash.value
+  })
+  window.location.reload()
+}
+
+const dismissUpdateAlert = () => {
+  showUpdateAlert.value = false
+  console.log('Update alert dismissed:', {
+    currentVersion: fullCommitHash.value,
+    latestVersion: latestCommitHash.value
+  })
+}
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (versionCheckInterval.value) {
+    clearInterval(versionCheckInterval.value)
+  }
+})
 </script>
 
 <style scoped>
@@ -1543,5 +1659,80 @@ const manualRetry = () => {
 .login-button .el-icon {
   margin-right: 8px;
   font-size: 0.9rem;
+}
+
+/* Version info styles */
+.version-item {
+  cursor: pointer !important;
+}
+
+.version-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 0.85rem;
+}
+
+.version-label {
+  color: #606266;
+  font-weight: 500;
+}
+
+.version-hash {
+  color: #409EFF;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.8rem;
+  background: rgba(64, 158, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.version-hash:hover {
+  background: rgba(64, 158, 255, 0.2);
+}
+
+/* Update Alert Styles */
+.update-alert {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.update-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.update-content p {
+  margin: 0;
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.update-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .update-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .update-actions {
+    justify-content: center;
+  }
 }
 </style>
