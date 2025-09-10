@@ -1,63 +1,14 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
-import { execSync } from 'child_process'
-import { writeFileSync } from 'fs'
-
-// Function to get current git commit hash
-function getGitCommitHash() {
-  try {
-    return execSync('git rev-parse HEAD').toString().trim()
-  } catch (error) {
-    console.warn('Could not get git commit hash:', error.message)
-    return 'unknown'
-  }
-}
-
-// Plugin to generate version.json file
-function generateVersionFile() {
-  return {
-    name: 'generate-version-file',
-    buildStart() {
-      const commitHash = getGitCommitHash()
-      const shortCommitHash = commitHash.substring(0, 7)
-      
-      const versionData = {
-        fullCommitHash: commitHash,
-        shortCommitHash: shortCommitHash,
-        timestamp: new Date().toISOString(),
-        buildTime: new Date().toISOString()
-      }
-
-      // Write to public directory so it's accessible as a static file
-      const publicDir = resolve(process.cwd(), 'public')
-      const versionFilePath = resolve(publicDir, 'version.json')
-      
-      try {
-        writeFileSync(versionFilePath, JSON.stringify(versionData, null, 2))
-        console.log('✅ Generated version.json with hash:', shortCommitHash)
-      } catch (error) {
-        console.error('❌ Failed to generate version.json:', error)
-      }
-    }
-  }
-}
 
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
   
-  // Get commit hash for version tracking
-  const commitHash = getGitCommitHash()
-  const shortCommitHash = commitHash.substring(0, 7)
-  
   if (isDev) {
     // Development mode - serve demo app
     return {
-      plugins: [vue(), generateVersionFile()],
-      define: {
-        __COMMIT_HASH__: JSON.stringify(commitHash),
-        __SHORT_COMMIT_HASH__: JSON.stringify(shortCommitHash),
-      },
+      plugins: [vue()],
       server: {
         port: 3000,
         open: true
@@ -66,15 +17,12 @@ export default defineConfig(({ command }) => {
   } else {
     // Build mode - create library
     return {
-      plugins: [vue(), generateVersionFile()],
+      plugins: [vue()],
       define: {
         // Prevent environment variables from being inlined in library builds
         'import.meta.env.VITE_SUPABASE_URL': 'undefined',
         'import.meta.env.VITE_SUPABASE_ANON_KEY': 'undefined',
-        'import.meta.env.MODE': '"production"',
-        // Add commit hash variables
-        __COMMIT_HASH__: JSON.stringify(commitHash),
-        __SHORT_COMMIT_HASH__: JSON.stringify(shortCommitHash),
+        'import.meta.env.MODE': '"production"'
       },
       build: {
         lib: {

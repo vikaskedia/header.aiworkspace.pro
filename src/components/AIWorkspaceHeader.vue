@@ -414,8 +414,8 @@ const userInfo = ref<{ name: string; email: string; avatar_url: string | null; i
 })
 
 // Version tracking
-const commitHash = ref(__SHORT_COMMIT_HASH__ || 'unknown')
-const fullCommitHash = ref(__COMMIT_HASH__ || 'unknown')
+const commitHash = ref('unknown')
+const fullCommitHash = ref('unknown')
 const showUpdateAlert = ref(false)
 const latestCommitHash = ref<string | null>(null)
 const versionCheckInterval = ref<NodeJS.Timeout | null>(null)
@@ -1082,6 +1082,9 @@ onMounted(async () => {
     await autoSelectWorkspaceFromUrl() // Auto-select workspace from URL on mount
   }
   
+  // Load commit hash from consuming app
+  await loadCommitHash()
+  
   // Start version checking
   checkForUpdates()
   startVersionChecking()
@@ -1130,6 +1133,23 @@ const manualRetry = () => {
   piniaRetryCount.value = 0 // Reset retry count
   retryPiniaStore()
   ElMessage.success('Manual Pinia retry initiated.')
+}
+
+// Load commit hash from consuming app's version.json
+const loadCommitHash = async () => {
+  try {
+    const response = await fetch('/version.json')
+    if (response.ok) {
+      const versionData = await response.json()
+      commitHash.value = versionData.shortCommitHash || 'unknown'
+      fullCommitHash.value = versionData.fullCommitHash || 'unknown'
+      console.log('Loaded commit hash from consuming app:', commitHash.value)
+    } else {
+      console.warn('Could not load version.json from consuming app')
+    }
+  } catch (error) {
+    console.warn('Error loading commit hash from consuming app:', error)
+  }
 }
 
 // Version checking functions
@@ -1596,7 +1616,6 @@ onUnmounted(() => {
   text-decoration: none; 
   color: inherit; 
   cursor: pointer;
-  padding: 0 8px;
   border-radius: 4px;
   transition: all 0.2s ease;
 }
@@ -1668,8 +1687,8 @@ onUnmounted(() => {
 
 .version-info {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
   width: 100%;
   font-size: 0.85rem;
 }
