@@ -1139,22 +1139,47 @@ const manualRetry = () => {
 const loadCommitHash = async () => {
   try {
     const response = await fetch('/version.json')
+    console.log('Version.json response status:', response.status, 'Content-Type:', response.headers.get('content-type'))
+    
     if (response.ok) {
-      const versionData = await response.json()
-      commitHash.value = versionData.shortCommitHash || 'unknown'
-      fullCommitHash.value = versionData.fullCommitHash || 'unknown'
-      console.log('Loaded commit hash from consuming app:', commitHash.value)
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        const versionData = await response.json()
+        console.log('Version data received:', versionData)
+        commitHash.value = versionData.shortCommitHash || 'unknown'
+        fullCommitHash.value = versionData.fullCommitHash || 'unknown'
+        console.log('Loaded commit hash from consuming app:', commitHash.value)
+      } else {
+        console.warn('version.json returned non-JSON content type:', contentType)
+        console.warn('This usually means the consuming app has not set up version.json generation')
+        commitHash.value = 'setup-required'
+        fullCommitHash.value = 'setup-required'
+      }
     } else {
-      console.warn('Could not load version.json from consuming app')
+      console.warn('Could not load version.json from consuming app - Status:', response.status)
+      console.warn('This usually means the consuming app has not set up version.json generation')
+      commitHash.value = 'not-found'
+      fullCommitHash.value = 'not-found'
     }
   } catch (error) {
     console.warn('Error loading commit hash from consuming app:', error)
+    commitHash.value = 'error'
+    fullCommitHash.value = 'error'
   }
 }
 
 // Version checking functions
 const copyCommitHash = async () => {
   try {
+    if (fullCommitHash.value === 'setup-required') {
+      ElMessage.warning('Version setup required - see console for details')
+      return
+    }
+    if (fullCommitHash.value === 'not-found' || fullCommitHash.value === 'error') {
+      ElMessage.warning('Version information not available')
+      return
+    }
+    
     await navigator.clipboard.writeText(fullCommitHash.value)
     ElMessage.success('Commit hash copied to clipboard!')
   } catch (error) {
