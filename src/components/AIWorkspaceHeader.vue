@@ -1180,8 +1180,12 @@ const loadCommitHash = async () => {
 // Check for new commits without updating current version
 const checkForNewCommits = async () => {
   try {
-    // Only check if we're using GitHub API detection
-    const repoInfo = await getRepoInfoFromPackage()
+    // Try to get repo info from package.json first, then domain
+    let repoInfo = await getRepoInfoFromPackage()
+    if (!repoInfo) {
+      repoInfo = detectRepoFromDomain()
+    }
+    
     if (repoInfo) {
       const latestCommit = await getLatestCommitFromGitHub(repoInfo)
       if (latestCommit && latestCommit !== fullCommitHash.value) {
@@ -1203,7 +1207,13 @@ const checkForNewCommits = async () => {
 const loadCommitHashAuto = async () => {
   try {
     // Method 1: Try to get from GitHub API if we can determine the repo
-    const repoInfo = await getRepoInfoFromPackage()
+    let repoInfo = await getRepoInfoFromPackage()
+    
+    // If package.json failed, try to detect from domain
+    if (!repoInfo) {
+      repoInfo = detectRepoFromDomain()
+    }
+    
     if (repoInfo) {
       const latestCommit = await getLatestCommitFromGitHub(repoInfo)
       if (latestCommit) {
@@ -1245,24 +1255,65 @@ const loadCommitHashAuto = async () => {
   }
 }
 
+// Try to detect repository from domain or other sources
+const detectRepoFromDomain = () => {
+  try {
+    const hostname = window.location.hostname
+    
+    // Try to extract repo info from common domain patterns
+    if (hostname.includes('github.io')) {
+      // GitHub Pages: username.github.io/repo-name
+      const parts = hostname.split('.')
+      if (parts.length >= 3) {
+        const username = parts[0]
+        const repo = window.location.pathname.split('/')[1] || 'unknown'
+        console.log('✅ Detected GitHub Pages repo:', username, repo)
+        return { owner: username, repo }
+      }
+    }
+    
+    // For custom domains, try to make educated guesses based on common patterns
+    // This is a fallback and may not always work
+    console.log('Could not detect repository from domain:', hostname)
+    return null
+  } catch (error) {
+    console.log('Error detecting repo from domain:', error)
+    return null
+  }
+}
+
 // Try to get repository information from package.json
 const getRepoInfoFromPackage = async () => {
   try {
     const response = await fetch('/package.json')
-    if (response.ok) {
-      const packageData = await response.json()
-      if (packageData.repository && packageData.repository.url) {
-        const url = packageData.repository.url
-        const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/)
-        if (match) {
-          return { owner: match[1], repo: match[2].replace('.git', '') }
-        }
+    if (!response.ok) {
+      console.log('package.json not found or not accessible')
+      return null
+    }
+    
+    // Check if response is actually JSON
+    const contentType = response.headers.get('content-type')
+    if (!contentType || !contentType.includes('application/json')) {
+      console.log('package.json returned non-JSON content (likely HTML), skipping GitHub API')
+      return null
+    }
+    
+    const packageData = await response.json()
+    if (packageData.repository && packageData.repository.url) {
+      const url = packageData.repository.url
+      const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/)
+      if (match) {
+        console.log('✅ Found GitHub repo info:', match[1], match[2].replace('.git', ''))
+        return { owner: match[1], repo: match[2].replace('.git', '') }
       }
     }
+    
+    console.log('No valid GitHub repository found in package.json')
+    return null
   } catch (error) {
     console.log('Could not get repo info from package.json:', error)
+    return null
   }
-  return null
 }
 
 // Get latest commit from GitHub API
@@ -1291,9 +1342,19 @@ const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string
 const getPackageInfo = async () => {
   try {
     const response = await fetch('/package.json')
-    if (response.ok) {
-      return await response.json()
+    if (!response.ok) {
+      console.log('package.json not found or not accessible')
+      return null
     }
+    
+    // Check if response is actually JSON
+    const contentType = response.headers.get('content-type')
+    if (!contentType || !contentType.includes('application/json')) {
+      console.log('package.json returned non-JSON content (likely HTML), skipping')
+      return null
+    }
+    
+    return await response.json()
   } catch (error) {
     console.log('Could not get package.json:', error)
   }
