@@ -180,6 +180,15 @@
                 <div class="version-info">
                   <span class="version-label">Version:</span>
                   <span class="version-hash">{{ commitHash }}</span>
+                  <el-button 
+                    size="small" 
+                    type="text" 
+                    @click.stop="refreshCommitHash"
+                    class="refresh-button"
+                    :loading="checkingVersion"
+                  >
+                    <el-icon><Refresh /></el-icon>
+                  </el-button>
                 </div>
               </el-dropdown-item>
               <el-dropdown-item divided>
@@ -308,7 +317,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Check, User, Warning } from '@element-plus/icons-vue'
+import { ArrowDown, Check, User, Warning, Refresh } from '@element-plus/icons-vue'
 import { useEnhancedAuth } from '../composables/useEnhancedAuth'
 import { useSessionMonitor } from '../composables/useSessionMonitor'
 import { useWorkspaceStore } from '../store/workspace'
@@ -1168,6 +1177,30 @@ const loadCommitHash = async () => {
   }
 }
 
+// Refresh commit hash to get latest from GitHub API
+const refreshCommitHash = async () => {
+  try {
+    // Only refresh if we're using GitHub API detection
+    const repoInfo = await getRepoInfoFromPackage()
+    if (repoInfo) {
+      const latestCommit = await getLatestCommitFromGitHub(repoInfo)
+      if (latestCommit && latestCommit !== fullCommitHash.value) {
+        const oldHash = commitHash.value
+        commitHash.value = latestCommit.substring(0, 7)
+        fullCommitHash.value = latestCommit
+        console.log('🔄 Updated commit hash:', oldHash, '→', commitHash.value)
+        
+        // Show a subtle notification that version was updated
+        if (oldHash !== 'unknown' && oldHash !== latestCommit.substring(0, 7)) {
+          ElMessage.info(`Version updated to ${commitHash.value}`)
+        }
+      }
+    }
+  } catch (error) {
+    console.log('Error refreshing commit hash:', error)
+  }
+}
+
 // Automatic commit hash detection without manual setup
 const loadCommitHashAuto = async () => {
   try {
@@ -1352,7 +1385,14 @@ const startVersionChecking = () => {
   // Check for updates every 30 seconds
   versionCheckInterval.value = setInterval(() => {
     checkForUpdates()
+    // Also refresh the commit hash to get latest from GitHub
+    refreshCommitHash()
   }, 30 * 1000) // 30 seconds
+  
+  // Also set up a more frequent refresh for GitHub API (every 2 minutes)
+  setInterval(() => {
+    refreshCommitHash()
+  }, 2 * 60 * 1000) // 2 minutes
 }
 
 const reloadPage = () => {
@@ -1845,6 +1885,14 @@ onUnmounted(() => {
   gap: 8px;
   width: 100%;
   font-size: 0.85rem;
+}
+
+.refresh-button {
+  margin-left: auto;
+  padding: 2px 4px;
+  min-width: 20px;
+  height: 20px;
+  font-size: 12px;
 }
 
 .version-label {
