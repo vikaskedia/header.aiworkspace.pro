@@ -183,7 +183,7 @@
                   <el-button 
                     size="small" 
                     type="text" 
-                    @click.stop="refreshCommitHash"
+                    @click.stop="checkForNewCommits"
                     class="refresh-button"
                     :loading="checkingVersion"
                   >
@@ -1202,28 +1202,25 @@ const loadCommitHash = async () => {
   }
 }
 
-// Refresh commit hash to get latest from GitHub API
-const refreshCommitHash = async () => {
+// Check for new commits without updating current version
+const checkForNewCommits = async () => {
   try {
-    // Only refresh if we're using GitHub API detection
+    // Only check if we're using GitHub API detection
     const repoInfo = await getRepoInfoFromPackage()
     if (repoInfo) {
       const latestCommit = await getLatestCommitFromGitHub(repoInfo)
       if (latestCommit && latestCommit !== fullCommitHash.value) {
-        const oldHash = commitHash.value
-        commitHash.value = latestCommit.substring(0, 7)
-        fullCommitHash.value = latestCommit
-        console.log('🔄 Updated commit hash:', oldHash, '→', commitHash.value)
+        console.log('🔄 New commit detected:', fullCommitHash.value, '→', latestCommit)
         
-        // Show update alert when version changes
-        if (oldHash !== 'unknown' && oldHash !== latestCommit.substring(0, 7)) {
+        // Show update alert when new version is available (only if not already showing)
+        if (fullCommitHash.value !== 'unknown' && !showUpdateAlert.value) {
           showUpdateAlert.value = true
           latestCommitHash.value = latestCommit
         }
       }
     }
   } catch (error) {
-    console.log('Error refreshing commit hash:', error)
+    console.log('Error checking for new commits:', error)
   }
 }
 
@@ -1392,12 +1389,15 @@ const checkForUpdates = async () => {
     
     // Compare current hash with latest hash
     if (fullCommitHash.value !== latestCommitHash.value) {
-      showUpdateAlert.value = true
-      console.log('Version mismatch detected:', {
-        currentVersion: fullCommitHash.value,
-        latestVersion: latestCommitHash.value,
-        serverBuildTime: versionData.buildTime
-      })
+      // Only show alert if not already showing
+      if (!showUpdateAlert.value) {
+        showUpdateAlert.value = true
+        console.log('Version mismatch detected:', {
+          currentVersion: fullCommitHash.value,
+          latestVersion: latestCommitHash.value,
+          serverBuildTime: versionData.buildTime
+        })
+      }
     }
   } catch (error) {
     console.error('Error checking for updates:', error)
@@ -1411,14 +1411,9 @@ const startVersionChecking = () => {
   // Check for updates every 30 seconds
   versionCheckInterval.value = setInterval(() => {
     checkForUpdates()
-    // Also refresh the commit hash to get latest from GitHub
-    refreshCommitHash()
+    // Check for new commits without updating current version
+    checkForNewCommits()
   }, 30 * 1000) // 30 seconds
-  
-  // Also set up a more frequent refresh for GitHub API (every 2 minutes)
-  setInterval(() => {
-    refreshCommitHash()
-  }, 2 * 60 * 1000) // 2 minutes
 }
 
 const reloadPage = () => {
