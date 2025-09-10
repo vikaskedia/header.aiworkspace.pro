@@ -22,6 +22,7 @@ export * from './utils/errorHandler'
 
 // Configuration
 export * from './config/sessionConfig'
+export * from './config/githubConfig'
 
 // Plugins
 export * from './plugins/crossSubdomainAuth'

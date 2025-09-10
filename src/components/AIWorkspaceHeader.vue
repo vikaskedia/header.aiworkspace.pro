@@ -321,6 +321,7 @@ import { ArrowDown, Check, User, Warning, Refresh } from '@element-plus/icons-vu
 import { useEnhancedAuth } from '../composables/useEnhancedAuth'
 import { useSessionMonitor } from '../composables/useSessionMonitor'
 import { useWorkspaceStore } from '../store/workspace'
+import { getGitHubToken as getGlobalGitHubToken } from '../config/githubConfig'
 import LoginModal from './LoginModal.vue'
 import SessionLossModal from './SessionLossModal.vue'
 import type { HeaderProps, Workspace, SecondaryNavigationItem } from '../types'
@@ -1333,9 +1334,15 @@ const resetGitHubCallCounter = () => {
   }
 }
 
-// Get GitHub token from environment or localStorage
+// Get GitHub token from global config, environment, or localStorage
 const getGitHubToken = () => {
-  // Try to get from environment variables first
+  // Try global configuration first
+  const globalToken = getGlobalGitHubToken()
+  if (globalToken) {
+    return globalToken
+  }
+  
+  // Try to get from environment variables
   if (import.meta.env.VITE_GITHUB_TOKEN) {
     return import.meta.env.VITE_GITHUB_TOKEN
   }

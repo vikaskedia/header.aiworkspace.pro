@@ -31,7 +31,27 @@ The AI Workspace Header package can access private GitHub repositories by using 
 
 ## Configuring the Token
 
-### Option 1: Environment Variable (Recommended for Production)
+### Option 1: Global Configuration (Recommended)
+
+Configure the token in your app's main.js, similar to how you configure Supabase:
+
+```javascript
+// main.js
+import { configureSupabase, configureGitHub } from '@aiworkspace/shared-header'
+
+// Configure Supabase
+configureSupabase({
+  url: import.meta.env.VITE_SUPABASE_URL,
+  anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY
+})
+
+// Configure GitHub
+configureGitHub({
+  token: import.meta.env.VITE_GITHUB_TOKEN
+})
+```
+
+### Option 2: Environment Variable (Fallback)
 
 Add the token to your app's environment variables:
 
@@ -45,7 +65,7 @@ VITE_GITHUB_TOKEN=ghp_your_token_here
 - **Next.js**: `NEXT_PUBLIC_GITHUB_TOKEN=ghp_...`
 - **Nuxt**: `NUXT_PUBLIC_GITHUB_TOKEN=ghp_...`
 
-### Option 2: Manual Configuration (For Testing)
+### Option 3: Manual Configuration (For Testing)
 
 You can manually set the token in the browser console:
 
