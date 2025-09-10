@@ -301,6 +301,35 @@
         </div>
       </template>
     </el-alert>
+
+    <!-- Version Setup Alert -->
+    <el-alert
+      v-if="commitHash === 'setup-required' || commitHash === 'not-found' || commitHash === 'error' || commitHash === 'parse-error'"
+      title="Version Setup Required"
+      type="error"
+      :closable="false"
+      show-icon
+      class="version-setup-alert"
+    >
+      <template #default>
+        <div class="setup-content">
+          <p><strong>The header package needs version.json to be set up in your app.</strong></p>
+          <p>This allows the header to display your app's commit hash instead of "setup-required".</p>
+          <div class="setup-actions">
+            <el-button type="primary" size="small" @click="copySetupCommand">
+              Copy Fix Command
+            </el-button>
+            <el-button size="small" @click="openSetupGuide">
+              View Setup Guide
+            </el-button>
+          </div>
+          <div class="setup-command">
+            <p><strong>Quick Fix:</strong> Run this command in your app's terminal:</p>
+            <pre>{{ setupCommand }}</pre>
+          </div>
+        </div>
+      </template>
+    </el-alert>
   </header>
 </template>
 
@@ -420,6 +449,9 @@ const showUpdateAlert = ref(false)
 const latestCommitHash = ref<string | null>(null)
 const versionCheckInterval = ref<NodeJS.Timeout | null>(null)
 const checkingVersion = ref(false)
+
+// Setup command for easy copying
+const setupCommand = `node -e "const fs=require('fs');const{execSync}=require('child_process');const hash=execSync('git rev-parse HEAD').toString().trim();const data={fullCommitHash:hash,shortCommitHash:hash.substring(0,7),timestamp:new Date().toISOString(),buildTime:new Date().toISOString()};fs.mkdirSync('public',{recursive:true});fs.writeFileSync('public/version.json',JSON.stringify(data,null,2));console.log('✅ Created version.json with hash:',hash.substring(0,7));"`
 const workspaceTree = ref<Workspace[]>([])
 const flattenedWorkspaces = ref<Workspace[]>([])
 const isInAllWorkspaceMode = ref(false)
@@ -1266,6 +1298,22 @@ const dismissUpdateAlert = () => {
   })
 }
 
+// Setup alert functions
+const copySetupCommand = async () => {
+  try {
+    await navigator.clipboard.writeText(setupCommand)
+    ElMessage.success('Setup command copied to clipboard!')
+  } catch (error) {
+    console.error('Failed to copy setup command:', error)
+    ElMessage.error('Failed to copy setup command')
+  }
+}
+
+const openSetupGuide = () => {
+  // Open the setup guide in a new tab
+  window.open('https://github.com/aiworkspace/header-package/blob/main/README_VERSION_SETUP.md', '_blank')
+}
+
 // Cleanup on unmount
 onUnmounted(() => {
   if (versionCheckInterval.value) {
@@ -1791,6 +1839,62 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
+/* Version Setup Alert Styles */
+.version-setup-alert {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  background: linear-gradient(135deg, #fff5f5, #fef2f2);
+  border-bottom: 2px solid #fecaca;
+}
+
+.setup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.setup-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.setup-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.setup-command {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.setup-command p {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.setup-command pre {
+  margin: 0;
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 @media (max-width: 768px) {
   .update-content {
     flex-direction: column;
@@ -1800,6 +1904,14 @@ onUnmounted(() => {
   
   .update-actions {
     justify-content: center;
+  }
+  
+  .setup-actions {
+    justify-content: center;
+  }
+  
+  .setup-command pre {
+    font-size: 0.7rem;
   }
 }
 </style>
