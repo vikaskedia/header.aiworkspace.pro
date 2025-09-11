@@ -222,7 +222,7 @@
         <span class="welcome-text">Welcome to AI Workspace</span>
       </div>
       
-      <div class="header-right">
+      <div v-if="!isSharedFolderUrl" class="header-right">
         <el-button 
           type="primary" 
           size="large"
@@ -548,6 +548,16 @@ const isAuthenticated = computed(() => authState.value.isAuthenticated)
 const currentWorkspace = computed<Workspace | null>(() => {
   if (!workspaceStore.value) return null
   return workspaceStore.value.currentWorkspace
+})
+
+// Check if URL contains 'shared-folder' to hide login button
+const isSharedFolderUrl = computed(() => {
+  try {
+    return window.location.pathname.includes('shared-folder')
+  } catch (error) {
+    console.warn('[AIWorkspaceHeader] Error checking shared-folder URL:', error)
+    return false
+  }
 })
 
 // Static secondary nav items for single workspace mode

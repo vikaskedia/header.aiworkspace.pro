@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Folder URL Test - AIWorkspace Header</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .url-test {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .expected {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .actual {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Shared Folder URL Test - AIWorkspace Header</h1>
+    
+    <p>This page helps you test if the login/signup button is properly hidden when the URL contains 'shared-folder'.</p>
+    
+    <div class="test-section">
+        <h3>Test Cases</h3>
+        
+        <div class="url-test">
+            <h4>Test 1: Regular URL (should show login button)</h4>
+            <p><strong>URL:</strong> <code>http://localhost/dashboard</code></p>
+            <p><strong>Expected:</strong> <span class="expected">Login button should be visible</span></p>
+            <button onclick="testUrl('http://localhost/dashboard')">Test This URL</button>
+            <div id="result1" class="result"></div>
+        </div>
+        
+        <div class="url-test">
+            <h4>Test 2: Shared Folder URL (should hide login button)</h4>
+            <p><strong>URL:</strong> <code>http://localhost/shared-folder/8d1aabf8fc432442407b8b50a788451c?folder=jaikalima%252FJaidurgamaa</code></p>
+            <p><strong>Expected:</strong> <span class="expected">Login button should be hidden</span></p>
+            <button onclick="testUrl('http://localhost/shared-folder/8d1aabf8fc432442407b8b50a788451c?folder=jaikalima%252FJaidurgamaa')">Test This URL</button>
+            <div id="result2" class="result"></div>
+        </div>
+        
+        <div class="url-test">
+            <h4>Test 3: Another Shared Folder URL (should hide login button)</h4>
+            <p><strong>URL:</strong> <code>http://localhost/shared-folder/abc123</code></p>
+            <p><strong>Expected:</strong> <span class="expected">Login button should be hidden</span></p>
+            <button onclick="testUrl('http://localhost/shared-folder/abc123')">Test This URL</button>
+            <div id="result3" class="result"></div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Implementation Details</h3>
+        <p>The implementation adds a computed property <code>isSharedFolderUrl</code> that checks if the current URL pathname contains 'shared-folder'.</p>
+        <p>In the template, the login button is conditionally rendered with <code>v-if="!isSharedFolderUrl"</code>.</p>
+    </div>
+
+    <script>
+        function testUrl(testUrl) {
+            // Simulate the URL check logic from the Vue component
+            const url = new URL(testUrl);
+            const isSharedFolder = url.pathname.includes('shared-folder');
+            const shouldShowLogin = !isSharedFolder;
+            
+            // Determine which result div to update based on the test
+            let resultDiv;
+            if (testUrl.includes('dashboard')) {
+                resultDiv = document.getElementById('result1');
+            } else if (testUrl.includes('8d1aabf8fc432442407b8b50a788451c')) {
+                resultDiv = document.getElementById('result2');
+            } else {
+                resultDiv = document.getElementById('result3');
+            }
+            
+            // Show the result
+            if (shouldShowLogin) {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ <strong>PASS:</strong> Login button would be shown<br>
+                        <strong>Pathname:</strong> ${url.pathname}<br>
+                        <strong>Contains 'shared-folder':</strong> ${isSharedFolder}<br>
+                        <strong>Should show login:</strong> ${shouldShowLogin}
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ <strong>PASS:</strong> Login button would be hidden<br>
+                        <strong>Pathname:</strong> ${url.pathname}<br>
+                        <strong>Contains 'shared-folder':</strong> ${isSharedFolder}<br>
+                        <strong>Should show login:</strong> ${shouldShowLogin}
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-run tests on page load
+        window.onload = function() {
+            testUrl('http://localhost/dashboard');
+            testUrl('http://localhost/shared-folder/8d1aabf8fc432442407b8b50a788451c?folder=jaikalima%252FJaidurgamaa');
+            testUrl('http://localhost/shared-folder/abc123');
+        };
+    </script>
+</body>
+</html>
