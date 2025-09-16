@@ -570,7 +570,7 @@ const singleWorkspaceNavItems = ref<SecondaryNavigationItem[]>([
   { label: 'Outlines', key: 'outlines', url: '/outlines' },
   { label: 'Communications', key: 'communications', url: '/communications' },
   { label: 'Canvas', key: 'canvas', url: '/canvas' },
-  { label: 'AI Phone', key: 'ai_phone', url: '/ai_phone' },
+  { label: 'AI Phone', key: 'phone', url: '/phone' },
   { label: 'AI Intake', key: 'ai_intake', url: '/ai_intake' },
   { label: 'AI Fax', key: 'ai_fax', url: '/ai_fax' },
   { label: 'AI Portfolios', key: 'ai-portfolios', url: '/ai-portfolios' },
@@ -791,6 +791,28 @@ const handleSecondaryNavClick = (item: SecondaryNavigationItem) => {
       }
       break
 
+    case 'phone': 
+      if (isAllWorkspace) {
+        window.location.href = 'https://phone.aiworkspace.pro/all-workspace/phone'
+      } else if (workspace) {
+        const phoneUrl = `https://phone.aiworkspace.pro/single-workspace/${workspace.id}/phone`
+        window.location.href = phoneUrl
+      } else {
+        window.location.href = 'https://phone.aiworkspace.pro'
+      }
+      break
+    
+    case 'ai_fax':
+      if (isAllWorkspace) {
+        window.location.href = 'https://fax.aiworkspace.pro/all-workspace/ai_fax'
+      } else if (workspace) {
+        const aiFaxUrl = `https://fax.aiworkspace.pro/single-workspace/${workspace.id}/ai_fax`
+        window.location.href = aiFaxUrl
+      } else {
+        window.location.href = 'https://fax.aiworkspace.pro'
+      }
+      break
+
     case 'goals':
       if (isAllWorkspace) {
         window.location.href = 'https://app.aiworkspace.pro/all-workspace/goals'
@@ -915,6 +937,22 @@ const secondaryHref = (item: SecondaryNavigationItem) => {
         return `https://tasks.aiworkspace.pro/single-workspace/${workspace.id}/tasks`
       } else {
         return 'https://tasks.aiworkspace.pro'
+      }
+    case 'phone':
+      if (isAllWorkspace) {
+        return 'https://phone.aiworkspace.pro/all-workspace/phone'
+      } else if (workspace) {
+        return `https://phone.aiworkspace.pro/single-workspace/${workspace.id}/phone`
+      } else {
+        return 'https://phone.aiworkspace.pro'
+      }
+    case 'ai_fax':
+      if (isAllWorkspace) {
+        return 'https://fax.aiworkspace.pro/all-workspace/ai_fax'
+      } else if (workspace) {
+        return `https://fax.aiworkspace.pro/single-workspace/${workspace.id}/ai_fax`
+      } else {
+        return 'https://fax.aiworkspace.pro'
       }
     case 'goals':
       if (isAllWorkspace) {

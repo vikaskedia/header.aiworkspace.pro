@@ -8,7 +8,7 @@ function D() {
     return console.error("[auth][immediate] Error during immediate cross-subdomain authentication setup:", e), !1;
   }
 }
-async function M() {
+async function P() {
   try {
     console.log("[auth][init] Starting cross-subdomain authentication initialization..."), h([i, u]), m();
     const e = await C(5, 50);
@@ -17,7 +17,7 @@ async function M() {
     return console.error("[auth][init] Error during cross-subdomain authentication initialization:", e), { success: !1, error: e };
   }
 }
-async function P() {
+async function I() {
   try {
     h([i, u]);
     const e = f(i), s = f(u);
@@ -238,12 +238,12 @@ console.log("Key configured:", !!(r != null && r.anonKey) && !r.anonKey.includes
 console.log("Environment mode:", "production");
 export {
   D as a,
-  P as b,
+  I as b,
   N as c,
   m as d,
   S as g,
   K as h,
-  M as i,
+  P as i,
   C as r,
   d as s
 };
