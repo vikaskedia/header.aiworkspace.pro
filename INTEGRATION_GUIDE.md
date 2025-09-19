@@ -9,7 +9,20 @@ This guide explains how to integrate the AI Workspace header package into your e
 npm install @aiworkspace/shared-header
 ```
 
-### 2. Import and Use
+### 2. Configure Supabase (IMPORTANT)
+Add this to your app's entry point (main.js, main.ts, index.js):
+
+```javascript
+import { configureSupabase } from '@aiworkspace/shared-header'
+
+// Configure before using any header components
+configureSupabase({
+  url: process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL,
+  anonKey: process.env.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY
+})
+```
+
+### 3. Import and Use
 ```vue
 <template>
   <div>
@@ -36,7 +49,7 @@ const handleLogout = () => {
 </script>
 ```
 
-### 3. Set Environment Variables
+### 4. Set Environment Variables
 ```env
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
