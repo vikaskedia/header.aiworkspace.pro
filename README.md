@@ -94,8 +94,8 @@ import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 Create a `.env` file in your app:
 
 ```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
 VITE_APEX_DOMAIN=aiworkspace.pro
 ```
 

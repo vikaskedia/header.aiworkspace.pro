@@ -99,8 +99,8 @@ npm install @aiworkspace/shared-header@latest
 
 Make sure you have these environment variables set:
 ```bash
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
 VITE_APEX_DOMAIN=aiworkspace.pro
 ```
 

@@ -109,8 +109,8 @@ function getSupabaseConfig(): SupabaseConfig | null {
   }
   
   // Strategy 2: Try environment variables (for development/demo)
-  const envUrl = (import.meta as any).env?.VITE_SUPABASE_URL
-  const envKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY
+  const envUrl = (import.meta as any).env?.SUPABASE_URL
+  const envKey = (import.meta as any).env?.SUPABASE_ANON_KEY
   if (envUrl && envKey) {
     return { url: envUrl, anonKey: envKey }
   }

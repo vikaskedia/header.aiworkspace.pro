@@ -7,13 +7,13 @@ import '@aiworkspace/shared-header/style.css'
 
 // Method 1: Configure Supabase programmatically (Recommended)
 configureSupabase({
-  url: process.env.VITE_SUPABASE_URL,
-  anonKey: process.env.VITE_SUPABASE_ANON_KEY
+  url: process.env.SUPABASE_URL,
+  anonKey: process.env.SUPABASE_ANON_KEY
 })
 
 // Method 2: Alternative - Set global variables before importing
-// window.__SUPABASE_URL__ = process.env.VITE_SUPABASE_URL
-// window.__SUPABASE_ANON_KEY__ = process.env.VITE_SUPABASE_ANON_KEY
+// window.__SUPABASE_URL__ = process.env.SUPABASE_URL
+// window.__SUPABASE_ANON_KEY__ = process.env.SUPABASE_ANON_KEY
 
 const app = createApp({
   components: {
@@ -33,5 +33,5 @@ const app = createApp({
 app.mount('#app')
 
 // Environment variables should be set in your .env file:
-// VITE_SUPABASE_URL=https://your-project.supabase.co
-// VITE_SUPABASE_ANON_KEY=your-anon-key-here
+// SUPABASE_URL=https://your-project.supabase.co
+// SUPABASE_ANON_KEY=your-anon-key-here

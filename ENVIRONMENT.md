@@ -28,8 +28,8 @@ cp env.config.js .env
 
 | Variable | Required | Description | Example |
 |----------|----------|-------------|---------|
-| `VITE_SUPABASE_URL` | ✅ Yes | Supabase project URL | `https://abc123.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | ✅ Yes | Supabase anonymous key | `eyJhbGciOiJIUzI1NiIs...` |
+| `SUPABASE_URL` | ✅ Yes | Supabase project URL | `https://abc123.supabase.co` |
+| `SUPABASE_ANON_KEY` | ✅ Yes | Supabase anonymous key | `eyJhbGciOiJIUzI1NiIs...` |
 | `VITE_APEX_DOMAIN` | ✅ Yes | Main domain for cross-subdomain auth | `aiworkspace.pro` |
 
 ## 🔧 Optional Environment Variables
@@ -51,8 +51,8 @@ cp env.config.js .env
 
 ```env
 # Supabase Configuration
-VITE_SUPABASE_URL=https://your-project-url.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_URL=https://your-project-url.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
 
 # Domain Configuration
 VITE_APEX_DOMAIN=aiworkspace.pro
@@ -97,8 +97,8 @@ Environment mode: development
 
 | Issue | Solution |
 |-------|----------|
-| "Key configured: false" | Check `VITE_SUPABASE_ANON_KEY` format |
-| "URL: https://*****.supabase.co" | Verify `VITE_SUPABASE_URL` format |
+| "Key configured: false" | Check `SUPABASE_ANON_KEY` format |
+| "URL: https://*****.supabase.co" | Verify `SUPABASE_URL` format |
 | Authentication not working | Check Supabase project status and RLS policies |
 | Cross-subdomain issues | Verify `VITE_APEX_DOMAIN` setting |
 

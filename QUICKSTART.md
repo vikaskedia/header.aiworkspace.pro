@@ -35,8 +35,8 @@ import { AIWorkspaceHeader } from '@aiworkspace/shared-header'
 ### 4. Add Environment Variables
 Create a `.env` file:
 ```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
 VITE_APEX_DOMAIN=aiworkspace.pro
 ```
 

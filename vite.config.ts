@@ -20,8 +20,8 @@ export default defineConfig(({ command }) => {
       plugins: [vue()],
       define: {
         // Prevent environment variables from being inlined in library builds
-        'import.meta.env.VITE_SUPABASE_URL': 'undefined',
-        'import.meta.env.VITE_SUPABASE_ANON_KEY': 'undefined',
+        'import.meta.env.SUPABASE_URL': 'undefined',
+        'import.meta.env.SUPABASE_ANON_KEY': 'undefined',
         'import.meta.env.MODE': '"production"'
       },
       build: {

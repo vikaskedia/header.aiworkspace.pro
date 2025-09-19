@@ -37,8 +37,8 @@ Set global variables on the window object before the package loads:
 For development and demo purposes, you can still use environment variables:
 
 ```bash
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
 ## Complete Integration Example
@@ -50,8 +50,8 @@ import '@aiworkspace/shared-header/style.css'
 
 // Configure Supabase before creating the app
 configureSupabase({
-  url: process.env.VITE_SUPABASE_URL,
-  anonKey: process.env.VITE_SUPABASE_ANON_KEY
+  url: process.env.SUPABASE_URL,
+  anonKey: process.env.SUPABASE_ANON_KEY
 })
 
 const app = createApp({
@@ -78,8 +78,8 @@ Create a `.env` file in your project root:
 
 ```bash
 # Supabase Configuration
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
 
 # Optional: Cross-subdomain settings
 VITE_APEX_DOMAIN=yourdomain.com

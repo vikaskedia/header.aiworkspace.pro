@@ -23,8 +23,8 @@ echo "📝 Creating .env file..."
 # Create .env file with template
 cat > .env << EOF
 # Supabase Configuration
-VITE_SUPABASE_URL=https://your-project-url.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_URL=https://your-project-url.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
 
 # Domain Configuration
 VITE_APEX_DOMAIN=aiworkspace.pro

@@ -6,8 +6,8 @@ Create a `.env` file in your app root with these variables:
 
 ```bash
 # Supabase Configuration (Required)
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
 
 # Cross-subdomain Authentication (Required)
 VITE_APEX_DOMAIN=aiworkspace.pro
@@ -28,8 +28,8 @@ VITE_DEFAULT_POST_LOGIN_URL=/dashboard
 
 ### 3. **Get API Keys**
 - Go to **Settings** → **API**
-- Copy the **Project URL** → `VITE_SUPABASE_URL`
-- Copy the **anon public** key → `VITE_SUPABASE_ANON_KEY`
+- Copy the **Project URL** → `SUPABASE_URL`
+- Copy the **anon public** key → `SUPABASE_ANON_KEY`
 
 ## 🌐 **Cross-Subdomain Configuration**
 
@@ -116,7 +116,7 @@ After setting up, verify your configuration:
 
 ### **"Supabase URL not configured"**
 - Check `.env` file exists
-- Verify `VITE_SUPABASE_URL` is set
+- Verify `SUPABASE_URL` is set
 - Ensure no typos in variable names
 
 ### **"Invalid API key"**

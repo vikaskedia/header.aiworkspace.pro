@@ -5,8 +5,8 @@ console.log('Testing Supabase Error Fix...')
 
 // Test 1: Check if environment variables are available
 console.log('Test 1: Environment Variables')
-console.log('VITE_SUPABASE_URL:', import.meta.env?.VITE_SUPABASE_URL ? '✓ Available' : '✗ Missing')
-console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env?.VITE_SUPABASE_ANON_KEY ? '✓ Available' : '✗ Missing')
+console.log('SUPABASE_URL:', import.meta.env?.SUPABASE_URL ? '✓ Available' : '✗ Missing')
+console.log('SUPABASE_ANON_KEY:', import.meta.env?.SUPABASE_ANON_KEY ? '✓ Available' : '✗ Missing')
 
 // Test 2: Check global configuration
 console.log('\nTest 2: Global Configuration')
@@ -17,8 +17,8 @@ console.log('window.__SUPABASE_ANON_KEY__:', window.__SUPABASE_ANON_KEY__ ? '✓
 console.log('\nTest 3: Supabase Client Creation')
 try {
   const { createClient } = await import('@supabase/supabase-js')
-  const url = import.meta.env?.VITE_SUPABASE_URL || window.__SUPABASE_URL__ || 'https://placeholder.supabase.co'
-  const key = import.meta.env?.VITE_SUPABASE_ANON_KEY || window.__SUPABASE_ANON_KEY__ || 'placeholder-key'
+  const url = import.meta.env?.SUPABASE_URL || window.__SUPABASE_URL__ || 'https://placeholder.supabase.co'
+  const key = import.meta.env?.SUPABASE_ANON_KEY || window.__SUPABASE_ANON_KEY__ || 'placeholder-key'
   
   const client = createClient(url, key)
   console.log('✓ Supabase client created successfully')

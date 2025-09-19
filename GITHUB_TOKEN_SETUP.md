@@ -41,13 +41,13 @@ import { configureSupabase, configureGitHub } from '@aiworkspace/shared-header'
 
 // Configure Supabase
 configureSupabase({
-  url: import.meta.env.VITE_SUPABASE_URL,
-  anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY
+  url: import.meta.env.SUPABASE_URL,
+  anonKey: import.meta.env.SUPABASE_ANON_KEY
 })
 
 // Configure GitHub
 configureGitHub({
-  token: import.meta.env.VITE_GITHUB_TOKEN
+  token: import.meta.env.GITHUB_TOKEN
 })
 ```
 
@@ -57,11 +57,11 @@ Add the token to your app's environment variables:
 
 ```bash
 # .env file
-VITE_GITHUB_TOKEN=ghp_your_token_here
+GITHUB_TOKEN=ghp_your_token_here
 ```
 
 **For different frameworks:**
-- **Vite/React**: `VITE_GITHUB_TOKEN=ghp_...`
+- **Vite/React**: `GITHUB_TOKEN=ghp_...`
 - **Next.js**: `NEXT_PUBLIC_GITHUB_TOKEN=ghp_...`
 - **Nuxt**: `NUXT_PUBLIC_GITHUB_TOKEN=ghp_...`
 
@@ -135,7 +135,7 @@ localStorage.setItem('github_token', 'ghp_your_token_here')
 
 ### Vite/React (.env)
 ```bash
-VITE_GITHUB_TOKEN=ghp_1234567890abcdef1234567890abcdef12345678
+GITHUB_TOKEN=ghp_1234567890abcdef1234567890abcdef12345678
 ```
 
 ### Next.js (.env.local)

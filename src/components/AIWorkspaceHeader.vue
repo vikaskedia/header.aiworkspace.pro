@@ -1391,8 +1391,8 @@ const getGitHubToken = () => {
   }
   
   // Try to get from environment variables
-  if (import.meta.env.VITE_GITHUB_TOKEN) {
-    return import.meta.env.VITE_GITHUB_TOKEN
+  if (import.meta.env.GITHUB_TOKEN) {
+    return import.meta.env.GITHUB_TOKEN
   }
   
   // Try to get from localStorage (for manual configuration)

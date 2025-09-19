@@ -45,8 +45,8 @@ window.createClient = createClient
 ### Option 2: Environment Variables
 ```bash
 # .env file
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
 ### Option 3: Vite Configuration
@@ -54,8 +54,8 @@ VITE_SUPABASE_ANON_KEY=your-anon-key-here
 // vite.config.js
 export default {
   define: {
-    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL),
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY)
+    'import.meta.env.SUPABASE_URL': JSON.stringify(process.env.SUPABASE_URL),
+    'import.meta.env.SUPABASE_ANON_KEY': JSON.stringify(process.env.SUPABASE_ANON_KEY)
   },
   optimizeDeps: {
     include: ['@supabase/supabase-js']
@@ -112,8 +112,8 @@ The error should now be caught and handled gracefully:
 
 3. **Check Environment Variables**:
    ```javascript
-   console.log('Env URL:', import.meta.env.VITE_SUPABASE_URL)
-   console.log('Env Key:', import.meta.env.VITE_SUPABASE_ANON_KEY)
+   console.log('Env URL:', import.meta.env.SUPABASE_URL)
+   console.log('Env Key:', import.meta.env.SUPABASE_ANON_KEY)
    ```
 
 4. **Test Import**:

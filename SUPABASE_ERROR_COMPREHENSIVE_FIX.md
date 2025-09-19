@@ -32,7 +32,7 @@ The `TypeError: ne is not a function` error was occurring when installing the `@
 - **Safe Session Restoration**: Enhanced session restoration with better error handling
 
 ### 4. **Configuration Flexibility**
-- **Environment Variables**: Support for `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+- **Environment Variables**: Support for `SUPABASE_URL` and `SUPABASE_ANON_KEY`
 - **Global Configuration**: Fallback to `window.__SUPABASE_URL__` and `window.__SUPABASE_ANON_KEY__`
 - **Multiple Setup Methods**: Apps can configure Supabase in multiple ways
 
@@ -60,8 +60,8 @@ The `TypeError: ne is not a function` error was occurring when installing the `@
 ### Option 1: Environment Variables (Recommended)
 ```bash
 # .env file
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
 ### Option 2: Global Configuration
@@ -76,8 +76,8 @@ window.__SUPABASE_ANON_KEY__ = 'your-anon-key-here'
 // vite.config.js
 export default {
   define: {
-    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL),
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY)
+    'import.meta.env.SUPABASE_URL': JSON.stringify(process.env.SUPABASE_URL),
+    'import.meta.env.SUPABASE_ANON_KEY': JSON.stringify(process.env.SUPABASE_ANON_KEY)
   }
 }
 ```
