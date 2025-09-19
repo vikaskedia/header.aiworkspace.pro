@@ -101,31 +101,14 @@ export function configureSupabase(config: SupabaseConfig) {
   }
 }
 
-// Safe configuration access with multiple fallback strategies
+// Safe configuration access - library only uses explicit configuration
 function getSupabaseConfig(): SupabaseConfig | null {
-  // Strategy 1: Use configuration set by consuming app
+  // Strategy 1: Use configuration set by consuming app (PRIMARY)
   if (globalSupabaseConfig) {
     return globalSupabaseConfig
   }
   
-  // Strategy 2: Try environment variables (for development/demo)
-  // Support non-prefixed variables only (for security)
-  let envUrl = (import.meta as any).env?.SUPABASE_URL
-  let envKey = (import.meta as any).env?.SUPABASE_ANON_KEY
-  
-  // Fallback: Try to access process.env directly (Node.js environments)
-  if (!envUrl && typeof process !== 'undefined' && process.env) {
-    envUrl = process.env.SUPABASE_URL
-  }
-  if (!envKey && typeof process !== 'undefined' && process.env) {
-    envKey = process.env.SUPABASE_ANON_KEY
-  }
-  
-  if (envUrl && envKey) {
-    return { url: envUrl, anonKey: envKey }
-  }
-  
-  // Strategy 3: Try global window variables (for runtime configuration)
+  // Strategy 2: Try global window variables (for runtime configuration)
   if (typeof window !== 'undefined') {
     const windowUrl = (window as any).__SUPABASE_URL__
     const windowKey = (window as any).__SUPABASE_ANON_KEY__

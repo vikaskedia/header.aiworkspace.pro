@@ -1,16 +1,16 @@
 # Supabase Configuration Guide
 
-## ⚠️ IMPORTANT
+## ⚠️ CRITICAL SECURITY UPDATE
 
-**You MUST configure Supabase before using this package.** The package cannot access your environment variables directly - you need to explicitly provide your Supabase credentials.
+**The package no longer accesses environment variables directly to prevent credential exposure in production bundles.** You MUST configure Supabase explicitly using the `configureSupabase()` function.
 
-## Overview
+## Why This Change?
 
-The AIWorkspace Header package no longer includes hardcoded Supabase credentials for security reasons. Instead, consuming applications must provide their own Supabase configuration using the `configureSupabase()` function.
+Environment variables were being bundled into the client-side JavaScript, exposing credentials in production. This new approach ensures your credentials remain secure.
 
 ## Configuration Methods
 
-### Method 1: Programmatic Configuration (Recommended)
+### Method 1: Programmatic Configuration (REQUIRED)
 
 Configure Supabase credentials in your application's entry point (main.js/main.ts) before using the header component:
 

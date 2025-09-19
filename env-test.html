@@ -57,6 +57,16 @@
     const configElement = document.getElementById('config-content')
 
     // Display current environment state
+    <script type="module">
+    // Simple environment test without using envConfig
+    console.log('Environment Test Started')
+    
+    function debugEnvironment() {
+      console.log('Debug Environment called')
+    }
+    
+    debugEnvironment()
+
     const envInfo = {
       importMetaEnv: import.meta.env,
       processEnv: typeof process !== 'undefined' ? {
