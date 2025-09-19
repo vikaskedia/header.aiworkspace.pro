@@ -17,8 +17,8 @@ import { configureSupabase } from '@aiworkspace/shared-header'
 
 // Configure before using any header components
 configureSupabase({
-  url: process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL,
-  anonKey: process.env.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY
+  url: process.env.SUPABASE_URL,
+  anonKey: process.env.SUPABASE_ANON_KEY
 })
 ```
 

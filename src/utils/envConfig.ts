@@ -21,15 +21,15 @@ export function loadEnvConfig(): EnvConfig | null {
   // Strategy 1: Try import.meta.env (Vite build-time variables)
   if ((import.meta as any).env) {
     const env = (import.meta as any).env
-    supabaseUrl = env.VITE_SUPABASE_URL || env.SUPABASE_URL || ''
-    supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY || ''
+    supabaseUrl = env.SUPABASE_URL || ''
+    supabaseAnonKey = env.SUPABASE_ANON_KEY || ''
     apexDomain = env.VITE_APEX_DOMAIN || env.APEX_DOMAIN || ''
   }
 
   // Strategy 2: Try process.env (Node.js environments)
   if ((!supabaseUrl || !supabaseAnonKey) && typeof process !== 'undefined' && process.env) {
-    supabaseUrl = supabaseUrl || process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || ''
-    supabaseAnonKey = supabaseAnonKey || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || ''
+    supabaseUrl = supabaseUrl || process.env.SUPABASE_URL || ''
+    supabaseAnonKey = supabaseAnonKey || process.env.SUPABASE_ANON_KEY || ''
     apexDomain = apexDomain || process.env.VITE_APEX_DOMAIN || process.env.APEX_DOMAIN || ''
   }
 
@@ -84,9 +84,7 @@ export function debugEnvConfig() {
     importMetaEnv: (import.meta as any).env,
     processEnv: typeof process !== 'undefined' ? {
       SUPABASE_URL: !!process.env.SUPABASE_URL,
-      SUPABASE_ANON_KEY: !!process.env.SUPABASE_ANON_KEY,
-      VITE_SUPABASE_URL: !!process.env.VITE_SUPABASE_URL,
-      VITE_SUPABASE_ANON_KEY: !!process.env.VITE_SUPABASE_ANON_KEY
+      SUPABASE_ANON_KEY: !!process.env.SUPABASE_ANON_KEY
     } : 'N/A'
   })
 }

@@ -19,11 +19,6 @@ The package now supports both prefixed and non-prefixed environment variables wi
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key-here
 APEX_DOMAIN=aiworkspace.pro
-
-# Or VITE prefixed (traditional)
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
-VITE_APEX_DOMAIN=aiworkspace.pro
 ```
 
 ### 2. Vite Configuration (vite.config.ts)

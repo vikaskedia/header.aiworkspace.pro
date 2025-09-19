@@ -1,28 +1,28 @@
-import { ensureCrossSubdomainCookies as f, ACCESS_COOKIE as i, REFRESH_COOKIE as u, getCookie as S, syncCookiesToLocalStorage as b, setSessionCookie as p } from "./utils/authRedirect.js";
+import { ensureCrossSubdomainCookies as g, ACCESS_COOKIE as i, REFRESH_COOKIE as u, getCookie as S, syncCookiesToLocalStorage as b, setSessionCookie as p } from "./utils/authRedirect.js";
 function O() {
   try {
-    return console.log("[auth][immediate] Setting up immediate cross-subdomain authentication..."), f([i, u]), m().catch((e) => {
+    return console.log("[auth][immediate] Setting up immediate cross-subdomain authentication..."), g([i, u]), m().catch((e) => {
       console.log("[auth][immediate] Auth state listener setup deferred:", e.message);
     }), console.log("[auth][immediate] Immediate cross-subdomain authentication setup completed"), !0;
   } catch (e) {
     return console.error("[auth][immediate] Error during immediate cross-subdomain authentication setup:", e), !1;
   }
 }
-async function K() {
+async function R() {
   try {
-    console.log("[auth][init] Starting cross-subdomain authentication initialization..."), f([i, u]), m();
+    console.log("[auth][init] Starting cross-subdomain authentication initialization..."), g([i, u]), m();
     const e = await U(5, 50);
     return e.success ? (console.log("[auth][init] Cross-subdomain authentication initialized successfully"), { success: !0, session: e.session }) : (console.log("[auth][init] Cross-subdomain authentication initialization completed (no active session)"), { success: !1, error: e.error });
   } catch (e) {
     return console.error("[auth][init] Error during cross-subdomain authentication initialization:", e), { success: !1, error: e };
   }
 }
-async function B() {
+async function M() {
   try {
-    f([i, u]);
+    g([i, u]);
     const e = S(i), s = S(u);
     if (e && s) {
-      const n = await h(), { data: { session: o } } = await n.auth.getSession();
+      const n = await f(), { data: { session: o } } = await n.auth.getSession();
       if (!o) {
         const { data: a, error: d } = await n.auth.setSession({ access_token: e, refresh_token: s });
         d ? console.log("[auth][restore] error", d) : console.log("[auth][restore] done", !!a.session);
@@ -42,7 +42,7 @@ async function m() {
   }
   console.log("[auth][listener] Setting up auth state listener...");
   try {
-    (await h()).auth.onAuthStateChange(async (s, n) => {
+    (await f()).auth.onAuthStateChange(async (s, n) => {
       switch (console.log("[auth][listener] Auth state changed:", s, !!n), s) {
         case "TOKEN_REFRESHED":
           console.log("[auth][listener] Token refreshed successfully"), n && (p(i, n.access_token, 60 * 60 * 24 * 365), p(u, n.refresh_token, 60 * 60 * 24 * 365), b());
@@ -73,7 +73,7 @@ async function U(e = 5, s = 100) {
       console.log(`[auth][restore] Attempt ${o}/${e}`);
       let a = null;
       try {
-        const c = await (await h()).auth.getSession();
+        const c = await (await f()).auth.getSession();
         a = (n = c == null ? void 0 : c.data) == null ? void 0 : n.session;
       } catch (t) {
         if (console.warn("[auth][restore] Error getting Supabase session:", t), t.message && t.message.includes("Missing configuration"))
@@ -81,18 +81,18 @@ async function U(e = 5, s = 100) {
       }
       if (a && a.user)
         return console.log("[auth][restore] Active session found"), { success: !0, session: a };
-      o > 1 && (console.log("[auth][restore] Re-syncing cross-subdomain cookies..."), f([i, u]), await new Promise((t) => setTimeout(t, s * o)));
-      const d = S(i), w = S(u);
-      if (console.log(`[auth][restore] Cookie check - Access: ${!!d}, Refresh: ${!!w}`), d && w) {
+      o > 1 && (console.log("[auth][restore] Re-syncing cross-subdomain cookies..."), g([i, u]), await new Promise((t) => setTimeout(t, s * o)));
+      const d = S(i), y = S(u);
+      if (console.log(`[auth][restore] Cookie check - Access: ${!!d}, Refresh: ${!!y}`), d && y) {
         console.log("[auth][restore] Attempting to restore session from cookies...");
         try {
-          const t = await h(), { data: c, error: A } = await t.auth.setSession({
+          const t = await f(), { data: c, error: E } = await t.auth.setSession({
             access_token: d,
-            refresh_token: w
+            refresh_token: y
           });
-          if (A) {
-            if (console.log(`[auth][restore] Attempt ${o} failed:`, A.message), o === e)
-              return { success: !1, error: A };
+          if (E) {
+            if (console.log(`[auth][restore] Attempt ${o} failed:`, E.message), o === e)
+              return { success: !1, error: E };
             continue;
           }
           if (c.session)
@@ -113,9 +113,9 @@ async function U(e = 5, s = 100) {
     }
   return console.log("[auth][restore] All attempts failed"), { success: !1, error: "All restoration attempts failed" };
 }
-function D() {
+function P() {
   try {
-    return console.log("[auth][domain-change] Handling domain change authentication..."), f([i, u]), m().catch((e) => {
+    return console.log("[auth][domain-change] Handling domain change authentication..."), g([i, u]), m().catch((e) => {
       console.log("[auth][domain-change] Auth state listener setup deferred:", e.message);
     }), U(7, 25).then((e) => {
       e.success ? console.log("[auth][domain-change] Domain change authentication successful") : console.log("[auth][domain-change] Domain change authentication failed:", e.error);
@@ -162,15 +162,15 @@ async function k() {
     }
   });
 }
-let y = null;
-function N(e) {
-  y = e, console.log("[Supabase] Configuration set by consuming app"), g || P();
+let A = null;
+function D(e) {
+  A = e, console.log("[Supabase] Configuration set by consuming app"), h || C();
 }
-function E() {
-  if (y)
-    return y;
-  let e = { VITE_APEX_DOMAIN: "aiworkspace.pro", BASE_URL: "/", MODE: "production", DEV: !1, PROD: !0, SSR: !1, SUPABASE_URL: void 0, SUPABASE_ANON_KEY: void 0 }.VITE_SUPABASE_URL || void 0, s = { VITE_APEX_DOMAIN: "aiworkspace.pro", BASE_URL: "/", MODE: "production", DEV: !1, PROD: !0, SSR: !1, SUPABASE_URL: void 0, SUPABASE_ANON_KEY: void 0 }.VITE_SUPABASE_ANON_KEY || void 0;
-  if (!e && typeof process < "u" && process.env && (e = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL), !s && typeof process < "u" && process.env && (s = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY), e && s)
+function w() {
+  if (A)
+    return A;
+  let e, s;
+  if (!e && typeof process < "u" && process.env && (e = process.env.SUPABASE_URL), !s && typeof process < "u" && process.env && (s = process.env.SUPABASE_ANON_KEY), e && s)
     return { url: e, anonKey: s };
   if (typeof window < "u") {
     const n = window.__SUPABASE_URL__, o = window.__SUPABASE_ANON_KEY__;
@@ -179,13 +179,13 @@ function E() {
   }
   return null;
 }
-const C = E();
-C || console.warn("[Supabase] No configuration found. Please call configureSupabase() with your credentials.");
-let l = null, g = null;
-async function P() {
-  return g || (g = (async () => {
+const N = w();
+N || console.warn("[Supabase] No configuration found. Please call configureSupabase() with your credentials.");
+let l = null, h = null;
+async function C() {
+  return h || (h = (async () => {
     try {
-      const e = await k(), s = E();
+      const e = await k(), s = w();
       if (s && s.url && s.anonKey) {
         if (l = e(
           s.url,
@@ -204,7 +204,7 @@ async function P() {
           }
         ), console.log("[Supabase] Client initialized successfully"), typeof window < "u")
           try {
-            await m(), D(), O(), f([i, u]);
+            await m(), P(), O(), g([i, u]);
           } catch (n) {
             console.warn("[Supabase] Error setting up auth components after init:", n);
           }
@@ -214,13 +214,13 @@ async function P() {
     } catch (e) {
       return console.error("[Supabase] Failed to initialize client:", e), l = (await k())("https://placeholder.supabase.co", "placeholder-key"), l;
     }
-  })(), g);
+  })(), h);
 }
-const h = async () => {
+const f = async () => {
   if (!l) {
-    if (!E())
+    if (!w())
       throw new Error("[Supabase] Missing configuration. Call configureSupabase({ url, anonKey }) before using the header package.");
-    await P();
+    await C();
   }
   return l;
 };
@@ -229,7 +229,7 @@ typeof window < "u" && (window.addEventListener("error", (e) => {
 }), window.addEventListener("unhandledrejection", (e) => {
   e.reason && e.reason.message && e.reason.message.includes("ne is not a function") && (console.warn("[Supabase] Caught unhandled promise rejection with TypeError: ne is not a function"), e.preventDefault());
 }));
-const r = E();
+const r = w();
 console.log("Supabase Configuration:", {
   url: (r == null ? void 0 : r.url) || "Not configured",
   hasKey: !!(r != null && r.anonKey),
@@ -241,21 +241,21 @@ console.log("Key configured:", !!(r != null && r.anonKey) && !r.anonKey.includes
 console.log("Environment mode:", "production");
 const I = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  configureSupabase: N,
-  getSupabase: h,
+  configureSupabase: D,
+  getSupabase: f,
   get supabase() {
     return l;
   }
 }, Symbol.toStringTag, { value: "Module" }));
 export {
   O as a,
-  B as b,
-  N as c,
+  M as b,
+  D as c,
   m as d,
   I as e,
-  h as g,
-  D as h,
-  K as i,
+  f as g,
+  P as h,
+  R as i,
   U as r,
   l as s
 };
