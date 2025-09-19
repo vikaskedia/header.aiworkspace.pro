@@ -1,14 +1,23 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
+  // Load env file based on `mode` in the current working directory
+  const env = loadEnv(mode, process.cwd(), '')
+  
   const isDev = command === 'serve'
   
   if (isDev) {
     // Development mode - serve demo app
     return {
       plugins: [vue()],
+      define: {
+        // Expose non-prefixed environment variables in development
+        'import.meta.env.SUPABASE_URL': JSON.stringify(env.SUPABASE_URL),
+        'import.meta.env.SUPABASE_ANON_KEY': JSON.stringify(env.SUPABASE_ANON_KEY),
+        'import.meta.env.VITE_APEX_DOMAIN': JSON.stringify(env.VITE_APEX_DOMAIN)
+      },
       server: {
         port: 3000,
         open: true

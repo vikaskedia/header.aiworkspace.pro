@@ -1,312 +1,312 @@
-var xs = Object.defineProperty;
-var Ts = (a, o, t) => o in a ? xs(a, o, { enumerable: !0, configurable: !0, writable: !0, value: t }) : a[o] = t;
-var me = (a, o, t) => (Ts(a, typeof o != "symbol" ? o + "" : o, t), t);
-import { defineComponent as ue, openBlock as y, createElementBlock as x, createElementVNode as n, ref as C, computed as X, onMounted as be, onUnmounted as cs, watch as pe, reactive as Hs, resolveComponent as ie, createBlock as oe, withCtx as d, toDisplayString as K, createVNode as h, unref as H, withModifiers as ge, createCommentVNode as Y, createTextVNode as q, Fragment as Ie, createStaticVNode as Le, normalizeClass as Pe, renderList as xe, normalizeStyle as Ds } from "vue";
-import { ElForm as Ns, ElMessage as z, ElDialog as Os, ElIcon as Ve, ElButton as Te, ElProgress as Fs, ElMessageBox as ns } from "element-plus";
-import { i as Gs, g as te, r as He, s as Ue } from "./supabase-2580d80a.mjs";
-import { c as ua, h as da, b as pa, d as fa, a as ga } from "./supabase-2580d80a.mjs";
-import { clearSessionCookie as ke, ACCESS_COOKIE as _e, REFRESH_COOKIE as ye, clearLocalStorageTokens as De, setSessionCookie as Se, syncCookiesToLocalStorage as Ne, getPostLoginBase as Bs } from "./utils/authRedirect.js";
-import { LS_ACCESS_KEY as va, LS_REFRESH_KEY as wa, buildOAuthRedirectUrl as ma, ensureCrossSubdomainCookies as ka, getCookie as _a } from "./utils/authRedirect.js";
-import { defineStore as js } from "pinia";
-import { setupUniversalCallback as Sa } from "./utils/universalCallback.js";
+var Ws = Object.defineProperty;
+var Ds = (t, s, a) => s in t ? Ws(t, s, { enumerable: !0, configurable: !0, writable: !0, value: a }) : t[s] = a;
+var me = (t, s, a) => (Ds(t, typeof s != "symbol" ? s + "" : s, a), a);
+import { defineComponent as ue, openBlock as y, createElementBlock as T, createElementVNode as i, ref as A, computed as q, onMounted as be, onUnmounted as cs, watch as pe, reactive as xs, resolveComponent as ie, createBlock as oe, withCtx as d, toDisplayString as K, createVNode as h, unref as D, withModifiers as ge, createCommentVNode as X, createTextVNode as J, Fragment as Ie, createStaticVNode as Le, normalizeClass as $e, renderList as Te, normalizeStyle as Hs } from "vue";
+import { ElForm as Os, ElMessage as z, ElDialog as Bs, ElIcon as Ue, ElButton as We, ElProgress as Fs, ElMessageBox as ns } from "element-plus";
+import { i as Gs, g as ae, r as De, s as Pe } from "./supabase-510327ca.mjs";
+import { c as ft, h as gt, b as ht, d as vt, a as wt } from "./supabase-510327ca.mjs";
+import { clearSessionCookie as ke, ACCESS_COOKIE as _e, REFRESH_COOKIE as ye, clearLocalStorageTokens as xe, setSessionCookie as Se, syncCookiesToLocalStorage as He, getPostLoginBase as js } from "./utils/authRedirect.js";
+import { LS_ACCESS_KEY as kt, LS_REFRESH_KEY as _t, buildOAuthRedirectUrl as yt, ensureCrossSubdomainCookies as St, getCookie as bt } from "./utils/authRedirect.js";
+import { defineStore as zs } from "pinia";
+import { setupUniversalCallback as Et } from "./utils/universalCallback.js";
 /*! Element Plus Icons Vue v2.3.2 */
-var zs = /* @__PURE__ */ ue({
+var Ks = /* @__PURE__ */ ue({
   name: "ArrowDown",
   __name: "arrow-down",
-  setup(a) {
-    return (o, t) => (y(), x("svg", {
+  setup(t) {
+    return (s, a) => (y(), T("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 1024 1024"
     }, [
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M831.872 340.864 512 652.672 192.128 340.864a30.59 30.59 0 0 0-42.752 0 29.12 29.12 0 0 0 0 41.6L489.664 714.24a32 32 0 0 0 44.672 0l340.288-331.712a29.12 29.12 0 0 0 0-41.728 30.59 30.59 0 0 0-42.752 0z"
       })
     ]));
   }
-}), is = zs, Ks = /* @__PURE__ */ ue({
+}), is = Ks, Ys = /* @__PURE__ */ ue({
   name: "Check",
   __name: "check",
-  setup(a) {
-    return (o, t) => (y(), x("svg", {
+  setup(t) {
+    return (s, a) => (y(), T("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 1024 1024"
     }, [
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M406.656 706.944 195.84 496.256a32 32 0 1 0-45.248 45.248l256 256 512-512a32 32 0 0 0-45.248-45.248L406.592 706.944z"
       })
     ]));
   }
-}), Js = Ks, qs = /* @__PURE__ */ ue({
+}), Js = Ys, Xs = /* @__PURE__ */ ue({
   name: "Lock",
   __name: "lock",
-  setup(a) {
-    return (o, t) => (y(), x("svg", {
+  setup(t) {
+    return (s, a) => (y(), T("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 1024 1024"
     }, [
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M224 448a32 32 0 0 0-32 32v384a32 32 0 0 0 32 32h576a32 32 0 0 0 32-32V480a32 32 0 0 0-32-32zm0-64h576a96 96 0 0 1 96 96v384a96 96 0 0 1-96 96H224a96 96 0 0 1-96-96V480a96 96 0 0 1 96-96"
       }),
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M512 544a32 32 0 0 1 32 32v192a32 32 0 1 1-64 0V576a32 32 0 0 1 32-32m192-160v-64a192 192 0 1 0-384 0v64zM512 64a256 256 0 0 1 256 256v128H256V320A256 256 0 0 1 512 64"
       })
     ]));
   }
-}), ls = qs, Ys = /* @__PURE__ */ ue({
+}), ls = Xs, qs = /* @__PURE__ */ ue({
   name: "Message",
   __name: "message",
-  setup(a) {
-    return (o, t) => (y(), x("svg", {
+  setup(t) {
+    return (s, a) => (y(), T("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 1024 1024"
     }, [
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M128 224v512a64 64 0 0 0 64 64h640a64 64 0 0 0 64-64V224zm0-64h768a64 64 0 0 1 64 64v512a128 128 0 0 1-128 128H192A128 128 0 0 1 64 736V224a64 64 0 0 1 64-64"
       }),
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M904 224 656.512 506.88a192 192 0 0 1-289.024 0L120 224zm-698.944 0 210.56 240.704a128 128 0 0 0 192.704 0L818.944 224z"
       })
     ]));
   }
-}), Xs = Ys, Qs = /* @__PURE__ */ ue({
+}), Qs = qs, Zs = /* @__PURE__ */ ue({
   name: "Refresh",
   __name: "refresh",
-  setup(a) {
-    return (o, t) => (y(), x("svg", {
+  setup(t) {
+    return (s, a) => (y(), T("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 1024 1024"
     }, [
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M771.776 794.88A384 384 0 0 1 128 512h64a320 320 0 0 0 555.712 216.448H654.72a32 32 0 1 1 0-64h149.056a32 32 0 0 1 32 32v148.928a32 32 0 1 1-64 0v-50.56zM276.288 295.616h92.992a32 32 0 0 1 0 64H220.16a32 32 0 0 1-32-32V178.56a32 32 0 0 1 64 0v50.56A384 384 0 0 1 896.128 512h-64a320 320 0 0 0-555.776-216.384z"
       })
     ]));
   }
-}), Oe = Qs, Zs = /* @__PURE__ */ ue({
+}), Oe = Zs, eo = /* @__PURE__ */ ue({
   name: "User",
   __name: "user",
-  setup(a) {
-    return (o, t) => (y(), x("svg", {
+  setup(t) {
+    return (s, a) => (y(), T("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 1024 1024"
     }, [
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M512 512a192 192 0 1 0 0-384 192 192 0 0 0 0 384m0 64a256 256 0 1 1 0-512 256 256 0 0 1 0 512m320 320v-96a96 96 0 0 0-96-96H288a96 96 0 0 0-96 96v96a32 32 0 1 1-64 0v-96a160 160 0 0 1 160-160h448a160 160 0 0 1 160 160v96a32 32 0 1 1-64 0"
       })
     ]));
   }
-}), Fe = Zs, eo = /* @__PURE__ */ ue({
+}), Be = eo, so = /* @__PURE__ */ ue({
   name: "Warning",
   __name: "warning",
-  setup(a) {
-    return (o, t) => (y(), x("svg", {
+  setup(t) {
+    return (s, a) => (y(), T("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 1024 1024"
     }, [
-      n("path", {
+      i("path", {
         fill: "currentColor",
         d: "M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896m0 832a384 384 0 0 0 0-768 384 384 0 0 0 0 768m48-176a48 48 0 1 1-96 0 48 48 0 0 1 96 0m-48-464a32 32 0 0 1 32 32v288a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32"
       })
     ]));
   }
-}), us = eo;
-class Me extends Error {
-  constructor(t, i = {}, w) {
-    super(t);
+}), us = so;
+class Ve extends Error {
+  constructor(a, n = {}, w) {
+    super(a);
     me(this, "context");
     me(this, "originalError");
-    this.name = "PackageError", this.context = i, this.originalError = w;
+    this.name = "PackageError", this.context = n, this.originalError = w;
   }
 }
-function Bt(a, o = {}, t) {
+function ja(t, s = {}, a) {
   try {
-    const i = a();
-    return i instanceof Promise ? i.catch((w) => {
+    const n = t();
+    return n instanceof Promise ? n.catch((w) => {
       if (console.warn("[ErrorHandler] Async operation failed:", {
-        context: o,
+        context: s,
         error: w.message,
         stack: w.stack
-      }), t !== void 0)
-        return t;
-      throw new Me(
+      }), a !== void 0)
+        return a;
+      throw new Ve(
         `Async operation failed: ${w.message}`,
-        o,
+        s,
         w
       );
-    }) : i;
-  } catch (i) {
+    }) : n;
+  } catch (n) {
     if (console.warn("[ErrorHandler] Operation failed:", {
-      context: o,
-      error: i instanceof Error ? i.message : String(i),
-      stack: i instanceof Error ? i.stack : void 0
-    }), t !== void 0)
-      return t;
-    throw new Me(
-      `Operation failed: ${i instanceof Error ? i.message : String(i)}`,
-      o,
-      i instanceof Error ? i : void 0
+      context: s,
+      error: n instanceof Error ? n.message : String(n),
+      stack: n instanceof Error ? n.stack : void 0
+    }), a !== void 0)
+      return a;
+    throw new Ve(
+      `Operation failed: ${n instanceof Error ? n.message : String(n)}`,
+      s,
+      n instanceof Error ? n : void 0
     );
   }
 }
-async function jt(a, o = {}, t) {
+async function za(t, s = {}, a) {
   try {
-    return await a();
-  } catch (i) {
+    return await t();
+  } catch (n) {
     if (console.warn("[ErrorHandler] Async operation failed:", {
-      context: o,
-      error: i instanceof Error ? i.message : String(i),
-      stack: i instanceof Error ? i.stack : void 0
-    }), t !== void 0)
-      return t;
-    throw new Me(
-      `Async operation failed: ${i instanceof Error ? i.message : String(i)}`,
-      o,
-      i instanceof Error ? i : void 0
+      context: s,
+      error: n instanceof Error ? n.message : String(n),
+      stack: n instanceof Error ? n.stack : void 0
+    }), a !== void 0)
+      return a;
+    throw new Ve(
+      `Async operation failed: ${n instanceof Error ? n.message : String(n)}`,
+      s,
+      n instanceof Error ? n : void 0
     );
   }
 }
-function so(a, o = {}) {
-  const t = a.message.toLowerCase();
-  if (t.includes("is not a function") || t.includes("cannot read property") || t.includes("undefined is not a function")) {
+function oo(t, s = {}) {
+  const a = t.message.toLowerCase();
+  if (a.includes("is not a function") || a.includes("cannot read property") || a.includes("undefined is not a function")) {
     console.warn("[ErrorHandler] Bundling error detected:", {
-      context: o,
-      error: a.message,
+      context: s,
+      error: t.message,
       suggestion: "This may be due to minification or import issues. The package will continue with fallback behavior."
     });
     return;
   }
-  throw new Me(
-    `Unexpected error: ${a.message}`,
-    o,
-    a
+  throw new Ve(
+    `Unexpected error: ${t.message}`,
+    s,
+    t
   );
 }
-async function zt(a, o = {}, t) {
+async function Ka(t, s = {}, a) {
   try {
-    return await a();
-  } catch (i) {
+    return await t();
+  } catch (n) {
     return console.warn("[ErrorHandler] Import failed:", {
-      context: o,
-      error: i instanceof Error ? i.message : String(i)
-    }), t !== void 0 ? t : void 0;
+      context: s,
+      error: n instanceof Error ? n.message : String(n)
+    }), a !== void 0 ? a : void 0;
   }
 }
-function Kt(a) {
-  var o;
+function Ya(t) {
+  var s;
   try {
     if (typeof document > "u")
       return null;
-    const i = `; ${document.cookie}`.split(`; ${a}=`);
-    return i.length === 2 && ((o = i.pop()) == null ? void 0 : o.split(";").shift()) || null;
-  } catch (t) {
+    const n = `; ${document.cookie}`.split(`; ${t}=`);
+    return n.length === 2 && ((s = n.pop()) == null ? void 0 : s.split(";").shift()) || null;
+  } catch (a) {
     return console.warn("[ErrorHandler] Cookie access failed:", {
-      cookieName: a,
-      error: t instanceof Error ? t.message : String(t)
+      cookieName: t,
+      error: a instanceof Error ? a.message : String(a)
     }), null;
   }
 }
-function Jt(a, o, t = {}) {
+function Ja(t, s, a = {}) {
   try {
     if (typeof document > "u")
       return !1;
-    let i = `${a}=${o}`;
-    return t.domain && (i += `; domain=${t.domain}`), t.path && (i += `; path=${t.path}`), t.secure && (i += "; secure"), t.sameSite && (i += `; samesite=${t.sameSite}`), t.maxAge && (i += `; max-age=${t.maxAge}`), document.cookie = i, !0;
-  } catch (i) {
+    let n = `${t}=${s}`;
+    return a.domain && (n += `; domain=${a.domain}`), a.path && (n += `; path=${a.path}`), a.secure && (n += "; secure"), a.sameSite && (n += `; samesite=${a.sameSite}`), a.maxAge && (n += `; max-age=${a.maxAge}`), document.cookie = n, !0;
+  } catch (n) {
     return console.warn("[ErrorHandler] Cookie setting failed:", {
-      cookieName: a,
-      error: i instanceof Error ? i.message : String(i)
+      cookieName: t,
+      error: n instanceof Error ? n.message : String(n)
     }), !1;
   }
 }
-function qt(a) {
+function Xa(t) {
   try {
-    return typeof localStorage > "u" ? null : localStorage.getItem(a);
-  } catch (o) {
+    return typeof localStorage > "u" ? null : localStorage.getItem(t);
+  } catch (s) {
     return console.warn("[ErrorHandler] localStorage get failed:", {
-      key: a,
-      error: o instanceof Error ? o.message : String(o)
+      key: t,
+      error: s instanceof Error ? s.message : String(s)
     }), null;
   }
 }
-function Yt(a, o) {
+function qa(t, s) {
   try {
-    return typeof localStorage > "u" ? !1 : (localStorage.setItem(a, o), !0);
-  } catch (t) {
+    return typeof localStorage > "u" ? !1 : (localStorage.setItem(t, s), !0);
+  } catch (a) {
     return console.warn("[ErrorHandler] localStorage set failed:", {
-      key: a,
-      error: t instanceof Error ? t.message : String(t)
+      key: t,
+      error: a instanceof Error ? a.message : String(a)
     }), !1;
   }
 }
-function Xt(a, o) {
+function Qa(t, s) {
   try {
-    return typeof window > "u" ? o : a(window);
-  } catch (t) {
+    return typeof window > "u" ? s : t(window);
+  } catch (a) {
     return console.warn("[ErrorHandler] Window operation failed:", {
-      error: t instanceof Error ? t.message : String(t)
-    }), o;
+      error: a instanceof Error ? a.message : String(a)
+    }), s;
   }
 }
-function oo() {
-  typeof window > "u" || (window.addEventListener("unhandledrejection", (a) => {
-    const o = a.reason;
-    if (o instanceof Error) {
-      const t = o.message.toLowerCase();
-      if (t.includes("is not a function") || t.includes("cannot read property") || t.includes("undefined is not a function")) {
+function ao() {
+  typeof window > "u" || (window.addEventListener("unhandledrejection", (t) => {
+    const s = t.reason;
+    if (s instanceof Error) {
+      const a = s.message.toLowerCase();
+      if (a.includes("is not a function") || a.includes("cannot read property") || a.includes("undefined is not a function")) {
         console.warn("[ErrorHandler] Unhandled promise rejection (bundling error):", {
-          error: o.message,
-          stack: o.stack
-        }), a.preventDefault();
+          error: s.message,
+          stack: s.stack
+        }), t.preventDefault();
         return;
       }
     }
-    console.error("[ErrorHandler] Unhandled promise rejection:", a.reason);
-  }), window.addEventListener("error", (a) => {
-    const o = a.error;
-    if (o instanceof Error) {
-      const t = o.message.toLowerCase();
-      if (t.includes("is not a function") || t.includes("cannot read property") || t.includes("undefined is not a function")) {
+    console.error("[ErrorHandler] Unhandled promise rejection:", t.reason);
+  }), window.addEventListener("error", (t) => {
+    const s = t.error;
+    if (s instanceof Error) {
+      const a = s.message.toLowerCase();
+      if (a.includes("is not a function") || a.includes("cannot read property") || a.includes("undefined is not a function")) {
         console.warn("[ErrorHandler] Uncaught error (bundling error):", {
-          error: o.message,
-          stack: o.stack
-        }), a.preventDefault();
+          error: s.message,
+          stack: s.stack
+        }), t.preventDefault();
         return;
       }
     }
-    console.error("[ErrorHandler] Uncaught error:", a.error);
+    console.error("[ErrorHandler] Uncaught error:", t.error);
   }));
 }
-typeof window < "u" && oo();
+typeof window < "u" && ao();
 function to() {
-  const a = C({
+  const t = A({
     user: null,
     isAuthenticated: !1,
     isLoading: !0,
     error: null
-  }), o = C(null), t = X(() => a.value.isAuthenticated), i = X(() => a.value.user), w = X(() => a.value.isLoading), _ = async () => {
-    var k, p, c, R, f, u, L, U, b, g, V, v, S, ae, J, B, O, re, j, A, D;
+  }), s = A(null), a = q(() => t.value.isAuthenticated), n = q(() => t.value.user), w = q(() => t.value.isLoading), _ = async () => {
+    var k, p, c, N, f, u, L, P, b, g, U, v, S, te, Y, G, O, re, j, E, x;
     try {
       console.log("[auth][enhanced] Starting loadUserInfo..."), console.log("[auth][enhanced] Ensuring cross-subdomain cookie synchronization...");
-      const F = "sb-access-token", E = "sb-refresh-token", G = ($) => {
+      const B = "sb-access-token", C = "sb-refresh-token", F = (R) => {
         try {
-          const P = location.hostname;
-          if (P === "localhost" || /^\d+\.\d+\.\d+\.\d+$/.test(P)) {
+          const $ = location.hostname;
+          if ($ === "localhost" || /^\d+\.\d+\.\d+\.\d+$/.test($)) {
             console.log("[auth][enhanced] Skipping cookie sync for localhost");
             return;
           }
           const ee = "aiworkspace.pro";
-          if (!P.endsWith(`.${ee}`) && P !== ee) {
+          if (!$.endsWith(`.${ee}`) && $ !== ee) {
             console.log("[auth][enhanced] Skipping cookie sync - not under apex domain");
             return;
           }
-          console.log("[auth][enhanced] Performing cookie synchronization"), $.forEach((se) => {
+          console.log("[auth][enhanced] Performing cookie synchronization"), R.forEach((se) => {
             const de = document.cookie.split(";").find((fe) => fe.trim().startsWith(se + "="));
             if (de) {
               console.log(`[auth][enhanced] Found cookie: ${se}`);
@@ -314,193 +314,193 @@ function to() {
               fe && (document.cookie = `${se}=${fe}; domain=.${ee}; path=/; secure; samesite=lax`);
             }
           });
-        } catch (P) {
-          console.warn("[auth][enhanced] Error in cookie sync:", P);
+        } catch ($) {
+          console.warn("[auth][enhanced] Error in cookie sync:", $);
         }
       };
-      G([F, E]), await new Promise(($) => setTimeout($, 50)), G([F, E]), await new Promise(($) => setTimeout($, 50));
+      F([B, C]), await new Promise((R) => setTimeout(R, 50)), F([B, C]), await new Promise((R) => setTimeout(R, 50));
       let Z = null;
       try {
-        const P = await (await te()).auth.getSession();
-        Z = (k = P == null ? void 0 : P.data) == null ? void 0 : k.session;
-      } catch ($) {
-        console.warn("[auth][enhanced] Error getting Supabase session:", $);
+        const $ = await (await ae()).auth.getSession();
+        Z = (k = $ == null ? void 0 : $.data) == null ? void 0 : k.session;
+      } catch (R) {
+        console.warn("[auth][enhanced] Error getting Supabase session:", R);
       }
       if (Z && Z.user) {
         console.log("[auth][enhanced] Active Supabase session found");
-        const $ = Z.user, P = {
-          id: $.id,
-          name: ((p = $.user_metadata) == null ? void 0 : p.name) || ((c = $.user_metadata) == null ? void 0 : c.user_name) || ((R = $.user_metadata) == null ? void 0 : R.full_name) || ((f = $.email) == null ? void 0 : f.split("@")[0]) || "User",
-          email: $.email,
-          avatar_url: ((u = $.user_metadata) == null ? void 0 : u.avatar_url) || null,
-          user_metadata: $.user_metadata
+        const R = Z.user, $ = {
+          id: R.id,
+          name: ((p = R.user_metadata) == null ? void 0 : p.name) || ((c = R.user_metadata) == null ? void 0 : c.user_name) || ((N = R.user_metadata) == null ? void 0 : N.full_name) || ((f = R.email) == null ? void 0 : f.split("@")[0]) || "User",
+          email: R.email,
+          avatar_url: ((u = R.user_metadata) == null ? void 0 : u.avatar_url) || null,
+          user_metadata: R.user_metadata
         };
-        return a.value = {
-          user: P,
+        return t.value = {
+          user: $,
           isAuthenticated: !0,
           isLoading: !1,
           error: null
-        }, o.value = {
-          user: P,
+        }, s.value = {
+          user: $,
           access_token: Z.access_token,
           refresh_token: Z.refresh_token
-        }, { user: P, session: o.value, error: null };
+        }, { user: $, session: s.value, error: null };
       }
       console.log("[auth][enhanced] No active session, attempting to restore from cookies...");
-      const ne = await He();
+      const ne = await De();
       if (ne.success && ne.session) {
         console.log("[auth][enhanced] Session restored successfully from cookies");
-        const $ = ne.session.user, P = {
-          id: $.id,
-          name: ((L = $.user_metadata) == null ? void 0 : L.name) || ((U = $.user_metadata) == null ? void 0 : U.user_name) || ((b = $.user_metadata) == null ? void 0 : b.full_name) || ((g = $.email) == null ? void 0 : g.split("@")[0]) || "User",
-          email: $.email,
-          avatar_url: ((V = $.user_metadata) == null ? void 0 : V.avatar_url) || null,
-          user_metadata: $.user_metadata
+        const R = ne.session.user, $ = {
+          id: R.id,
+          name: ((L = R.user_metadata) == null ? void 0 : L.name) || ((P = R.user_metadata) == null ? void 0 : P.user_name) || ((b = R.user_metadata) == null ? void 0 : b.full_name) || ((g = R.email) == null ? void 0 : g.split("@")[0]) || "User",
+          email: R.email,
+          avatar_url: ((U = R.user_metadata) == null ? void 0 : U.avatar_url) || null,
+          user_metadata: R.user_metadata
         };
-        return a.value = {
-          user: P,
+        return t.value = {
+          user: $,
           isAuthenticated: !0,
           isLoading: !1,
           error: null
-        }, o.value = ne.session, { user: P, session: o.value, error: null };
+        }, s.value = ne.session, { user: $, session: s.value, error: null };
       } else {
-        console.log("[auth][enhanced] Failed to restore session:", ne.error), console.log("[auth][enhanced] Retrying session restoration with extended delay..."), await new Promise((P) => setTimeout(P, 500)), G([F, E]);
-        const $ = await He();
-        if ($.success && $.session) {
+        console.log("[auth][enhanced] Failed to restore session:", ne.error), console.log("[auth][enhanced] Retrying session restoration with extended delay..."), await new Promise(($) => setTimeout($, 500)), F([B, C]);
+        const R = await De();
+        if (R.success && R.session) {
           console.log("[auth][enhanced] Session restored on retry");
-          const P = $.session.user, ee = {
-            id: P.id,
-            name: ((v = P.user_metadata) == null ? void 0 : v.name) || ((S = P.user_metadata) == null ? void 0 : S.user_name) || ((ae = P.user_metadata) == null ? void 0 : ae.full_name) || ((J = P.email) == null ? void 0 : J.split("@")[0]) || "User",
-            email: P.email,
-            avatar_url: ((B = P.user_metadata) == null ? void 0 : B.avatar_url) || null,
-            user_metadata: P.user_metadata
+          const $ = R.session.user, ee = {
+            id: $.id,
+            name: ((v = $.user_metadata) == null ? void 0 : v.name) || ((S = $.user_metadata) == null ? void 0 : S.user_name) || ((te = $.user_metadata) == null ? void 0 : te.full_name) || ((Y = $.email) == null ? void 0 : Y.split("@")[0]) || "User",
+            email: $.email,
+            avatar_url: ((G = $.user_metadata) == null ? void 0 : G.avatar_url) || null,
+            user_metadata: $.user_metadata
           };
-          return a.value = {
+          return t.value = {
             user: ee,
             isAuthenticated: !0,
             isLoading: !1,
             error: null
-          }, o.value = $.session, { user: ee, session: o.value, error: null };
+          }, s.value = R.session, { user: ee, session: s.value, error: null };
         }
       }
-    } catch (F) {
-      console.error("Error getting Supabase session:", F), F instanceof Error && so(F, {
+    } catch (B) {
+      console.error("Error getting Supabase session:", B), B instanceof Error && oo(B, {
         component: "useEnhancedAuth",
         function: "loadUserInfo",
         operation: "session_validation"
       });
       try {
-        const E = await He();
-        if (E.success && E.session) {
+        const C = await De();
+        if (C.success && C.session) {
           console.log("[auth][enhanced] Session restored after error");
-          const G = E.session.user, Z = {
-            id: G.id,
-            name: ((O = G.user_metadata) == null ? void 0 : O.name) || ((re = G.user_metadata) == null ? void 0 : re.user_name) || ((j = G.user_metadata) == null ? void 0 : j.full_name) || ((A = G.email) == null ? void 0 : A.split("@")[0]) || "User",
-            email: G.email,
-            avatar_url: ((D = G.user_metadata) == null ? void 0 : D.avatar_url) || null,
-            user_metadata: G.user_metadata
+          const F = C.session.user, Z = {
+            id: F.id,
+            name: ((O = F.user_metadata) == null ? void 0 : O.name) || ((re = F.user_metadata) == null ? void 0 : re.user_name) || ((j = F.user_metadata) == null ? void 0 : j.full_name) || ((E = F.email) == null ? void 0 : E.split("@")[0]) || "User",
+            email: F.email,
+            avatar_url: ((x = F.user_metadata) == null ? void 0 : x.avatar_url) || null,
+            user_metadata: F.user_metadata
           };
-          return a.value = {
+          return t.value = {
             user: Z,
             isAuthenticated: !0,
             isLoading: !1,
             error: null
-          }, o.value = E.session, { user: Z, session: o.value, error: null };
+          }, s.value = C.session, { user: Z, session: s.value, error: null };
         }
-      } catch (E) {
-        console.error("Error restoring session:", E);
+      } catch (C) {
+        console.error("Error restoring session:", C);
       }
     }
-    return console.log("[auth][enhanced] No valid authentication found"), a.value = {
+    return console.log("[auth][enhanced] No valid authentication found"), t.value = {
       user: null,
       isAuthenticated: !1,
       isLoading: !1,
       error: "No valid session found"
-    }, o.value = null, { user: null, session: null, error: "No valid session found" };
-  }, W = async () => {
+    }, s.value = null, { user: null, session: null, error: "No valid session found" };
+  }, M = async () => {
     try {
-      await (await te()).auth.signOut(), ke(_e), ke(ye), De(), a.value = {
+      await (await ae()).auth.signOut(), ke(_e), ke(ye), xe(), t.value = {
         user: null,
         isAuthenticated: !1,
         isLoading: !1,
         error: null
-      }, o.value = null, console.log("[auth][enhanced] User logged out successfully");
+      }, s.value = null, console.log("[auth][enhanced] User logged out successfully");
     } catch (k) {
-      console.error("Error during logout:", k), a.value = {
+      console.error("Error during logout:", k), t.value = {
         user: null,
         isAuthenticated: !1,
         isLoading: !1,
         error: null
-      }, o.value = null;
+      }, s.value = null;
     }
-  }, T = async (k, p) => {
-    var c, R, f, u, L;
+  }, W = async (k, p) => {
+    var c, N, f, u, L;
     try {
-      a.value.isLoading = !0;
-      const U = await te(), { data: b, error: g } = await U.auth.signInWithPassword({
+      t.value.isLoading = !0;
+      const P = await ae(), { data: b, error: g } = await P.auth.signInWithPassword({
         email: k,
         password: p
       });
       if (g)
         throw g;
       if (b.session) {
-        const V = b.session.user, v = {
-          id: V.id,
-          name: ((c = V.user_metadata) == null ? void 0 : c.name) || ((R = V.user_metadata) == null ? void 0 : R.user_name) || ((f = V.user_metadata) == null ? void 0 : f.full_name) || ((u = V.email) == null ? void 0 : u.split("@")[0]) || "User",
-          email: V.email,
-          avatar_url: ((L = V.user_metadata) == null ? void 0 : L.avatar_url) || null,
-          user_metadata: V.user_metadata
+        const U = b.session.user, v = {
+          id: U.id,
+          name: ((c = U.user_metadata) == null ? void 0 : c.name) || ((N = U.user_metadata) == null ? void 0 : N.user_name) || ((f = U.user_metadata) == null ? void 0 : f.full_name) || ((u = U.email) == null ? void 0 : u.split("@")[0]) || "User",
+          email: U.email,
+          avatar_url: ((L = U.user_metadata) == null ? void 0 : L.avatar_url) || null,
+          user_metadata: U.user_metadata
         };
-        return a.value = {
+        return t.value = {
           user: v,
           isAuthenticated: !0,
           isLoading: !1,
           error: null
-        }, o.value = {
+        }, s.value = {
           user: v,
           access_token: b.session.access_token,
           refresh_token: b.session.refresh_token
-        }, { user: v, session: o.value, error: null };
+        }, { user: v, session: s.value, error: null };
       }
       return { user: null, session: null, error: "No session returned" };
-    } catch (U) {
-      return console.error("Sign in error:", U), a.value.isLoading = !1, { user: null, session: null, error: String(U) };
+    } catch (P) {
+      return console.error("Sign in error:", P), t.value.isLoading = !1, { user: null, session: null, error: String(P) };
     }
-  }, N = async (k, p, c) => {
-    var R, f, u, L, U;
+  }, H = async (k, p, c) => {
+    var N, f, u, L, P;
     try {
-      a.value.isLoading = !0;
-      const b = await te(), { data: g, error: V } = await b.auth.signUp({
+      t.value.isLoading = !0;
+      const b = await ae(), { data: g, error: U } = await b.auth.signUp({
         email: k,
         password: p,
         options: {
           data: c
         }
       });
-      if (V)
-        throw V;
+      if (U)
+        throw U;
       if (g.session) {
         const v = g.session.user, S = {
           id: v.id,
-          name: ((R = v.user_metadata) == null ? void 0 : R.name) || ((f = v.user_metadata) == null ? void 0 : f.user_name) || ((u = v.user_metadata) == null ? void 0 : u.full_name) || ((L = v.email) == null ? void 0 : L.split("@")[0]) || "User",
+          name: ((N = v.user_metadata) == null ? void 0 : N.name) || ((f = v.user_metadata) == null ? void 0 : f.user_name) || ((u = v.user_metadata) == null ? void 0 : u.full_name) || ((L = v.email) == null ? void 0 : L.split("@")[0]) || "User",
           email: v.email,
-          avatar_url: ((U = v.user_metadata) == null ? void 0 : U.avatar_url) || null,
+          avatar_url: ((P = v.user_metadata) == null ? void 0 : P.avatar_url) || null,
           user_metadata: v.user_metadata
         };
-        return a.value = {
+        return t.value = {
           user: S,
           isAuthenticated: !0,
           isLoading: !1,
           error: null
-        }, o.value = {
+        }, s.value = {
           user: S,
           access_token: g.session.access_token,
           refresh_token: g.session.refresh_token
-        }, { user: S, session: o.value, error: null };
+        }, { user: S, session: s.value, error: null };
       }
       return { user: null, session: null, error: "No session returned" };
     } catch (b) {
-      return console.error("Sign up error:", b), a.value.isLoading = !1, { user: null, session: null, error: String(b) };
+      return console.error("Sign up error:", b), t.value.isLoading = !1, { user: null, session: null, error: String(b) };
     }
   }, m = async () => {
     await _();
@@ -509,17 +509,17 @@ function to() {
     await Gs(), await m();
   }), {
     // State
-    authState: a,
-    currentSession: o,
+    authState: t,
+    currentSession: s,
     // Computed
-    isAuthenticated: t,
-    currentUser: i,
+    isAuthenticated: a,
+    currentUser: n,
     isLoading: w,
     // Methods
     loadUserInfo: _,
-    logout: W,
-    signIn: T,
-    signUp: N,
+    logout: M,
+    signIn: W,
+    signUp: H,
     checkAuth: m
   };
 }
@@ -546,7 +546,7 @@ const ve = {
   // Enable fast monitoring mode
   enableNetworkAwareness: !0
   // Enable network-aware monitoring
-}, ao = {
+}, ro = {
   ...ve,
   normalCheckInterval: 1e4,
   // 10 seconds - faster normal monitoring
@@ -558,7 +558,7 @@ const ve = {
   // Fewer retry attempts for faster response
   retryDelay: 1e3
   // 1 second between retries
-}, ro = {
+}, no = {
   ...ve,
   normalCheckInterval: 6e4,
   // 1 minute - less frequent monitoring
@@ -603,28 +603,28 @@ function fs() {
       return ve;
   }
 }
-function Qt(a) {
+function Za(t) {
   return {
     ...ve,
-    ...a
+    ...t
   };
 }
-const no = {
+const io = {
   default: ve,
-  fast: ao,
-  conservative: ro,
+  fast: ro,
+  conservative: no,
   development: ds,
   production: ps
 };
-function Zt(a) {
-  return no[a];
+function et(t) {
+  return io[t];
 }
-const ea = {
+const st = {
   immediate: "Immediate (0-2 seconds) - When logout is detected via auth events",
   fast: "Fast (2-5 seconds) - When fast monitoring is active",
   normal: "Normal (up to 30 seconds) - Regular monitoring interval",
   conservative: "Conservative (up to 60 seconds) - Less frequent monitoring"
-}, sa = {
+}, ot = {
   manualLogout: {
     timing: "Immediate (0-2 seconds)",
     description: "User clicks logout button",
@@ -651,219 +651,219 @@ const ea = {
     method: "Storage event listener + fast monitoring"
   }
 };
-function io(a) {
-  const o = C(!0), t = C(null), i = C(!1), w = C(!1), _ = C(null), W = C(null), T = C(null), N = { ...fs(), ...a }, m = N.normalCheckInterval, k = N.fastCheckInterval, p = N.fastMonitoringDuration, c = N.maxRetryAttempts, R = N.retryDelay, f = X(() => !o.value && t.value !== null), u = X(
+function lo(t) {
+  const s = A(!0), a = A(null), n = A(!1), w = A(!1), _ = A(null), M = A(null), W = A(null), H = { ...fs(), ...t }, m = H.normalCheckInterval, k = H.fastCheckInterval, p = H.fastMonitoringDuration, c = H.maxRetryAttempts, N = H.retryDelay, f = q(() => !s.value && a.value !== null), u = q(
     () => {
-      var A, D;
-      return ((A = t.value) == null ? void 0 : A.canRetry) && ((D = t.value) == null ? void 0 : D.type) !== "manual_check_failed";
+      var E, x;
+      return ((E = a.value) == null ? void 0 : E.canRetry) && ((x = a.value) == null ? void 0 : x.type) !== "manual_check_failed";
     }
-  ), L = (A) => {
-    var E;
+  ), L = (E) => {
+    var C;
     if (typeof document > "u")
       return null;
-    const F = `; ${document.cookie}`.split(`; ${A}=`);
-    return F.length === 2 && ((E = F.pop()) == null ? void 0 : E.split(";").shift()) || null;
-  }, U = async () => {
-    var A, D;
+    const B = `; ${document.cookie}`.split(`; ${E}=`);
+    return B.length === 2 && ((C = B.pop()) == null ? void 0 : C.split(";").shift()) || null;
+  }, P = async () => {
+    var E, x;
     try {
       console.log("[SessionMonitor] Validating session...");
-      const F = L("sb-access-token"), E = L("sb-refresh-token");
-      if (!F || !E)
+      const B = L("sb-access-token"), C = L("sb-refresh-token");
+      if (!B || !C)
         return console.log("[SessionMonitor] No tokens found in cookies"), !1;
-      const G = await te();
+      const F = await ae();
       let Z = null, ne = null;
       for (let se = 1; se <= 2; se++)
         try {
-          const de = await G.auth.getSession();
+          const de = await F.auth.getSession();
           Z = de.data.session, ne = de.error;
           break;
         } catch (de) {
           if (console.warn(`[SessionMonitor] Network error on attempt ${se}:`, de), se === 2)
-            return console.log("[SessionMonitor] Network issues detected, maintaining current session state"), o.value;
+            return console.log("[SessionMonitor] Network issues detected, maintaining current session state"), s.value;
           await new Promise((fe) => setTimeout(fe, 1e3));
         }
       if (ne)
-        return console.warn("[SessionMonitor] Error getting session:", ne), (A = ne.message) != null && A.includes("Invalid JWT") || (D = ne.message) != null && D.includes("JWT expired") ? !1 : o.value;
+        return console.warn("[SessionMonitor] Error getting session:", ne), (E = ne.message) != null && E.includes("Invalid JWT") || (x = ne.message) != null && x.includes("JWT expired") ? !1 : s.value;
       if (!Z || !Z.user)
         return console.log("[SessionMonitor] No valid session found"), !1;
-      const $ = /* @__PURE__ */ new Date(), P = new Date(Z.expires_at * 1e3), ee = 5 * 60 * 1e3;
-      return $ >= new Date(P.getTime() - ee) ? (console.log("[SessionMonitor] Session is close to expiry or expired"), !1) : (console.log("[SessionMonitor] Session is valid"), _.value = /* @__PURE__ */ new Date(), !0);
-    } catch (F) {
-      return console.error("[SessionMonitor] Error validating session:", F), o.value;
+      const R = /* @__PURE__ */ new Date(), $ = new Date(Z.expires_at * 1e3), ee = 5 * 60 * 1e3;
+      return R >= new Date($.getTime() - ee) ? (console.log("[SessionMonitor] Session is close to expiry or expired"), !1) : (console.log("[SessionMonitor] Session is valid"), _.value = /* @__PURE__ */ new Date(), !0);
+    } catch (B) {
+      return console.error("[SessionMonitor] Error validating session:", B), s.value;
     }
   }, b = async () => {
     try {
       console.log("[SessionMonitor] Attempting to restore session...");
-      const A = L("sb-access-token"), D = L("sb-refresh-token");
-      if (!A || !D)
+      const E = L("sb-access-token"), x = L("sb-refresh-token");
+      if (!E || !x)
         return console.log("[SessionMonitor] No tokens available for restoration"), !1;
-      const F = await te(), { data: E, error: G } = await F.auth.setSession({
-        access_token: A,
-        refresh_token: D
+      const B = await ae(), { data: C, error: F } = await B.auth.setSession({
+        access_token: E,
+        refresh_token: x
       });
-      return G ? (console.warn("[SessionMonitor] Error restoring session:", G), !1) : E.session && E.session.user ? (console.log("[SessionMonitor] Session restored successfully"), _.value = /* @__PURE__ */ new Date(), !0) : !1;
-    } catch (A) {
-      return console.error("[SessionMonitor] Error restoring session:", A), !1;
+      return F ? (console.warn("[SessionMonitor] Error restoring session:", F), !1) : C.session && C.session.user ? (console.log("[SessionMonitor] Session restored successfully"), _.value = /* @__PURE__ */ new Date(), !0) : !1;
+    } catch (E) {
+      return console.error("[SessionMonitor] Error restoring session:", E), !1;
     }
-  }, g = (A, D, F = !0) => {
-    console.warn("[SessionMonitor] Session loss detected:", { type: A, message: D }), o.value = !1, t.value = {
-      type: A,
-      message: D,
+  }, g = (E, x, B = !0) => {
+    console.warn("[SessionMonitor] Session loss detected:", { type: E, message: x }), s.value = !1, a.value = {
+      type: E,
+      message: x,
       timestamp: /* @__PURE__ */ new Date(),
-      canRetry: F
+      canRetry: B
     };
-  }, V = async () => {
+  }, U = async () => {
     console.log("[SessionMonitor] Retrying session validation...");
-    for (let A = 1; A <= c; A++) {
-      if (console.log(`[SessionMonitor] Retry attempt ${A}/${c}`), A > 1 && await new Promise((E) => setTimeout(E, R)), await b() && await U())
-        return console.log("[SessionMonitor] Session restored and validated successfully"), o.value = !0, t.value = null, !0;
-      if (await U())
-        return console.log("[SessionMonitor] Session validated successfully on retry"), o.value = !0, t.value = null, !0;
+    for (let E = 1; E <= c; E++) {
+      if (console.log(`[SessionMonitor] Retry attempt ${E}/${c}`), E > 1 && await new Promise((C) => setTimeout(C, N)), await b() && await P())
+        return console.log("[SessionMonitor] Session restored and validated successfully"), s.value = !0, a.value = null, !0;
+      if (await P())
+        return console.log("[SessionMonitor] Session validated successfully on retry"), s.value = !0, a.value = null, !0;
     }
     return console.log("[SessionMonitor] All retry attempts failed"), !1;
   }, v = () => {
-    console.log("[SessionMonitor] Clearing session loss state"), o.value = !0, t.value = null;
+    console.log("[SessionMonitor] Clearing session loss state"), s.value = !0, a.value = null;
   }, S = () => {
-    if (i.value) {
+    if (n.value) {
       console.log("[SessionMonitor] Already monitoring, skipping start");
       return;
     }
-    console.log("[SessionMonitor] Starting session monitoring..."), i.value = !0, setTimeout(async () => {
-      console.log("[SessionMonitor] Performing initial session validation..."), await U() ? console.log("[SessionMonitor] Initial validation successful") : (console.log("[SessionMonitor] Initial validation failed, but waiting for confirmation..."), setTimeout(async () => {
-        await U() || g("session_expired", "Your session has expired. Please log in again.", !0);
+    console.log("[SessionMonitor] Starting session monitoring..."), n.value = !0, setTimeout(async () => {
+      console.log("[SessionMonitor] Performing initial session validation..."), await P() ? console.log("[SessionMonitor] Initial validation successful") : (console.log("[SessionMonitor] Initial validation failed, but waiting for confirmation..."), setTimeout(async () => {
+        await P() || g("session_expired", "Your session has expired. Please log in again.", !0);
       }, 3e3));
-    }, 2e3), W.value = setInterval(async () => {
+    }, 2e3), M.value = setInterval(async () => {
       console.log("[SessionMonitor] Periodic session check...");
-      const A = await U();
-      !A && o.value ? (console.log("[SessionMonitor] Session validation failed, performing confirmation check..."), setTimeout(async () => {
-        await U() || g("session_expired", "Your session has expired. Please log in again.", !0);
-      }, 2e3)) : A && !o.value && (console.log("[SessionMonitor] Session recovered"), v());
+      const E = await P();
+      !E && s.value ? (console.log("[SessionMonitor] Session validation failed, performing confirmation check..."), setTimeout(async () => {
+        await P() || g("session_expired", "Your session has expired. Please log in again.", !0);
+      }, 2e3)) : E && !s.value && (console.log("[SessionMonitor] Session recovered"), v());
     }, m);
-  }, ae = () => {
+  }, te = () => {
     if (w.value) {
       console.log("[SessionMonitor] Fast monitoring already active");
       return;
     }
-    console.log("[SessionMonitor] Starting fast monitoring (5s intervals)..."), w.value = !0, T.value && clearInterval(T.value), T.value = setInterval(async () => {
+    console.log("[SessionMonitor] Starting fast monitoring (5s intervals)..."), w.value = !0, W.value && clearInterval(W.value), W.value = setInterval(async () => {
       console.log("[SessionMonitor] Fast session check...");
-      const A = await U();
-      !A && o.value ? (console.log("[SessionMonitor] Fast monitoring detected potential session loss, confirming..."), setTimeout(async () => {
-        await U() || (g("session_expired", "Your session has expired. Please log in again.", !0), J());
-      }, 1e3)) : A && !o.value && (console.log("[SessionMonitor] Session recovered"), v(), J());
+      const E = await P();
+      !E && s.value ? (console.log("[SessionMonitor] Fast monitoring detected potential session loss, confirming..."), setTimeout(async () => {
+        await P() || (g("session_expired", "Your session has expired. Please log in again.", !0), Y());
+      }, 1e3)) : E && !s.value && (console.log("[SessionMonitor] Session recovered"), v(), Y());
     }, k), setTimeout(() => {
-      w.value && (console.log(`[SessionMonitor] Auto-stopping fast monitoring after ${p / 1e3} seconds`), J());
+      w.value && (console.log(`[SessionMonitor] Auto-stopping fast monitoring after ${p / 1e3} seconds`), Y());
     }, p);
-  }, J = () => {
-    w.value && (console.log("[SessionMonitor] Stopping fast monitoring..."), w.value = !1, T.value && (clearInterval(T.value), T.value = null));
-  }, B = () => {
-    i.value && (console.log("[SessionMonitor] Stopping session monitoring..."), i.value = !1, W.value && (clearInterval(W.value), W.value = null), J());
+  }, Y = () => {
+    w.value && (console.log("[SessionMonitor] Stopping fast monitoring..."), w.value = !1, W.value && (clearInterval(W.value), W.value = null));
+  }, G = () => {
+    n.value && (console.log("[SessionMonitor] Stopping session monitoring..."), n.value = !1, M.value && (clearInterval(M.value), M.value = null), Y());
   }, O = async () => {
     console.log("[SessionMonitor] Manual session check requested");
-    const A = await U();
-    return !A && !await b() ? (g("manual_check_failed", "Session validation failed. Please log in again.", !1), !1) : A;
+    const E = await P();
+    return !E && !await b() ? (g("manual_check_failed", "Session validation failed. Please log in again.", !1), !1) : E;
   }, re = () => {
-    console.log("[SessionMonitor] Network error detected, but not triggering immediate session loss"), o.value || g("network_error", "Network connection lost. Please check your internet connection and try again.", !0);
+    console.log("[SessionMonitor] Network error detected, but not triggering immediate session loss"), s.value || g("network_error", "Network connection lost. Please check your internet connection and try again.", !0);
   }, j = () => {
     if (typeof window > "u")
       return;
-    const A = () => {
-      var E;
-      console.log("[SessionMonitor] Network connection restored"), f.value && ((E = t.value) == null ? void 0 : E.type) === "network_error" && setTimeout(() => V(), 1e3);
-    }, D = () => {
+    const E = () => {
+      var C;
+      console.log("[SessionMonitor] Network connection restored"), f.value && ((C = a.value) == null ? void 0 : C.type) === "network_error" && setTimeout(() => U(), 1e3);
+    }, x = () => {
       console.log("[SessionMonitor] Network connection lost"), re();
-    }, F = (E) => {
-      console.log("[SessionMonitor] Logout detected, starting fast monitoring for immediate detection"), ae();
+    }, B = (C) => {
+      console.log("[SessionMonitor] Logout detected, starting fast monitoring for immediate detection"), te();
     };
-    return window.addEventListener("online", A), window.addEventListener("offline", D), window.addEventListener("session-logout-detected", F), () => {
-      window.removeEventListener("online", A), window.removeEventListener("offline", D), window.removeEventListener("session-logout-detected", F);
+    return window.addEventListener("online", E), window.addEventListener("offline", x), window.addEventListener("session-logout-detected", B), () => {
+      window.removeEventListener("online", E), window.removeEventListener("offline", x), window.removeEventListener("session-logout-detected", B);
     };
   };
   return be(() => {
     console.log("[SessionMonitor] Mounted, setting up monitoring"), S(), j();
   }), cs(() => {
-    console.log("[SessionMonitor] Unmounted, cleaning up"), B();
+    console.log("[SessionMonitor] Unmounted, cleaning up"), G();
   }), {
     // State
-    isSessionValid: o,
-    sessionLossEvent: t,
-    isMonitoring: i,
+    isSessionValid: s,
+    sessionLossEvent: a,
+    isMonitoring: n,
     isFastMonitoring: w,
     lastValidSession: _,
     // Computed
     hasSessionLoss: f,
     canRetrySession: u,
     // Methods
-    validateSession: U,
+    validateSession: P,
     restoreSession: b,
-    retrySession: V,
+    retrySession: U,
     clearSessionLoss: v,
     startMonitoring: S,
-    stopMonitoring: B,
-    startFastMonitoring: ae,
-    stopFastMonitoring: J,
+    stopMonitoring: G,
+    startFastMonitoring: te,
+    stopFastMonitoring: Y,
     checkSession: O,
     handleNetworkError: re
   };
 }
-const lo = js("workspace", () => {
-  const a = C(null), o = C([]), t = C(null), i = (m) => {
-    a.value = m, localStorage.setItem("current_workspace", JSON.stringify(m));
+const co = zs("workspace", () => {
+  const t = A(null), s = A([]), a = A(null), n = (m) => {
+    t.value = m, localStorage.setItem("current_workspace", JSON.stringify(m));
   }, w = (m) => {
-    o.value = m, localStorage.setItem("available_workspaces", JSON.stringify(m));
+    s.value = m, localStorage.setItem("available_workspaces", JSON.stringify(m));
   };
   return {
-    currentWorkspace: a,
-    workspaces: o,
-    user: t,
-    setCurrentWorkspace: i,
+    currentWorkspace: t,
+    workspaces: s,
+    user: a,
+    setCurrentWorkspace: n,
     setWorkspaces: w,
     setUser: (m) => {
-      t.value = m, localStorage.setItem("user_info", JSON.stringify(m));
+      a.value = m, localStorage.setItem("user_info", JSON.stringify(m));
     },
     loadPersistedData: () => {
       const m = localStorage.getItem("current_workspace");
       if (m)
         try {
-          a.value = JSON.parse(m);
+          t.value = JSON.parse(m);
         } catch (c) {
           console.error("Error loading persisted workspace:", c);
         }
       const k = localStorage.getItem("available_workspaces");
       if (k)
         try {
-          o.value = JSON.parse(k);
+          s.value = JSON.parse(k);
         } catch (c) {
           console.error("Error loading persisted workspaces:", c);
         }
       const p = localStorage.getItem("user_info");
       if (p)
         try {
-          t.value = JSON.parse(p);
+          a.value = JSON.parse(p);
         } catch (c) {
           console.error("Error loading persisted user:", c);
         }
     },
     clearData: () => {
-      a.value = null, o.value = [], t.value = null, localStorage.removeItem("current_workspace"), localStorage.removeItem("available_workspaces"), localStorage.removeItem("user_info");
+      t.value = null, s.value = [], a.value = null, localStorage.removeItem("current_workspace"), localStorage.removeItem("available_workspaces"), localStorage.removeItem("user_info");
     },
     loadWorkspaces: async (m = !1) => {
       try {
-        const { data: { user: k } } = await Ue.auth.getUser();
+        const { data: { user: k } } = await Pe.auth.getUser();
         if (!k)
           return [];
-        let p = Ue.from("workspaces").select(`
+        let p = Pe.from("workspaces").select(`
           id, title, description, parent_workspace_id, created_by, archived, created_at, git_repo, 
           workspace_access!inner ( access_type, shared_with_user_id ),
           workspace_activities!left ( updated_at )
         `).eq("workspace_access.shared_with_user_id", k.id);
         m || (p = p.eq("archived", !1));
-        const { data: c, error: R } = await p;
-        if (R)
-          throw R;
+        const { data: c, error: N } = await p;
+        if (N)
+          throw N;
         const f = /* @__PURE__ */ new Map();
         (c || []).forEach((g) => {
-          (g.workspace_access || []).forEach((V) => {
-            V.shared_with_user_id === k.id && f.set(g.id, V);
+          (g.workspace_access || []).forEach((U) => {
+            U.shared_with_user_id === k.id && f.set(g.id, U);
           });
         });
         const u = [...new Set(
@@ -871,15 +871,15 @@ const lo = js("workspace", () => {
         )];
         let L = [];
         if (u.length) {
-          let g = Ue.from("workspaces").select("id, title, description, parent_workspace_id, created_by, archived, created_at").in("id", u);
+          let g = Pe.from("workspaces").select("id, title, description, parent_workspace_id, created_by, archived, created_at").in("id", u);
           m || (g = g.eq("archived", !1));
-          const { data: V, error: v } = await g;
+          const { data: U, error: v } = await g;
           if (v)
             throw v;
-          L = V || [];
+          L = U || [];
         }
         const b = [...c || [], ...L].map((g) => {
-          var V, v, S;
+          var U, v, S;
           return {
             id: g.id,
             title: g.title,
@@ -888,35 +888,35 @@ const lo = js("workspace", () => {
             created_by: g.created_by,
             archived: g.archived,
             created_at: g.created_at,
-            latest_activity: ((v = (V = g.workspace_activities) == null ? void 0 : V[0]) == null ? void 0 : v.updated_at) || g.created_at,
+            latest_activity: ((v = (U = g.workspace_activities) == null ? void 0 : U[0]) == null ? void 0 : v.updated_at) || g.created_at,
             hasAccess: f.has(g.id),
             accessType: ((S = f.get(g.id)) == null ? void 0 : S.access_type) || null
           };
         });
-        return b.sort((g, V) => new Date(V.latest_activity) - new Date(g.latest_activity)), w(b), b;
+        return b.sort((g, U) => new Date(U.latest_activity) - new Date(g.latest_activity)), w(b), b;
       } catch (k) {
         return console.error("loadWorkspaces error", k), [];
       }
     }
   };
 });
-let Be = null;
-const oa = (a) => {
-  Be = a.token, console.log("🔧 GitHub token configured");
-}, co = () => Be, ta = () => Be !== null;
-function uo() {
-  const a = C({
+let Ge = null;
+const at = (t) => {
+  Ge = t.token, console.log("🔧 GitHub token configured");
+}, uo = () => Ge, tt = () => Ge !== null;
+function po() {
+  const t = A({
     user: null,
     isAuthenticated: !1,
     isLoading: !0,
     error: null
-  }), o = C(window.location.href), t = async () => {
-    var m, k, p, c, R, f, u, L;
+  }), s = A(window.location.href), a = async () => {
+    var m, k, p, c, N, f, u, L;
     try {
-      a.value.isLoading = !0;
-      const U = await te(), { data: { session: b }, error: g } = await U.auth.getSession();
+      t.value.isLoading = !0;
+      const P = await ae(), { data: { session: b }, error: g } = await P.auth.getSession();
       if (g) {
-        console.error("Error checking auth status:", g), a.value = {
+        console.error("Error checking auth status:", g), t.value = {
           user: null,
           isAuthenticated: !1,
           isLoading: !1,
@@ -924,114 +924,114 @@ function uo() {
         };
         return;
       }
-      b != null && b.user ? (a.value = {
+      b != null && b.user ? (t.value = {
         user: {
           id: b.user.id,
           email: b.user.email || "",
           name: ((m = b.user.user_metadata) == null ? void 0 : m.full_name) || ((k = b.user.user_metadata) == null ? void 0 : k.name) || ((p = b.user.email) == null ? void 0 : p.split("@")[0]) || "User",
-          avatar_url: ((c = b.user.user_metadata) == null ? void 0 : c.avatar_url) || ((R = b.user.user_metadata) == null ? void 0 : R.picture) || null,
-          initials: (((f = b.user.user_metadata) == null ? void 0 : f.full_name) || ((u = b.user.user_metadata) == null ? void 0 : u.name) || ((L = b.user.email) == null ? void 0 : L.split("@")[0]) || "U").split(" ").map((V) => V[0]).join("").toUpperCase().substring(0, 2)
+          avatar_url: ((c = b.user.user_metadata) == null ? void 0 : c.avatar_url) || ((N = b.user.user_metadata) == null ? void 0 : N.picture) || null,
+          initials: (((f = b.user.user_metadata) == null ? void 0 : f.full_name) || ((u = b.user.user_metadata) == null ? void 0 : u.name) || ((L = b.user.email) == null ? void 0 : L.split("@")[0]) || "U").split(" ").map((U) => U[0]).join("").toUpperCase().substring(0, 2)
         },
         isAuthenticated: !0,
         isLoading: !1,
         error: null
-      }, b.access_token && Se(_e, b.access_token), b.refresh_token && Se(ye, b.refresh_token), Ne()) : a.value = {
+      }, b.access_token && Se(_e, b.access_token), b.refresh_token && Se(ye, b.refresh_token), He()) : t.value = {
         user: null,
         isAuthenticated: !1,
         isLoading: !1,
         error: null
       };
-    } catch (U) {
-      console.error("Auth check failed:", U), a.value = {
+    } catch (P) {
+      console.error("Auth check failed:", P), t.value = {
         user: null,
         isAuthenticated: !1,
         isLoading: !1,
-        error: U.message || "Authentication check failed"
+        error: P.message || "Authentication check failed"
       };
     }
-  }, i = async (m, k) => {
+  }, n = async (m, k) => {
     try {
-      const p = await te(), { error: c } = await p.auth.signInWithPassword({
+      const p = await ae(), { error: c } = await p.auth.signInWithPassword({
         email: m,
         password: k
       });
-      return c ? { success: !1, error: c.message } : (await t(), sessionStorage.setItem("post-login-redirect", o.value), { success: !0 });
+      return c ? { success: !1, error: c.message } : (await a(), sessionStorage.setItem("post-login-redirect", s.value), { success: !0 });
     } catch (p) {
       return console.error("Login error:", p), { success: !1, error: p.message || "Login failed" };
     }
   }, w = async (m, k) => {
     var p;
     try {
-      const c = await te(), { data: R, error: f } = await c.auth.signUp({
+      const c = await ae(), { data: N, error: f } = await c.auth.signUp({
         email: m,
         password: k
       });
-      return f ? { success: !1, error: f.message } : R.user && !R.user.email_confirmed_at ? { success: !0, needsConfirmation: !0 } : (p = R.session) != null && p.user ? (await t(), sessionStorage.setItem("post-login-redirect", o.value), { success: !0 }) : { success: !1, error: "No session created" };
+      return f ? { success: !1, error: f.message } : N.user && !N.user.email_confirmed_at ? { success: !0, needsConfirmation: !0 } : (p = N.session) != null && p.user ? (await a(), sessionStorage.setItem("post-login-redirect", s.value), { success: !0 }) : { success: !1, error: "No session created" };
     } catch (c) {
       return console.error("Signup error:", c), { success: !1, error: c.message || "Signup failed" };
     }
   }, _ = async (m) => {
     try {
       const k = `${window.location.origin}/auth/callback`;
-      console.log("[OAuth] Starting login with provider:", m), console.log("[OAuth] Redirect URL:", k), console.log("[OAuth] Current URL:", o.value), console.log("[OAuth] Current origin:", window.location.origin);
-      const p = await te(), { error: c } = await p.auth.signInWithOAuth({
+      console.log("[OAuth] Starting login with provider:", m), console.log("[OAuth] Redirect URL:", k), console.log("[OAuth] Current URL:", s.value), console.log("[OAuth] Current origin:", window.location.origin);
+      const p = await ae(), { error: c } = await p.auth.signInWithOAuth({
         provider: m,
         options: {
           redirectTo: k,
           queryParams: {
-            redirect_origin: o.value
+            redirect_origin: s.value
           }
         }
       });
       if (c)
         return console.error("[OAuth] Error:", c), { success: !1, error: c.message };
-      const R = o.value || window.location.href;
-      return sessionStorage.setItem("post-login-redirect", R), localStorage.setItem("post-login-redirect", R), console.log("[OAuth] Stored redirect URL:", R), console.log("[OAuth] Current URL value:", o.value), console.log("[OAuth] Window location href:", window.location.href), { success: !0 };
+      const N = s.value || window.location.href;
+      return sessionStorage.setItem("post-login-redirect", N), localStorage.setItem("post-login-redirect", N), console.log("[OAuth] Stored redirect URL:", N), console.log("[OAuth] Current URL value:", s.value), console.log("[OAuth] Window location href:", window.location.href), { success: !0 };
     } catch (k) {
       return console.error("OAuth login error:", k), { success: !1, error: k.message || "OAuth login failed" };
     }
-  }, W = async () => {
+  }, M = async () => {
     try {
-      const m = await te(), { error: k } = await m.auth.signOut();
-      k && console.error("Logout error:", k), a.value = {
+      const m = await ae(), { error: k } = await m.auth.signOut();
+      k && console.error("Logout error:", k), t.value = {
         user: null,
         isAuthenticated: !1,
         isLoading: !1,
         error: null
-      }, ke(_e), ke(ye), De();
+      }, ke(_e), ke(ye), xe();
     } catch (m) {
       console.error("Logout error:", m);
     }
-  }, T = async (m) => {
+  }, W = async (m) => {
     try {
-      const k = await te(), { error: p } = await k.auth.resetPasswordForEmail(m, {
+      const k = await ae(), { error: p } = await k.auth.resetPasswordForEmail(m, {
         redirectTo: `${window.location.origin}/auth/reset-password`
       });
       return p ? { success: !1, error: p.message } : { success: !0 };
     } catch (k) {
       return console.error("Password reset error:", k), { success: !1, error: k.message || "Password reset failed" };
     }
-  }, N = async () => {
+  }, H = async () => {
     try {
-      (await te()).auth.onAuthStateChange((k, p) => {
+      (await ae()).auth.onAuthStateChange((k, p) => {
         var c;
         switch (console.log("Auth state changed:", k, (c = p == null ? void 0 : p.user) == null ? void 0 : c.email), k) {
           case "SIGNED_IN":
-            p != null && p.user && t();
+            p != null && p.user && a();
             break;
           case "SIGNED_OUT":
-            a.value = {
+            t.value = {
               user: null,
               isAuthenticated: !1,
               isLoading: !1,
               error: null
-            }, ke(_e), ke(ye), De();
+            }, ke(_e), ke(ye), xe();
             break;
           case "TOKEN_REFRESHED":
-            p != null && p.access_token && Se(_e, p.access_token), p != null && p.refresh_token && Se(ye, p.refresh_token), Ne();
+            p != null && p.access_token && Se(_e, p.access_token), p != null && p.refresh_token && Se(ye, p.refresh_token), He();
             break;
           case "USER_UPDATED":
-            p != null && p.user && t();
+            p != null && p.user && a();
             break;
         }
       });
@@ -1040,41 +1040,41 @@ function uo() {
     }
   };
   return be(async () => {
-    N(), await t();
+    H(), await a();
   }), pe(() => window.location.href, (m) => {
-    o.value = m;
+    s.value = m;
   }), {
-    authState: X(() => a.value),
-    isAuthenticated: X(() => a.value.isAuthenticated),
-    user: X(() => a.value.user),
-    isLoading: X(() => a.value.isLoading),
-    checkAuthStatus: t,
-    loginWithEmail: i,
+    authState: q(() => t.value),
+    isAuthenticated: q(() => t.value.isAuthenticated),
+    user: q(() => t.value.user),
+    isLoading: q(() => t.value.isLoading),
+    checkAuthStatus: a,
+    loginWithEmail: n,
     signupWithEmail: w,
     loginWithProvider: _,
-    logout: W,
-    resetPassword: T,
-    currentUrl: X(() => o.value)
+    logout: M,
+    resetPassword: W,
+    currentUrl: q(() => s.value)
   };
 }
-const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { class: "login-buttons" }, ho = {
+const fo = { class: "login-container" }, go = { class: "logo-section" }, ho = { class: "login-buttons" }, vo = {
   key: 0,
   class: "forgot-password"
-}, vo = { class: "signup-link" }, wo = /* @__PURE__ */ ue({
+}, wo = { class: "signup-link" }, mo = /* @__PURE__ */ ue({
   __name: "LoginModal",
   props: {
     modelValue: { type: Boolean }
   },
   emits: ["update:modelValue", "login-success"],
-  setup(a, { emit: o }) {
-    const t = a, i = o, w = X({
-      get: () => t.modelValue,
-      set: (v) => i("update:modelValue", v)
-    }), _ = C(!1), W = C(!1), T = C(), { loginWithEmail: N, signupWithEmail: m, loginWithProvider: k, resetPassword: p } = uo(), c = Hs({
+  setup(t, { emit: s }) {
+    const a = t, n = s, w = q({
+      get: () => a.modelValue,
+      set: (v) => n("update:modelValue", v)
+    }), _ = A(!1), M = A(!1), W = A(), { loginWithEmail: H, signupWithEmail: m, loginWithProvider: k, resetPassword: p } = po(), c = xs({
       email: "",
       password: "",
       confirmPassword: ""
-    }), R = X(() => ({
+    }), N = q(() => ({
       email: [
         { required: !0, message: "Please enter your email", trigger: "blur" },
         { type: "email", message: "Please enter a valid email", trigger: "blur" }
@@ -1087,8 +1087,8 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
         confirmPassword: [
           { required: !0, message: "Please confirm your password", trigger: "blur" },
           {
-            validator: (v, S, ae) => {
-              S !== c.password ? ae(new Error("Passwords do not match")) : ae();
+            validator: (v, S, te) => {
+              S !== c.password ? te(new Error("Passwords do not match")) : te();
             },
             trigger: "blur"
           }
@@ -1096,29 +1096,29 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
       } : {}
     })), f = () => {
       var v;
-      _.value = !_.value, c.email = "", c.password = "", c.confirmPassword = "", (v = T.value) == null || v.clearValidate();
+      _.value = !_.value, c.email = "", c.password = "", c.confirmPassword = "", (v = W.value) == null || v.clearValidate();
     }, u = () => {
       var v;
-      w.value = !1, c.email = "", c.password = "", c.confirmPassword = "", _.value = !1, (v = T.value) == null || v.clearValidate();
+      w.value = !1, c.email = "", c.password = "", c.confirmPassword = "", _.value = !1, (v = W.value) == null || v.clearValidate();
     }, L = async () => {
-      if (T.value)
+      if (W.value)
         try {
-          await T.value.validate(), W.value = !0, _.value ? await b() : await U();
+          await W.value.validate(), M.value = !0, _.value ? await b() : await P();
         } catch (v) {
           console.error("Form validation failed:", v);
         } finally {
-          W.value = !1;
+          M.value = !1;
         }
-    }, U = async () => {
-      const v = await N(c.email, c.password);
-      v.success ? (z.success("Login successful"), i("login-success", { email: c.email }), u()) : z.error("Login failed: " + v.error);
+    }, P = async () => {
+      const v = await H(c.email, c.password);
+      v.success ? (z.success("Login successful"), n("login-success", { email: c.email }), u()) : z.error("Login failed: " + v.error);
     }, b = async () => {
       const v = await m(c.email, c.password);
-      v.success ? v.needsConfirmation ? z.success("Please check your email to confirm your account") : (z.success("Account created successfully"), i("login-success", { email: c.email }), u()) : z.error("Signup failed: " + v.error);
+      v.success ? v.needsConfirmation ? z.success("Please check your email to confirm your account") : (z.success("Account created successfully"), n("login-success", { email: c.email }), u()) : z.error("Signup failed: " + v.error);
     }, g = async (v) => {
       const S = await k(v);
       S.success ? z.success("Redirecting to login provider...") : z.error("Login failed: " + S.error);
-    }, V = async () => {
+    }, U = async () => {
       if (!c.email) {
         z.warning("Please enter your email address first");
         return;
@@ -1127,7 +1127,7 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
       v.success ? z.success("Password reset email sent! Please check your inbox.") : z.error("Failed to send reset email: " + v.error);
     };
     return (v, S) => {
-      const ae = ie("el-icon"), J = ie("el-input"), B = ie("el-form-item"), O = ie("el-button"), re = ie("el-dialog");
+      const te = ie("el-icon"), Y = ie("el-input"), G = ie("el-form-item"), O = ie("el-button"), re = ie("el-dialog");
       return y(), oe(re, {
         modelValue: w.value,
         "onUpdate:modelValue": S[6] || (S[6] = (j) => w.value = j),
@@ -1140,23 +1140,23 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
         onClose: u
       }, {
         default: d(() => [
-          n("div", po, [
-            n("div", fo, [
-              n("h2", null, K(_.value ? "Create Account" : "Welcome Back"), 1),
-              n("p", null, K(_.value ? "Sign up to get started with your account" : "Sign in to continue to your account"), 1)
+          i("div", fo, [
+            i("div", go, [
+              i("h2", null, K(_.value ? "Create Account" : "Welcome Back"), 1),
+              i("p", null, K(_.value ? "Sign up to get started with your account" : "Sign in to continue to your account"), 1)
             ]),
-            h(H(Ns), {
+            h(D(Os), {
               model: c,
-              rules: R.value,
+              rules: N.value,
               ref_key: "formRef",
-              ref: T,
+              ref: W,
               class: "login-form",
               onSubmit: ge(L, ["prevent"])
             }, {
               default: d(() => [
-                h(B, { prop: "email" }, {
+                h(G, { prop: "email" }, {
                   default: d(() => [
-                    h(J, {
+                    h(Y, {
                       modelValue: c.email,
                       "onUpdate:modelValue": S[0] || (S[0] = (j) => c.email = j),
                       placeholder: "Email",
@@ -1165,9 +1165,9 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                       class: "form-input"
                     }, {
                       prefix: d(() => [
-                        h(ae, null, {
+                        h(te, null, {
                           default: d(() => [
-                            h(H(Xs))
+                            h(D(Qs))
                           ]),
                           _: 1
                         })
@@ -1177,9 +1177,9 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                   ]),
                   _: 1
                 }),
-                h(B, { prop: "password" }, {
+                h(G, { prop: "password" }, {
                   default: d(() => [
-                    h(J, {
+                    h(Y, {
                       modelValue: c.password,
                       "onUpdate:modelValue": S[1] || (S[1] = (j) => c.password = j),
                       placeholder: "Password",
@@ -1189,9 +1189,9 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                       class: "form-input"
                     }, {
                       prefix: d(() => [
-                        h(ae, null, {
+                        h(te, null, {
                           default: d(() => [
-                            h(H(ls))
+                            h(D(ls))
                           ]),
                           _: 1
                         })
@@ -1201,12 +1201,12 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                   ]),
                   _: 1
                 }),
-                _.value ? (y(), oe(B, {
+                _.value ? (y(), oe(G, {
                   key: 0,
                   prop: "confirmPassword"
                 }, {
                   default: d(() => [
-                    h(J, {
+                    h(Y, {
                       modelValue: c.confirmPassword,
                       "onUpdate:modelValue": S[2] || (S[2] = (j) => c.confirmPassword = j),
                       placeholder: "Confirm Password",
@@ -1216,9 +1216,9 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                       class: "form-input"
                     }, {
                       prefix: d(() => [
-                        h(ae, null, {
+                        h(te, null, {
                           default: d(() => [
-                            h(H(ls))
+                            h(D(ls))
                           ]),
                           _: 1
                         })
@@ -1227,18 +1227,18 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                     }, 8, ["modelValue"])
                   ]),
                   _: 1
-                })) : Y("", !0),
-                h(B, null, {
+                })) : X("", !0),
+                h(G, null, {
                   default: d(() => [
                     h(O, {
                       type: "primary",
                       class: "submit-button",
-                      loading: W.value,
+                      loading: M.value,
                       onClick: L,
                       size: "large"
                     }, {
                       default: d(() => [
-                        q(K(_.value ? "Sign Up" : "Sign In"), 1)
+                        J(K(_.value ? "Sign Up" : "Sign In"), 1)
                       ]),
                       _: 1
                     }, 8, ["loading"])
@@ -1248,18 +1248,18 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
               ]),
               _: 1
             }, 8, ["model", "rules"]),
-            S[10] || (S[10] = n("div", { class: "divider" }, [
-              n("span", null, "Or continue with")
+            S[10] || (S[10] = i("div", { class: "divider" }, [
+              i("span", null, "Or continue with")
             ], -1)),
-            n("div", go, [
+            i("div", ho, [
               h(O, {
                 class: "login-button google",
                 onClick: S[3] || (S[3] = (j) => g("google")),
                 size: "large"
               }, {
                 default: d(() => [...S[7] || (S[7] = [
-                  n("span", { class: "social-icon" }, "G", -1),
-                  q(" Google ", -1)
+                  i("span", { class: "social-icon" }, "G", -1),
+                  J(" Google ", -1)
                 ])]),
                 _: 1
               }),
@@ -1269,8 +1269,8 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                 size: "large"
               }, {
                 default: d(() => [...S[8] || (S[8] = [
-                  n("span", { class: "social-icon" }, "⚡", -1),
-                  q(" GitHub ", -1)
+                  i("span", { class: "social-icon" }, "⚡", -1),
+                  J(" GitHub ", -1)
                 ])]),
                 _: 1
               }),
@@ -1280,22 +1280,22 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
                 size: "large"
               }, {
                 default: d(() => [...S[9] || (S[9] = [
-                  n("span", { class: "social-icon" }, "X", -1),
-                  q(" X (Twitter) ", -1)
+                  i("span", { class: "social-icon" }, "X", -1),
+                  J(" X (Twitter) ", -1)
                 ])]),
                 _: 1
               })
             ]),
-            S[11] || (S[11] = n("div", { class: "terms" }, " By continuing, you agree to AI Workspace's Terms of Service and Privacy Policy ", -1)),
-            _.value ? Y("", !0) : (y(), x("div", ho, [
-              n("a", {
+            S[11] || (S[11] = i("div", { class: "terms" }, " By continuing, you agree to AI Workspace's Terms of Service and Privacy Policy ", -1)),
+            _.value ? X("", !0) : (y(), T("div", vo, [
+              i("a", {
                 href: "#",
-                onClick: ge(V, ["prevent"])
+                onClick: ge(U, ["prevent"])
               }, "Forgot Password?")
             ])),
-            n("div", vo, [
-              q(K(_.value ? "Already have an account?" : "Don't have an account?") + " ", 1),
-              n("a", {
+            i("div", wo, [
+              J(K(_.value ? "Already have an account?" : "Don't have an account?") + " ", 1),
+              i("a", {
                 href: "#",
                 onClick: ge(f, ["prevent"])
               }, K(_.value ? "Sign in" : "Sign up"), 1)
@@ -1307,18 +1307,18 @@ const po = { class: "login-container" }, fo = { class: "logo-section" }, go = { 
     };
   }
 });
-const $e = (a, o) => {
-  const t = a.__vccOpts || a;
-  for (const [i, w] of o)
-    t[i] = w;
-  return t;
-}, mo = /* @__PURE__ */ $e(wo, [["__scopeId", "data-v-684a3f28"]]), ko = { class: "session-loss-content" }, _o = { class: "session-loss-icon" }, yo = { class: "session-loss-message" }, So = {
+const Re = (t, s) => {
+  const a = t.__vccOpts || t;
+  for (const [n, w] of s)
+    a[n] = w;
+  return a;
+}, ko = /* @__PURE__ */ Re(mo, [["__scopeId", "data-v-684a3f28"]]), _o = { class: "session-loss-content" }, yo = { class: "session-loss-icon" }, So = { class: "session-loss-message" }, bo = {
   key: 0,
   class: "session-loss-details"
-}, bo = { class: "detail-item" }, Co = { class: "detail-value" }, Ao = { class: "detail-item" }, Eo = { class: "detail-value" }, Io = { class: "session-loss-actions" }, Lo = {
+}, Ao = { class: "detail-item" }, Eo = { class: "detail-value" }, Co = { class: "detail-item" }, Io = { class: "detail-value" }, Lo = { class: "session-loss-actions" }, Uo = {
   key: 0,
   class: "retry-status"
-}, Vo = { class: "retry-message" }, Uo = /* @__PURE__ */ ue({
+}, Po = { class: "retry-message" }, Vo = /* @__PURE__ */ ue({
   __name: "SessionLossModal",
   props: {
     modelValue: { type: Boolean },
@@ -1326,10 +1326,10 @@ const $e = (a, o) => {
     canRetrySession: { type: Boolean }
   },
   emits: ["update:modelValue", "retry", "login", "refresh"],
-  setup(a, { emit: o }) {
-    const t = a, i = o, w = C(!1), _ = C(0), W = C(void 0), T = C(""), N = X({
-      get: () => t.modelValue,
-      set: (f) => i("update:modelValue", f)
+  setup(t, { emit: s }) {
+    const a = t, n = s, w = A(!1), _ = A(0), M = A(void 0), W = A(""), H = q({
+      get: () => a.modelValue,
+      set: (f) => n("update:modelValue", f)
     }), m = (f) => {
       switch (f) {
         case "session_expired":
@@ -1346,31 +1346,31 @@ const $e = (a, o) => {
     }, k = (f) => f.toLocaleString(), p = async () => {
       if (w.value)
         return;
-      w.value = !0, _.value = 0, W.value = void 0, T.value = "Attempting to restore session...";
+      w.value = !0, _.value = 0, M.value = void 0, W.value = "Attempting to restore session...";
       const f = setInterval(() => {
         _.value < 90 && (_.value += Math.random() * 20);
       }, 200);
       try {
-        i("retry"), await new Promise((u) => setTimeout(u, 2e3)), _.value = 100, W.value = "success", T.value = "Session restored successfully!", setTimeout(() => {
-          N.value = !1;
+        n("retry"), await new Promise((u) => setTimeout(u, 2e3)), _.value = 100, M.value = "success", W.value = "Session restored successfully!", setTimeout(() => {
+          H.value = !1;
         }, 1e3);
       } catch {
-        _.value = 100, W.value = "exception", T.value = "Failed to restore session. Please log in again.", z.error("Session restoration failed");
+        _.value = 100, M.value = "exception", W.value = "Failed to restore session. Please log in again.", z.error("Session restoration failed");
       } finally {
         clearInterval(f), setTimeout(() => {
-          w.value = !1, _.value = 0, W.value = void 0, T.value = "";
+          w.value = !1, _.value = 0, M.value = void 0, W.value = "";
         }, 3e3);
       }
     }, c = () => {
-      i("login"), N.value = !1;
-    }, R = () => {
-      i("refresh"), window.location.reload();
+      n("login"), H.value = !1;
+    }, N = () => {
+      n("refresh"), window.location.reload();
     };
-    return pe(() => t.sessionLossEvent, (f) => {
-      f && (w.value = !1, _.value = 0, W.value = void 0, T.value = "");
-    }), (f, u) => (y(), oe(H(Os), {
-      modelValue: N.value,
-      "onUpdate:modelValue": u[0] || (u[0] = (L) => N.value = L),
+    return pe(() => a.sessionLossEvent, (f) => {
+      f && (w.value = !1, _.value = 0, M.value = void 0, W.value = "");
+    }), (f, u) => (y(), oe(D(Bs), {
+      modelValue: H.value,
+      "onUpdate:modelValue": u[0] || (u[0] = (L) => H.value = L),
       title: "Session Expired",
       width: "500px",
       "close-on-click-modal": !1,
@@ -1382,92 +1382,92 @@ const $e = (a, o) => {
       default: d(() => {
         var L;
         return [
-          n("div", ko, [
-            n("div", _o, [
-              h(H(Ve), {
+          i("div", _o, [
+            i("div", yo, [
+              h(D(Ue), {
                 size: "48",
                 color: "#f56c6c"
               }, {
                 default: d(() => [
-                  h(H(us))
+                  h(D(us))
                 ]),
                 _: 1
               })
             ]),
-            n("div", yo, [
-              u[3] || (u[3] = n("h3", null, "Your session has expired", -1)),
-              n("p", null, K(((L = f.sessionLossEvent) == null ? void 0 : L.message) || "Please log in again to continue using the application."), 1),
-              f.sessionLossEvent ? (y(), x("div", So, [
-                n("div", bo, [
-                  u[1] || (u[1] = n("span", { class: "detail-label" }, "Issue:", -1)),
-                  n("span", Co, K(m(f.sessionLossEvent.type)), 1)
+            i("div", So, [
+              u[3] || (u[3] = i("h3", null, "Your session has expired", -1)),
+              i("p", null, K(((L = f.sessionLossEvent) == null ? void 0 : L.message) || "Please log in again to continue using the application."), 1),
+              f.sessionLossEvent ? (y(), T("div", bo, [
+                i("div", Ao, [
+                  u[1] || (u[1] = i("span", { class: "detail-label" }, "Issue:", -1)),
+                  i("span", Eo, K(m(f.sessionLossEvent.type)), 1)
                 ]),
-                n("div", Ao, [
-                  u[2] || (u[2] = n("span", { class: "detail-label" }, "Time:", -1)),
-                  n("span", Eo, K(k(f.sessionLossEvent.timestamp)), 1)
+                i("div", Co, [
+                  u[2] || (u[2] = i("span", { class: "detail-label" }, "Time:", -1)),
+                  i("span", Io, K(k(f.sessionLossEvent.timestamp)), 1)
                 ])
-              ])) : Y("", !0)
+              ])) : X("", !0)
             ]),
-            n("div", Io, [
-              f.canRetrySession && !w.value ? (y(), oe(H(Te), {
+            i("div", Lo, [
+              f.canRetrySession && !w.value ? (y(), oe(D(We), {
                 key: 0,
                 type: "primary",
                 onClick: p,
                 loading: w.value
               }, {
                 default: d(() => [
-                  h(H(Ve), null, {
+                  h(D(Ue), null, {
                     default: d(() => [
-                      h(H(Oe))
+                      h(D(Oe))
                     ]),
                     _: 1
                   }),
-                  u[4] || (u[4] = q(" Try Again ", -1))
+                  u[4] || (u[4] = J(" Try Again ", -1))
                 ]),
                 _: 1
-              }, 8, ["loading"])) : Y("", !0),
-              h(H(Te), {
+              }, 8, ["loading"])) : X("", !0),
+              h(D(We), {
                 type: "primary",
                 onClick: c,
                 disabled: w.value
               }, {
                 default: d(() => [
-                  h(H(Ve), null, {
+                  h(D(Ue), null, {
                     default: d(() => [
-                      h(H(Fe))
+                      h(D(Be))
                     ]),
                     _: 1
                   }),
-                  u[5] || (u[5] = q(" Log In ", -1))
+                  u[5] || (u[5] = J(" Log In ", -1))
                 ]),
                 _: 1
               }, 8, ["disabled"]),
-              f.canRetrySession ? Y("", !0) : (y(), oe(H(Te), {
+              f.canRetrySession ? X("", !0) : (y(), oe(D(We), {
                 key: 1,
                 type: "info",
-                onClick: R,
+                onClick: N,
                 disabled: w.value
               }, {
                 default: d(() => [
-                  h(H(Ve), null, {
+                  h(D(Ue), null, {
                     default: d(() => [
-                      h(H(Oe))
+                      h(D(Oe))
                     ]),
                     _: 1
                   }),
-                  u[6] || (u[6] = q(" Refresh Page ", -1))
+                  u[6] || (u[6] = J(" Refresh Page ", -1))
                 ]),
                 _: 1
               }, 8, ["disabled"]))
             ]),
-            w.value ? (y(), x("div", Lo, [
-              h(H(Fs), {
+            w.value ? (y(), T("div", Uo, [
+              h(D(Fs), {
                 percentage: _.value,
-                status: W.value,
+                status: M.value,
                 "stroke-width": 6
               }, null, 8, ["percentage", "status"]),
-              n("p", Vo, K(T.value), 1)
-            ])) : Y("", !0)
+              i("p", Po, K(W.value), 1)
+            ])) : X("", !0)
           ])
         ];
       }),
@@ -1475,52 +1475,52 @@ const $e = (a, o) => {
     }, 8, ["modelValue"]));
   }
 });
-const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { class: "aiworkspace-header" }, Wo = {
+const Ro = /* @__PURE__ */ Re(Vo, [["__scopeId", "data-v-0dd27f7f"]]), Mo = { class: "aiworkspace-header" }, No = {
   key: 0,
   class: "header-content header-loading"
-}, Ro = { class: "header-center" }, Po = { class: "loading-text" }, xo = { key: 0 }, To = { key: 1 }, Ho = {
+}, $o = { class: "header-center" }, To = { class: "loading-text" }, Wo = { key: 0 }, Do = { key: 1 }, xo = {
   key: 1,
   class: "header-content header-fallback"
-}, Do = {
+}, Ho = {
   key: 2,
   class: "header-content header-restricted"
-}, No = { class: "header-center" }, Oo = { class: "restricted-text" }, Fo = { class: "header-right" }, Go = {
+}, Oo = { class: "header-center" }, Bo = { class: "restricted-text" }, Fo = { class: "header-right" }, Go = {
   key: 3,
   class: "header-content"
-}, Bo = { class: "header-left" }, jo = { class: "logo-section" }, zo = {
+}, jo = { class: "header-left" }, zo = { class: "logo-section" }, Ko = {
   href: "/",
   class: "logo"
-}, Ko = ["src"], Jo = {
+}, Yo = ["src"], Jo = {
   key: 1,
   class: "text-logo"
-}, qo = {
+}, Xo = {
   key: 0,
   class: "header-center"
-}, Yo = { class: "main-navigation" }, Xo = { class: "nav-item" }, Qo = {
+}, qo = { class: "main-navigation" }, Qo = { class: "nav-item" }, Zo = {
   href: "https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard",
   class: "nav-link"
-}, Zo = { class: "workspace-dropdown-item" }, et = ["href"], st = { class: "workspace-icon" }, ot = {
+}, ea = { class: "workspace-dropdown-item" }, sa = ["href"], oa = { class: "workspace-icon" }, aa = {
   key: 1,
   class: "nav-divider"
-}, tt = { class: "nav-item" }, at = ["href", "onClick"], rt = { class: "header-right" }, nt = { class: "user-profile" }, it = { class: "user-info" }, lt = { class: "user-name" }, ct = { class: "user-avatar" }, ut = ["src", "alt"], dt = {
+}, ta = { class: "nav-item" }, ra = ["href", "onClick"], na = { class: "header-right" }, ia = { class: "user-profile" }, la = { class: "user-info" }, ca = { class: "user-name" }, ua = { class: "user-avatar" }, da = ["src", "alt"], pa = {
   key: 1,
   class: "avatar-placeholder"
-}, pt = { class: "version-info" }, ft = { class: "version-hash" }, gt = {
+}, fa = { class: "version-info" }, ga = { class: "version-hash" }, ha = {
   key: 4,
   class: "header-content header-unauthenticated"
-}, ht = { class: "header-left" }, vt = { class: "logo-section" }, wt = {
+}, va = { class: "header-left" }, wa = { class: "logo-section" }, ma = {
   href: "/",
   class: "logo"
-}, mt = ["src"], kt = {
+}, ka = ["src"], _a = {
   key: 1,
   class: "text-logo"
-}, _t = {
+}, ya = {
   key: 0,
   class: "header-right"
-}, yt = { class: "workspace-list" }, St = ["onClick"], bt = { class: "workspace-icon" }, Ct = { class: "workspace-details" }, At = { class: "workspace-members" }, Et = {
+}, Sa = { class: "workspace-list" }, ba = ["onClick"], Aa = { class: "workspace-icon" }, Ea = { class: "workspace-details" }, Ca = { class: "workspace-members" }, Ia = {
   key: 0,
   class: "current-indicator"
-}, It = { class: "update-content" }, Lt = { class: "update-actions" }, Ae = 50, Vt = 6e4, Ut = 30, Mt = /* @__PURE__ */ ue({
+}, La = { class: "update-content" }, Ua = { class: "update-actions" }, Ee = 50, Pa = 6e4, Va = 30, Ra = /* @__PURE__ */ ue({
   __name: "AIWorkspaceHeader",
   props: {
     customLogo: { default: "" },
@@ -1536,17 +1536,17 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
     onLogin: {}
   },
   emits: ["workspaceChange", "logout", "login", "profileClick", "settingsClick"],
-  setup(a, { emit: o }) {
-    const t = a, i = o, { authState: w, logout: _, isLoading: W } = to(), {
-      isSessionValid: T,
-      sessionLossEvent: N,
+  setup(t, { emit: s }) {
+    const a = t, n = s, { authState: w, logout: _, isLoading: M } = to(), {
+      isSessionValid: W,
+      sessionLossEvent: H,
       hasSessionLoss: m,
       canRetrySession: k,
       retrySession: p,
       clearSessionLoss: c
-    } = io(), R = () => {
+    } = lo(), N = () => {
       try {
-        return lo();
+        return co();
       } catch {
         return console.warn("[AIWorkspaceHeader] Pinia not initialized yet, using fallback state"), null;
       }
@@ -1556,82 +1556,82 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
       } catch {
         return !1;
       }
-    }, u = C(R()), L = X(() => !!u.value), U = C(0), b = () => {
-      if (!u.value && U.value < Ae) {
+    }, u = A(N()), L = q(() => !!u.value), P = A(0), b = () => {
+      if (!u.value && P.value < Ee) {
         if (f()) {
-          const s = R();
-          if (s) {
-            u.value = s, console.log("[AIWorkspaceHeader] Pinia store initialized successfully");
+          const o = N();
+          if (o) {
+            u.value = o, console.log("[AIWorkspaceHeader] Pinia store initialized successfully");
             return;
           }
         }
-        U.value++, setTimeout(b, 100);
+        P.value++, setTimeout(b, 100);
       } else
-        U.value >= Ae && console.warn("[AIWorkspaceHeader] Pinia initialization failed after maximum retries, using fallback mode");
+        P.value >= Ee && console.warn("[AIWorkspaceHeader] Pinia initialization failed after maximum retries, using fallback mode");
     };
     be(() => {
       u.value || b();
     });
-    const g = C(!1), V = C(!1), v = C(!1), S = C([]), ae = C([]), J = C({
+    const g = A(!1), U = A(!1), v = A(!1), S = A([]), te = A([]), Y = A({
       name: "",
       email: "",
       avatar_url: null,
       initials: ""
-    }), B = C("unknown"), O = C("unknown"), re = C(!1), j = C(null), A = C(null), D = C(!1), F = C([]), E = C([]), G = C(!1);
-    pe(E, async (s) => {
-      s.length > 0 && L.value && ee.value && await P();
+    }), G = A("unknown"), O = A("unknown"), re = A(!1), j = A(null), E = A(null), x = A(!1), B = A([]), C = A([]), F = A(!1);
+    pe(C, async (o) => {
+      o.length > 0 && L.value && ee.value && await $();
     }, { immediate: !1 }), pe(() => window.location.pathname + window.location.search + window.location.hash, async () => {
-      L.value && ee.value && await P();
+      L.value && ee.value && await $();
     }, { immediate: !1 });
-    const Z = C(window.location.pathname);
-    pe(() => window.location.pathname, (s) => {
-      Z.value = s;
-    }, { immediate: !0 }), pe(L, (s) => {
-      !s && U.value < Ae && b();
+    const Z = A(window.location.pathname);
+    pe(() => window.location.pathname, (o) => {
+      Z.value = o;
+    }, { immediate: !0 }), pe(L, (o) => {
+      !o && P.value < Ee && b();
     });
     const ne = () => {
       try {
-        const s = window.location.pathname.match(/\/single-workspace\/(\d+)/);
-        if (s)
-          return s[1];
+        const o = window.location.pathname.match(/\/single-workspace\/(\d+)/);
+        if (o)
+          return o[1];
         const r = new URLSearchParams(window.location.search).get("workspace_id");
         if (r)
           return r;
         const l = window.location.hash.match(/workspace_id=(\d+)/);
         return l ? l[1] : null;
-      } catch (s) {
-        return console.warn("[AIWorkspaceHeader] Error parsing URL for workspace_id:", s), null;
+      } catch (o) {
+        return console.warn("[AIWorkspaceHeader] Error parsing URL for workspace_id:", o), null;
       }
-    }, $ = () => {
+    }, R = () => {
       try {
         return window.location.pathname.includes("/all-workspace/");
-      } catch (s) {
-        return console.warn("[AIWorkspaceHeader] Error checking all-workspace mode:", s), !1;
+      } catch (o) {
+        return console.warn("[AIWorkspaceHeader] Error checking all-workspace mode:", o), !1;
       }
-    }, P = async () => {
+    }, $ = async () => {
       if (!u.value || !L.value)
         return;
-      const s = $();
-      if (G.value = s, s) {
+      const o = R();
+      if (F.value = o, o) {
         u.value.currentWorkspace = null, localStorage.removeItem("current_workspace"), console.log("[AIWorkspaceHeader] Auto-selected all-workspace mode from URL");
         return;
       }
       const e = ne();
       if (e)
         try {
-          E.value.length === 0 && await Je();
-          const r = E.value.find((l) => l.id.toString() === e);
-          r ? (u.value.setCurrentWorkspace(r), console.log(`[AIWorkspaceHeader] Auto-selected workspace from URL: ${r.title} (ID: ${r.id})`), i("workspaceChange", r)) : console.warn(`[AIWorkspaceHeader] Workspace with ID ${e} not found in available workspaces`);
+          C.value.length === 0 && await Ye();
+          const r = C.value.find((l) => l.id.toString() === e);
+          r ? (u.value.setCurrentWorkspace(r), console.log(`[AIWorkspaceHeader] Auto-selected workspace from URL: ${r.title} (ID: ${r.id})`), n("workspaceChange", r)) : console.warn(`[AIWorkspaceHeader] Workspace with ID ${e} not found in available workspaces`);
         } catch (r) {
           console.error("[AIWorkspaceHeader] Error auto-selecting workspace from URL:", r);
         }
-    }, ee = X(() => w.value.isAuthenticated), se = X(() => u.value ? u.value.currentWorkspace : null), de = X(() => {
+    }, ee = q(() => w.value.isAuthenticated), se = q(() => u.value ? u.value.currentWorkspace : null), de = q(() => {
       try {
         return window.location.pathname.includes("shared-folder");
-      } catch (s) {
-        return console.warn("[AIWorkspaceHeader] Error checking shared-folder URL:", s), !1;
+      } catch (o) {
+        return console.warn("[AIWorkspaceHeader] Error checking shared-folder URL:", o), !1;
       }
-    }), fe = C([
+    }), fe = A([
       { label: "Dashboard", key: "dashboard", url: "/dashboard" },
       { label: "Goals", key: "goals", url: "/goals" },
       { label: "Tasks", key: "tasks", url: "/tasks" },
@@ -1647,7 +1647,7 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
       { label: "AI Fund Analyst", key: "ai_fund_analyst", url: "/ai_fund_analyst" },
       { label: "Contacts", key: "contacts", url: "/contacts" },
       { label: "Settings", key: "settings", url: "/settings" }
-    ]), gs = C([
+    ]), hs = A([
       { label: "Dashboard", key: "dashboard", url: "/dashboard" },
       { label: "All Tasks", key: "tasks", url: "/tasks" },
       { label: "All Goals", key: "goals", url: "/goals" },
@@ -1655,77 +1655,77 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
       { label: "All Drive", key: "files", url: "/files" },
       { label: "All Contacts", key: "contacts", url: "/contacts" },
       { label: "All Settings", key: "settings", url: "/settings" }
-    ]), ze = X(() => G.value ? gs.value : fe.value), hs = X(() => {
+    ]), ze = q(() => F.value ? hs.value : fe.value), vs = q(() => {
       try {
-        const s = Z.value;
+        const o = Z.value;
         let e = "";
-        const r = s.match(/\/all-workspace\/([^\/]+)/);
+        const r = o.match(/\/all-workspace\/([^\/]+)/);
         if (r)
           e = r[1];
         else {
-          const l = s.match(/\/single-workspace\/\d+\/([^\/]+)/);
+          const l = o.match(/\/single-workspace\/\d+\/([^\/]+)/);
           if (l)
             e = l[1];
           else {
-            const M = s.match(/\/([^\/]+)$/);
-            M && (e = M[1]);
+            const V = o.match(/\/([^\/]+)$/);
+            V && (e = V[1]);
           }
         }
         if (e) {
           const l = ze.value.find(
-            (M) => M.key === e || M.url.includes(`/${e}`) || M.url === `/${e}`
+            (V) => V.key === e || V.url.includes(`/${e}`) || V.url === `/${e}`
           );
           if (l)
             return l.label;
         }
         return "Dashboard";
-      } catch (s) {
-        return console.warn("[AIWorkspaceHeader] Error determining current section:", s), "Dashboard";
+      } catch (o) {
+        return console.warn("[AIWorkspaceHeader] Error determining current section:", o), "Dashboard";
       }
-    }), vs = (s) => {
+    }), ws = (o) => {
       const e = /* @__PURE__ */ new Map();
-      s.forEach((M) => {
-        e.set(M.id, { ...M, children: [] });
+      o.forEach((V) => {
+        e.set(V.id, { ...V, children: [] });
       });
       const r = [];
-      e.forEach((M) => {
-        M.parent_workspace_id && e.has(M.parent_workspace_id) ? e.get(M.parent_workspace_id).children.push(M) : r.push(M);
+      e.forEach((V) => {
+        V.parent_workspace_id && e.has(V.parent_workspace_id) ? e.get(V.parent_workspace_id).children.push(V) : r.push(V);
       });
-      const l = (M) => {
-        M.sort((Q, ce) => Q.title.localeCompare(ce.title)), M.forEach((Q) => {
+      const l = (V) => {
+        V.sort((Q, ce) => Q.title.localeCompare(ce.title)), V.forEach((Q) => {
           Q.children && l(Q.children);
         });
       };
       return l(r), r;
-    }, Ke = (s, e = 0, r = []) => (s.forEach((l) => {
+    }, Ke = (o, e = 0, r = []) => (o.forEach((l) => {
       r.push({ ...l, level: e }), l.children && l.children.length && Ke(l.children, e + 1, r);
-    }), r), Je = async () => {
-      var s, e, r;
+    }), r), Ye = async () => {
+      var o, e, r;
       try {
-        const l = await ((s = u.value) == null ? void 0 : s.loadWorkspaces());
-        if (F.value = vs(l || []), E.value = Ke(F.value), ae.value = E.value, S.value = E.value, t.currentWorkspaceId) {
-          const M = E.value.find((Q) => {
+        const l = await ((o = u.value) == null ? void 0 : o.loadWorkspaces());
+        if (B.value = ws(l || []), C.value = Ke(B.value), te.value = C.value, S.value = C.value, a.currentWorkspaceId) {
+          const V = C.value.find((Q) => {
             var ce;
-            return Q.id.toString() === ((ce = t.currentWorkspaceId) == null ? void 0 : ce.toString());
+            return Q.id.toString() === ((ce = a.currentWorkspaceId) == null ? void 0 : ce.toString());
           });
-          M && ((e = u.value) == null || e.setCurrentWorkspace(M));
+          V && ((e = u.value) == null || e.setCurrentWorkspace(V));
         } else
-          !se.value && E.value.length && ((r = u.value) == null || r.setCurrentWorkspace(E.value[0]));
+          !se.value && C.value.length && ((r = u.value) == null || r.setCurrentWorkspace(C.value[0]));
       } catch (l) {
         console.error("loadWorkspaces (header) error", l);
       }
-    }, ws = (s) => {
-      if (console.log("Navigation command:", s), s === "all-workspace") {
+    }, ms = (o) => {
+      if (console.log("Navigation command:", o), o === "all-workspace") {
         window.location.href = "https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard";
         return;
       } else {
-        const e = parseInt(s.replace("workspace-", ""));
+        const e = parseInt(o.replace("workspace-", ""));
         window.location.href = `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${e}/dashboard`;
         return;
       }
-    }, ms = (s) => {
-      const e = se.value, r = G.value;
-      switch (s.key) {
+    }, ks = (o) => {
+      const e = se.value, r = F.value;
+      switch (o.key) {
         case "dashboard":
           r ? window.location.href = "https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard" : e ? window.location.href = `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${e.id}/dashboard` : window.location.href = "https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard";
           break;
@@ -1830,20 +1830,20 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
           break;
         default:
           if (r) {
-            const l = `https://app.aiworkspace.pro/all-workspace/${s.key}`;
+            const l = `https://app.aiworkspace.pro/all-workspace/${o.key}`;
             window.location.href = l;
           } else if (e) {
-            const l = `https://app.aiworkspace.pro/single-workspace/${e.id}/${s.key}`;
+            const l = `https://app.aiworkspace.pro/single-workspace/${e.id}/${o.key}`;
             window.location.href = l;
           } else {
-            const l = `https://app.aiworkspace.pro/${s.key}`;
+            const l = `https://app.aiworkspace.pro/${o.key}`;
             window.location.href = l;
           }
           break;
       }
-    }, ks = (s) => {
-      const e = se.value, r = G.value;
-      switch (s.key) {
+    }, _s = (o) => {
+      const e = se.value, r = F.value;
+      switch (o.key) {
         case "dashboard":
           return r ? "https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard" : e ? `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${e.id}/dashboard` : "https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard";
         case "ai-portfolios":
@@ -1869,34 +1869,34 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
         case "settings":
           return r ? "https://settings.aiworkspace.pro/all-workspace/settings" : e ? `https://settings.aiworkspace.pro/single-workspace/${e.id}/settings` : "https://settings.aiworkspace.pro";
         default:
-          return r ? `https://app.aiworkspace.pro/all-workspace/${s.key}` : e ? `https://app.aiworkspace.pro/single-workspace/${e.id}/${s.key}` : `https://app.aiworkspace.pro/${s.key}`;
+          return r ? `https://app.aiworkspace.pro/all-workspace/${o.key}` : e ? `https://app.aiworkspace.pro/single-workspace/${e.id}/${o.key}` : `https://app.aiworkspace.pro/${o.key}`;
       }
-    }, Ee = (s) => {
-      switch (s) {
+    }, Ce = (o) => {
+      switch (o) {
         case "profile":
-          t.onProfileClick ? t.onProfileClick() : z.info("Profile settings coming soon");
+          a.onProfileClick ? a.onProfileClick() : z.info("Profile settings coming soon");
           break;
         case "workspaces":
           g.value = !0;
           break;
         case "logout":
-          ys();
+          Ss();
           break;
       }
-    }, qe = (s) => {
+    }, Je = (o) => {
       var e;
-      (e = u.value) == null || e.setCurrentWorkspace(s), g.value = !1, i("workspaceChange", s), z.success(`Switched to ${s.title}`);
-    }, _s = () => {
+      (e = u.value) == null || e.setCurrentWorkspace(o), g.value = !1, n("workspaceChange", o), z.success(`Switched to ${o.title}`);
+    }, ys = () => {
       ns.prompt("Enter workspace name:", "Create New Workspace", {
         confirmButtonText: "Create",
         cancelButtonText: "Cancel",
         inputPattern: /\S/,
         inputErrorMessage: "Workspace name cannot be empty"
-      }).then(({ value: s }) => {
+      }).then(({ value: o }) => {
         var r;
         const e = {
           id: Date.now(),
-          title: s,
+          title: o,
           description: "New workspace",
           archived: !1,
           created_by: "",
@@ -1905,10 +1905,10 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
           hasAccess: !0,
           accessType: "edit"
         };
-        S.value.push(e), (r = u.value) == null || r.setWorkspaces(S.value), qe(e), z.success(`Created workspace: ${s}`);
+        S.value.push(e), (r = u.value) == null || r.setWorkspaces(S.value), Je(e), z.success(`Created workspace: ${o}`);
       }).catch(() => {
       });
-    }, ys = () => {
+    }, Ss = () => {
       ns.confirm(
         "Are you sure you want to sign out?",
         "Sign Out",
@@ -1918,166 +1918,166 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
           type: "warning"
         }
       ).then(async () => {
-        var s;
-        (s = u.value) == null || s.clearData(), await _(), typeof window < "u" && window.dispatchEvent(new CustomEvent("session-logout-detected", {
+        var o;
+        (o = u.value) == null || o.clearData(), await _(), typeof window < "u" && window.dispatchEvent(new CustomEvent("session-logout-detected", {
           detail: { timestamp: /* @__PURE__ */ new Date(), source: "manual-logout" }
-        })), i("logout"), z.success("Signed out successfully");
+        })), n("logout"), z.success("Signed out successfully");
       }).catch(() => {
       });
-    }, We = async () => {
-      var s, e;
+    }, Me = async () => {
+      var o, e;
       if (w.value.user) {
         const r = w.value.user;
-        J.value = {
-          name: r.name || ((s = r.email) == null ? void 0 : s.split("@")[0]) || "User",
+        Y.value = {
+          name: r.name || ((o = r.email) == null ? void 0 : o.split("@")[0]) || "User",
           email: r.email || "",
           avatar_url: r.avatar_url || null,
           initials: (r.name || ((e = r.email) == null ? void 0 : e.split("@")[0]) || "U").split(" ").map((l) => l[0]).join("").toUpperCase().substring(0, 2)
-        }, t.showWorkspaceSelector && await Je();
+        }, a.showWorkspaceSelector && await Ye();
       }
     };
-    pe(() => w.value.user, (s) => {
+    pe(() => w.value.user, (o) => {
       var e;
-      s ? We() : (J.value = { name: "", email: "", avatar_url: null, initials: "" }, (e = u.value) == null || e.clearData());
-    }), pe(m, (s) => {
-      s && ee.value && (console.log("[AIWorkspaceHeader] Session loss detected, showing modal"), v.value = !0);
-    }), pe(() => t.currentWorkspaceId, (s) => {
+      o ? Me() : (Y.value = { name: "", email: "", avatar_url: null, initials: "" }, (e = u.value) == null || e.clearData());
+    }), pe(m, (o) => {
+      o && ee.value && (console.log("[AIWorkspaceHeader] Session loss detected, showing modal"), v.value = !0);
+    }), pe(() => a.currentWorkspaceId, (o) => {
       var e;
-      if (s && E.value.length) {
-        const r = E.value.find((l) => l.id.toString() === s.toString());
+      if (o && C.value.length) {
+        const r = C.value.find((l) => l.id.toString() === o.toString());
         r && ((e = u.value) == null || e.setCurrentWorkspace(r));
       }
     }), be(async () => {
-      ee.value && (await We(), await P()), await Is(), ts(), Ws();
+      ee.value && (await Me(), await $()), await Ls(), as(), Ns();
     });
-    const Ss = async (s) => {
-      console.log("Login successful:", s), V.value = !1, await We(), i("login"), z.success("Welcome back!");
-    }, bs = async () => {
+    const bs = async (o) => {
+      console.log("Login successful:", o), U.value = !1, await Me(), n("login"), z.success("Welcome back!");
+    }, As = async () => {
       console.log("[AIWorkspaceHeader] Retrying session..."), await p() ? (v.value = !1, c(), z.success("Session restored successfully!")) : z.error("Failed to restore session. Please log in again.");
-    }, Cs = () => {
-      console.log("[AIWorkspaceHeader] Opening login modal from session loss"), v.value = !1, V.value = !0;
-    }, As = () => {
-      console.log("[AIWorkspaceHeader] Refreshing page due to session loss"), window.location.reload();
     }, Es = () => {
-      U.value = 0, b(), z.success("Manual Pinia retry initiated.");
-    }, Is = async () => {
+      console.log("[AIWorkspaceHeader] Opening login modal from session loss"), v.value = !1, U.value = !0;
+    }, Cs = () => {
+      console.log("[AIWorkspaceHeader] Refreshing page due to session loss"), window.location.reload();
+    }, Is = () => {
+      P.value = 0, b(), z.success("Manual Pinia retry initiated.");
+    }, Ls = async () => {
       try {
-        const s = await fetch("/version.json");
-        if (s.ok) {
-          const e = s.headers.get("content-type");
+        const o = await fetch("/version.json");
+        if (o.ok) {
+          const e = o.headers.get("content-type");
           if (e && e.includes("application/json"))
             try {
-              const r = await s.json();
-              console.log("Version data received:", r), B.value = r.shortCommitHash || "unknown", O.value = r.fullCommitHash || "unknown", console.log("✅ Loaded commit hash from version.json:", B.value);
+              const r = await o.json();
+              console.log("Version data received:", r), G.value = r.shortCommitHash || "unknown", O.value = r.fullCommitHash || "unknown", console.log("✅ Loaded commit hash from version.json:", G.value);
               return;
             } catch {
               console.log("Failed to parse version.json, trying fallback methods...");
             }
         }
-        console.log("🔄 version.json not available, trying automatic detection..."), await Xe();
-      } catch (s) {
-        console.log("Error loading version.json, trying automatic detection...", s), await Xe();
-      }
-    }, Ye = async () => {
-      try {
-        let s = await Ze();
-        if (s || (s = Qe()), s) {
-          const e = await os(s);
-          e && e !== O.value && (console.log("🔄 New commit detected:", O.value, "→", e), O.value !== "unknown" && !re.value && (re.value = !0, j.value = e));
-        }
-      } catch (s) {
-        console.log("Error checking for new commits:", s);
+        console.log("🔄 version.json not available, trying automatic detection..."), await qe();
+      } catch (o) {
+        console.log("Error loading version.json, trying automatic detection...", o), await qe();
       }
     }, Xe = async () => {
       try {
-        let s = await Ze();
-        if (s || (s = Qe()), s) {
-          const M = await os(s);
-          if (M) {
-            B.value = M.substring(0, 7), O.value = M, console.log("✅ Loaded commit hash from GitHub API:", B.value);
+        let o = await Ze();
+        if (o || (o = Qe()), o) {
+          const e = await os(o);
+          e && e !== O.value && (console.log("🔄 New commit detected:", O.value, "→", e), O.value !== "unknown" && !re.value && (re.value = !0, j.value = e));
+        }
+      } catch (o) {
+        console.log("Error checking for new commits:", o);
+      }
+    }, qe = async () => {
+      try {
+        let o = await Ze();
+        if (o || (o = Qe()), o) {
+          const V = await os(o);
+          if (V) {
+            G.value = V.substring(0, 7), O.value = V, console.log("✅ Loaded commit hash from GitHub API:", G.value);
             return;
           }
         }
-        const e = await Us();
+        const e = await Vs();
         if (e && e.version) {
-          B.value = e.version, O.value = e.version, console.log("✅ Loaded version from package.json:", B.value);
+          G.value = e.version, O.value = e.version, console.log("✅ Loaded version from package.json:", G.value);
           return;
         }
-        const r = await Ms();
+        const r = await Rs();
         if (r) {
-          B.value = r, O.value = r, console.log("✅ Loaded version from build info:", B.value);
+          G.value = r, O.value = r, console.log("✅ Loaded version from build info:", G.value);
           return;
         }
         const l = Date.now().toString(36);
-        B.value = l.substring(0, 7), O.value = l, console.log("✅ Using timestamp-based version:", B.value);
-      } catch (s) {
-        console.warn("❌ All automatic detection methods failed:", s), B.value = "unknown", O.value = "unknown";
+        G.value = l.substring(0, 7), O.value = l, console.log("✅ Using timestamp-based version:", G.value);
+      } catch (o) {
+        console.warn("❌ All automatic detection methods failed:", o), G.value = "unknown", O.value = "unknown";
       }
     }, Qe = () => {
       try {
-        const s = window.location.hostname;
-        if (s.includes("github.io")) {
-          const e = s.split(".");
+        const o = window.location.hostname;
+        if (o.includes("github.io")) {
+          const e = o.split(".");
           if (e.length >= 3) {
             const r = e[0], l = window.location.pathname.split("/")[1] || "unknown";
             return console.log("✅ Detected GitHub Pages repo:", r, l), { owner: r, repo: l };
           }
         }
-        return console.log("Could not detect repository from domain:", s), null;
-      } catch (s) {
-        return console.log("Error detecting repo from domain:", s), null;
+        return console.log("Could not detect repository from domain:", o), null;
+      } catch (o) {
+        return console.log("Error detecting repo from domain:", o), null;
       }
     }, Ze = async () => {
       try {
-        const s = await fetch("/package.json");
-        if (!s.ok)
+        const o = await fetch("/package.json");
+        if (!o.ok)
           return console.log("package.json not found or not accessible"), null;
-        const e = s.headers.get("content-type");
+        const e = o.headers.get("content-type");
         if (!e || !e.includes("application/json"))
           return console.log("package.json returned non-JSON content (likely HTML), skipping GitHub API"), null;
-        const r = await s.json();
+        const r = await o.json();
         if (r.repository && r.repository.url) {
-          const M = r.repository.url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-          if (M)
-            return console.log("✅ Found GitHub repo info:", M[1], M[2].replace(".git", "")), { owner: M[1], repo: M[2].replace(".git", "") };
+          const V = r.repository.url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+          if (V)
+            return console.log("✅ Found GitHub repo info:", V[1], V[2].replace(".git", "")), { owner: V[1], repo: V[2].replace(".git", "") };
         }
         return console.log("No valid GitHub repository found in package.json"), null;
-      } catch (s) {
-        return console.log("Could not get repo info from package.json:", s), null;
+      } catch (o) {
+        return console.log("Could not get repo info from package.json:", o), null;
       }
-    }, es = C(0), Re = C(0), ss = C(Date.now()), Ls = () => {
-      const s = Date.now();
-      s - ss.value > 60 * 60 * 1e3 && (Re.value = 0, ss.value = s, console.log("🔄 GitHub API call counter reset"));
-    }, Vs = () => {
-      const s = co();
-      if (s)
-        return s;
+    }, es = A(0), Ne = A(0), ss = A(Date.now()), Us = () => {
+      const o = Date.now();
+      o - ss.value > 60 * 60 * 1e3 && (Ne.value = 0, ss.value = o, console.log("🔄 GitHub API call counter reset"));
+    }, Ps = () => {
+      const o = uo();
+      if (o)
+        return o;
       if ({}.GITHUB_TOKEN)
         return {}.GITHUB_TOKEN;
       const e = localStorage.getItem("github_token");
       return e || null;
-    }, os = async (s) => {
+    }, os = async (o) => {
       var e;
       try {
         const r = Date.now();
-        if (Ls(), r - es.value < Vt)
+        if (Us(), r - es.value < Pa)
           return console.log("⏳ GitHub API rate limit: waiting before next call"), null;
-        if (Re.value >= Ut)
+        if (Ne.value >= Va)
           return console.log("🚫 GitHub API hourly limit reached, skipping call"), null;
-        const l = Vs(), M = {
+        const l = Ps(), V = {
           Accept: "application/vnd.github.v3+json",
           "User-Agent": "AIWorkspace-Header/1.0"
         };
-        l ? (M.Authorization = `token ${l}`, console.log("🔑 Using GitHub token for authentication")) : console.log("⚠️ No GitHub token found, trying unauthenticated request");
+        l ? (V.Authorization = `token ${l}`, console.log("🔑 Using GitHub token for authentication")) : console.log("⚠️ No GitHub token found, trying unauthenticated request");
         const Q = ["main", "master"];
         for (const ce of Q)
           try {
-            const le = await fetch(`https://api.github.com/repos/${s.owner}/${s.repo}/commits/${ce}`, {
-              headers: M
+            const le = await fetch(`https://api.github.com/repos/${o.owner}/${o.repo}/commits/${ce}`, {
+              headers: V
             });
-            if (es.value = r, Re.value++, le.ok) {
-              const Ce = await le.json();
-              return console.log("✅ GitHub API call successful:", Ce.sha.substring(0, 7)), Ce.sha;
+            if (es.value = r, Ne.value++, le.ok) {
+              const Ae = await le.json();
+              return console.log("✅ GitHub API call successful:", Ae.sha.substring(0, 7)), Ae.sha;
             } else if (le.status === 403) {
               if ((e = (await le.json()).message) != null && e.includes("rate limit"))
                 return console.log("🚫 GitHub API rate limit exceeded, will retry later"), null;
@@ -2094,21 +2094,21 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
         console.log("Could not get commit from GitHub API:", r);
       }
       return null;
-    }, Us = async () => {
+    }, Vs = async () => {
       try {
-        const s = await fetch("/package.json");
-        if (!s.ok)
+        const o = await fetch("/package.json");
+        if (!o.ok)
           return console.log("package.json not found or not accessible"), null;
-        const e = s.headers.get("content-type");
-        return !e || !e.includes("application/json") ? (console.log("package.json returned non-JSON content (likely HTML), skipping"), null) : await s.json();
-      } catch (s) {
-        console.log("Could not get package.json:", s);
+        const e = o.headers.get("content-type");
+        return !e || !e.includes("application/json") ? (console.log("package.json returned non-JSON content (likely HTML), skipping"), null) : await o.json();
+      } catch (o) {
+        console.log("Could not get package.json:", o);
       }
       return null;
-    }, Ms = async () => {
+    }, Rs = async () => {
       try {
-        const s = ["/build-manifest.json", "/build-info.json", "/.next/build-manifest.json"];
-        for (const e of s)
+        const o = ["/build-manifest.json", "/build-info.json", "/.next/build-manifest.json"];
+        for (const e of o)
           try {
             const r = await fetch(e);
             if (r.ok) {
@@ -2118,25 +2118,25 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
             }
           } catch {
           }
-      } catch (s) {
-        console.log("Could not get build info:", s);
+      } catch (o) {
+        console.log("Could not get build info:", o);
       }
       return null;
-    }, $s = async () => {
+    }, Ms = async () => {
       try {
         if (O.value === "unknown") {
           z.warning("Version information not available");
           return;
         }
         await navigator.clipboard.writeText(O.value), z.success("Version information copied to clipboard!");
-      } catch (s) {
-        console.error("Failed to copy version info:", s), z.error("Failed to copy version info");
+      } catch (o) {
+        console.error("Failed to copy version info:", o), z.error("Failed to copy version info");
       }
-    }, ts = async () => {
-      if (!D.value) {
-        D.value = !0;
+    }, as = async () => {
+      if (!x.value) {
+        x.value = !0;
         try {
-          const s = Date.now(), e = await fetch(`/version.json?t=${s}`);
+          const o = Date.now(), e = await fetch(`/version.json?t=${o}`);
           if (!e.ok)
             throw new Error("Failed to fetch version info");
           const r = e.headers.get("content-type");
@@ -2150,100 +2150,100 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
             latestVersion: j.value,
             serverBuildTime: l.buildTime
           })));
-        } catch (s) {
-          console.error("Error checking for updates:", s);
+        } catch (o) {
+          console.error("Error checking for updates:", o);
         } finally {
-          D.value = !1;
+          x.value = !1;
         }
       }
-    }, Ws = () => {
-      A.value = setInterval(() => {
-        ts(), Ye();
+    }, Ns = () => {
+      E.value = setInterval(() => {
+        as(), Xe();
       }, 5 * 60 * 1e3);
-    }, Rs = () => {
+    }, $s = () => {
       console.log("User reloaded for update:", {
         currentVersion: O.value,
         latestVersion: j.value
       }), window.location.reload();
-    }, as = () => {
+    }, ts = () => {
       re.value = !1, console.log("Update alert dismissed:", {
         currentVersion: O.value,
         latestVersion: j.value
       });
     };
     return cs(() => {
-      A.value && clearInterval(A.value);
-    }), (s, e) => {
-      const r = ie("el-icon"), l = ie("el-button"), M = ie("el-tag"), Q = ie("el-dropdown-item"), ce = ie("el-dropdown-menu"), le = ie("el-dropdown"), Ce = ie("el-dialog"), Ps = ie("el-alert");
-      return y(), x(Ie, null, [
-        n("header", $o, [
-          !L.value && U.value < Ae || H(W) ? (y(), x("div", Wo, [
+      E.value && clearInterval(E.value);
+    }), (o, e) => {
+      const r = ie("el-icon"), l = ie("el-button"), V = ie("el-tag"), Q = ie("el-dropdown-item"), ce = ie("el-dropdown-menu"), le = ie("el-dropdown"), Ae = ie("el-dialog"), Ts = ie("el-alert");
+      return y(), T(Ie, null, [
+        i("header", Mo, [
+          !L.value && P.value < Ee || D(M) ? (y(), T("div", No, [
             e[10] || (e[10] = Le('<div class="header-left" data-v-40c8a261><div class="logo-section" data-v-40c8a261><a href="/" class="logo" data-v-40c8a261><div class="text-logo" data-v-40c8a261><span class="logo-text" data-v-40c8a261>AI Workspace</span></div></a></div></div>', 1)),
-            n("div", Ro, [
-              n("span", Po, [
-                H(W) ? (y(), x("span", xo, "Syncing authentication...")) : (y(), x("span", To, "Initializing..."))
+            i("div", $o, [
+              i("span", To, [
+                D(M) ? (y(), T("span", Wo, "Syncing authentication...")) : (y(), T("span", Do, "Initializing..."))
               ])
             ])
-          ])) : !L.value && U.value >= Ae ? (y(), x("div", Ho, [
+          ])) : !L.value && P.value >= Ee ? (y(), T("div", xo, [
             e[12] || (e[12] = Le('<div class="header-left" data-v-40c8a261><div class="logo-section" data-v-40c8a261><a href="/" class="logo" data-v-40c8a261><div class="text-logo" data-v-40c8a261><span class="logo-text" data-v-40c8a261>AI Workspace</span></div></a></div></div>', 1)),
-            n("div", { class: "header-center" }, [
-              e[11] || (e[11] = n("span", { class: "fallback-text" }, "Header Ready (Fallback Mode)", -1)),
-              n("button", {
-                onClick: Es,
+            i("div", { class: "header-center" }, [
+              e[11] || (e[11] = i("span", { class: "fallback-text" }, "Header Ready (Fallback Mode)", -1)),
+              i("button", {
+                onClick: Is,
                 class: "retry-button"
               }, "Retry Pinia")
             ]),
             e[13] || (e[13] = Le('<div class="header-right" data-v-40c8a261><div class="user-profile" data-v-40c8a261><div class="user-info" data-v-40c8a261><span class="user-name" data-v-40c8a261>User</span></div><div class="user-avatar" data-v-40c8a261><span class="avatar-placeholder" data-v-40c8a261>U</span></div></div></div>', 1))
-          ])) : ee.value && !H(T) ? (y(), x("div", Do, [
+          ])) : ee.value && !D(W) ? (y(), T("div", Ho, [
             e[16] || (e[16] = Le('<div class="header-left" data-v-40c8a261><div class="logo-section" data-v-40c8a261><a href="/" class="logo" data-v-40c8a261><div class="text-logo" data-v-40c8a261><span class="logo-text" data-v-40c8a261>AI Workspace</span></div></a></div></div>', 1)),
-            n("div", No, [
-              n("span", Oo, [
+            i("div", Oo, [
+              i("span", Bo, [
                 h(r, null, {
                   default: d(() => [
-                    h(H(us))
+                    h(D(us))
                   ]),
                   _: 1
                 }),
-                e[14] || (e[14] = q(" Session expired - Please log in again ", -1))
+                e[14] || (e[14] = J(" Session expired - Please log in again ", -1))
               ])
             ]),
-            n("div", Fo, [
+            i("div", Fo, [
               h(l, {
                 type: "primary",
-                onClick: e[0] || (e[0] = (I) => V.value = !0)
+                onClick: e[0] || (e[0] = (I) => U.value = !0)
               }, {
                 default: d(() => [
                   h(r, null, {
                     default: d(() => [
-                      h(H(Fe))
+                      h(D(Be))
                     ]),
                     _: 1
                   }),
-                  e[15] || (e[15] = q(" Log In ", -1))
+                  e[15] || (e[15] = J(" Log In ", -1))
                 ]),
                 _: 1
               })
             ])
-          ])) : ee.value && H(T) ? (y(), x("div", Go, [
-            n("div", Bo, [
-              n("div", jo, [
-                n("a", zo, [
-                  s.customLogo ? (y(), x("img", {
+          ])) : ee.value && D(W) ? (y(), T("div", Go, [
+            i("div", jo, [
+              i("div", zo, [
+                i("a", Ko, [
+                  o.customLogo ? (y(), T("img", {
                     key: 0,
-                    src: s.customLogo,
+                    src: o.customLogo,
                     alt: "AIWorkspace",
                     class: "logo-image"
-                  }, null, 8, Ko)) : (y(), x("div", Jo, [...e[17] || (e[17] = [
-                    n("span", { class: "logo-text" }, "AI Workspace", -1)
+                  }, null, 8, Yo)) : (y(), T("div", Jo, [...e[17] || (e[17] = [
+                    i("span", { class: "logo-text" }, "AI Workspace", -1)
                   ])]))
                 ])
               ])
             ]),
-            s.showSecondaryNavigation ? (y(), x("div", qo, [
-              n("nav", Yo, [
-                s.showWorkspaceSelector ? (y(), oe(le, {
+            o.showSecondaryNavigation ? (y(), T("div", Xo, [
+              i("nav", qo, [
+                o.showWorkspaceSelector ? (y(), oe(le, {
                   key: 0,
-                  onCommand: ws,
+                  onCommand: ms,
                   trigger: "hover"
                 }, {
                   dropdown: d(() => [
@@ -2251,75 +2251,75 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                       default: d(() => [
                         h(Q, {
                           command: "all-workspace",
-                          class: Pe({ active: G.value })
+                          class: $e({ active: F.value })
                         }, {
                           default: d(() => [
-                            n("a", Qo, [
-                              n("div", Zo, [
-                                e[19] || (e[19] = n("span", { class: "workspace-icon" }, "🌐", -1)),
-                                e[20] || (e[20] = n("span", null, "All workspace", -1)),
-                                G.value ? (y(), oe(M, {
+                            i("a", Zo, [
+                              i("div", ea, [
+                                e[19] || (e[19] = i("span", { class: "workspace-icon" }, "🌐", -1)),
+                                e[20] || (e[20] = i("span", null, "All workspace", -1)),
+                                F.value ? (y(), oe(V, {
                                   key: 0,
                                   size: "small",
                                   type: "success"
                                 }, {
                                   default: d(() => [...e[18] || (e[18] = [
-                                    q("Current", -1)
+                                    J("Current", -1)
                                   ])]),
                                   _: 1
-                                })) : Y("", !0)
+                                })) : X("", !0)
                               ])
                             ])
                           ]),
                           _: 1
                         }, 8, ["class"]),
-                        E.value.length > 0 ? (y(), oe(Q, {
+                        C.value.length > 0 ? (y(), oe(Q, {
                           key: 0,
                           divided: "",
                           disabled: ""
-                        })) : Y("", !0),
-                        (y(!0), x(Ie, null, xe(E.value, (I) => (y(), oe(Q, {
+                        })) : X("", !0),
+                        (y(!0), T(Ie, null, Te(C.value, (I) => (y(), oe(Q, {
                           key: I.id,
                           command: `workspace-${I.id}`
                         }, {
                           default: d(() => {
                             var we;
                             return [
-                              n("a", {
+                              i("a", {
                                 href: `https://single-ws-dashboard.aiworkspace.pro/single-workspace/${I.id}/dashboard`,
                                 class: "nav-link"
                               }, [
-                                n("div", {
+                                i("div", {
                                   class: "workspace-dropdown-item",
-                                  style: Ds({ paddingLeft: (I.level || 0) * 16 + "px" })
+                                  style: Hs({ paddingLeft: (I.level || 0) * 16 + "px" })
                                 }, [
-                                  n("span", st, K(I.children && I.children.length ? "📁" : "📄"), 1),
-                                  n("span", null, K(I.title), 1),
-                                  I.id === ((we = se.value) == null ? void 0 : we.id) ? (y(), oe(M, {
+                                  i("span", oa, K(I.children && I.children.length ? "📁" : "📄"), 1),
+                                  i("span", null, K(I.title), 1),
+                                  I.id === ((we = se.value) == null ? void 0 : we.id) ? (y(), oe(V, {
                                     key: 0,
                                     size: "small",
                                     type: "success"
                                   }, {
                                     default: d(() => [...e[21] || (e[21] = [
-                                      q("Current", -1)
+                                      J("Current", -1)
                                     ])]),
                                     _: 1
-                                  })) : Y("", !0)
+                                  })) : X("", !0)
                                 ], 4)
-                              ], 8, et)
+                              ], 8, sa)
                             ];
                           }),
                           _: 2
                         }, 1032, ["command"]))), 128)),
-                        E.value.length === 0 ? (y(), oe(Q, {
+                        C.value.length === 0 ? (y(), oe(Q, {
                           key: 1,
                           disabled: ""
                         }, {
                           default: d(() => [...e[22] || (e[22] = [
-                            q(" No workspaces ", -1)
+                            J(" No workspaces ", -1)
                           ])]),
                           _: 1
-                        })) : Y("", !0)
+                        })) : X("", !0)
                       ]),
                       _: 1
                     })
@@ -2327,11 +2327,11 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                   default: d(() => {
                     var I;
                     return [
-                      n("span", Xo, [
-                        q(K(G.value ? "All workspace" : ((I = se.value) == null ? void 0 : I.title) || "Select Workspace") + " ", 1),
+                      i("span", Qo, [
+                        J(K(F.value ? "All workspace" : ((I = se.value) == null ? void 0 : I.title) || "Select Workspace") + " ", 1),
                         h(r, { class: "nav-arrow" }, {
                           default: d(() => [
-                            h(H(is))
+                            h(D(is))
                           ]),
                           _: 1
                         })
@@ -2339,25 +2339,25 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                     ];
                   }),
                   _: 1
-                })) : Y("", !0),
-                s.showWorkspaceSelector ? (y(), x("span", ot, "/")) : Y("", !0),
-                s.showSecondaryNavigation ? (y(), oe(le, {
+                })) : X("", !0),
+                o.showWorkspaceSelector ? (y(), T("span", aa, "/")) : X("", !0),
+                o.showSecondaryNavigation ? (y(), oe(le, {
                   key: 2,
                   trigger: "hover"
                 }, {
                   dropdown: d(() => [
                     h(ce, null, {
                       default: d(() => [
-                        (y(!0), x(Ie, null, xe(ze.value, (I) => (y(), oe(Q, {
+                        (y(!0), T(Ie, null, Te(ze.value, (I) => (y(), oe(Q, {
                           key: I.label,
-                          class: Pe({ active: I.active })
+                          class: $e({ active: I.active })
                         }, {
                           default: d(() => [
-                            n("a", {
-                              href: ks(I),
+                            i("a", {
+                              href: _s(I),
                               class: "nav-link",
-                              onClick: ge((we) => ms(I), ["prevent"])
-                            }, K(I.label), 9, at)
+                              onClick: ge((we) => ks(I), ["prevent"])
+                            }, K(I.label), 9, ra)
                           ]),
                           _: 2
                         }, 1032, ["class"]))), 128))
@@ -2366,23 +2366,23 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                     })
                   ]),
                   default: d(() => [
-                    n("span", tt, [
-                      q(K(hs.value) + " ", 1),
+                    i("span", ta, [
+                      J(K(vs.value) + " ", 1),
                       h(r, { class: "nav-arrow" }, {
                         default: d(() => [
-                          h(H(is))
+                          h(D(is))
                         ]),
                         _: 1
                       })
                     ])
                   ]),
                   _: 1
-                })) : Y("", !0)
+                })) : X("", !0)
               ])
-            ])) : Y("", !0),
-            n("div", rt, [
+            ])) : X("", !0),
+            i("div", na, [
               h(le, {
-                onCommand: Ee,
+                onCommand: Ce,
                 trigger: "click",
                 placement: "bottom-end"
               }, {
@@ -2391,43 +2391,43 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                     default: d(() => [
                       h(Q, null, {
                         default: d(() => [
-                          n("a", {
+                          i("a", {
                             href: "/profile",
                             class: "nav-link",
-                            onClick: e[1] || (e[1] = ge((I) => Ee("profile"), ["prevent"]))
+                            onClick: e[1] || (e[1] = ge((I) => Ce("profile"), ["prevent"]))
                           }, "Profile Settings")
                         ]),
                         _: 1
                       }),
-                      s.showWorkspaceSelector ? (y(), oe(Q, { key: 0 }, {
+                      o.showWorkspaceSelector ? (y(), oe(Q, { key: 0 }, {
                         default: d(() => [
-                          n("a", {
+                          i("a", {
                             href: "#switch-workspace",
                             class: "nav-link",
-                            onClick: e[2] || (e[2] = ge((I) => Ee("workspaces"), ["prevent"]))
+                            onClick: e[2] || (e[2] = ge((I) => Ce("workspaces"), ["prevent"]))
                           }, "Switch Workspace")
                         ]),
                         _: 1
-                      })) : Y("", !0),
+                      })) : X("", !0),
                       h(Q, {
-                        onClick: $s,
+                        onClick: Ms,
                         class: "version-item"
                       }, {
                         default: d(() => [
-                          n("div", pt, [
-                            e[23] || (e[23] = n("span", { class: "version-label" }, "Version:", -1)),
-                            n("span", ft, K(B.value), 1),
+                          i("div", fa, [
+                            e[23] || (e[23] = i("span", { class: "version-label" }, "Version:", -1)),
+                            i("span", ga, K(G.value), 1),
                             h(l, {
                               size: "small",
                               type: "text",
-                              onClick: ge(Ye, ["stop"]),
+                              onClick: ge(Xe, ["stop"]),
                               class: "refresh-button",
-                              loading: D.value
+                              loading: x.value
                             }, {
                               default: d(() => [
                                 h(r, null, {
                                   default: d(() => [
-                                    h(H(Oe))
+                                    h(D(Oe))
                                   ]),
                                   _: 1
                                 })
@@ -2440,10 +2440,10 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                       }),
                       h(Q, { divided: "" }, {
                         default: d(() => [
-                          n("a", {
+                          i("a", {
                             href: "#signout",
                             class: "nav-link",
-                            onClick: e[3] || (e[3] = ge((I) => Ee("logout"), ["prevent"]))
+                            onClick: e[3] || (e[3] = ge((I) => Ce("logout"), ["prevent"]))
                           }, "Sign Out")
                         ]),
                         _: 1
@@ -2453,61 +2453,61 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                   })
                 ]),
                 default: d(() => [
-                  n("div", nt, [
-                    n("div", it, [
-                      n("span", lt, K(J.value.name), 1)
+                  i("div", ia, [
+                    i("div", la, [
+                      i("span", ca, K(Y.value.name), 1)
                     ]),
-                    n("div", ct, [
-                      J.value.avatar_url ? (y(), x("img", {
+                    i("div", ua, [
+                      Y.value.avatar_url ? (y(), T("img", {
                         key: 0,
-                        src: J.value.avatar_url,
-                        alt: J.value.name
-                      }, null, 8, ut)) : (y(), x("span", dt, K(J.value.initials), 1))
+                        src: Y.value.avatar_url,
+                        alt: Y.value.name
+                      }, null, 8, da)) : (y(), T("span", pa, K(Y.value.initials), 1))
                     ])
                   ])
                 ]),
                 _: 1
               })
             ])
-          ])) : (y(), x("div", gt, [
-            n("div", ht, [
-              n("div", vt, [
-                n("a", wt, [
-                  s.customLogo ? (y(), x("img", {
+          ])) : (y(), T("div", ha, [
+            i("div", va, [
+              i("div", wa, [
+                i("a", ma, [
+                  o.customLogo ? (y(), T("img", {
                     key: 0,
-                    src: s.customLogo,
+                    src: o.customLogo,
                     alt: "AIWorkspace",
                     class: "logo-image"
-                  }, null, 8, mt)) : (y(), x("div", kt, [...e[24] || (e[24] = [
-                    n("span", { class: "logo-text" }, "AI Workspace", -1)
+                  }, null, 8, ka)) : (y(), T("div", _a, [...e[24] || (e[24] = [
+                    i("span", { class: "logo-text" }, "AI Workspace", -1)
                   ])]))
                 ])
               ])
             ]),
-            e[26] || (e[26] = n("div", { class: "header-center" }, [
-              n("span", { class: "welcome-text" }, "Welcome to AI Workspace")
+            e[26] || (e[26] = i("div", { class: "header-center" }, [
+              i("span", { class: "welcome-text" }, "Welcome to AI Workspace")
             ], -1)),
-            de.value ? Y("", !0) : (y(), x("div", _t, [
+            de.value ? X("", !0) : (y(), T("div", ya, [
               h(l, {
                 type: "primary",
                 size: "large",
                 class: "login-button",
-                onClick: e[4] || (e[4] = (I) => V.value = !0)
+                onClick: e[4] || (e[4] = (I) => U.value = !0)
               }, {
                 default: d(() => [
                   h(r, null, {
                     default: d(() => [
-                      h(H(Fe))
+                      h(D(Be))
                     ]),
                     _: 1
                   }),
-                  e[25] || (e[25] = q(" Login / Signup ", -1))
+                  e[25] || (e[25] = J(" Login / Signup ", -1))
                 ]),
                 _: 1
               })
             ]))
           ])),
-          ee.value && s.showWorkspaceSelector ? (y(), oe(Ce, {
+          ee.value && o.showWorkspaceSelector ? (y(), oe(Ae, {
             key: 5,
             modelValue: g.value,
             "onUpdate:modelValue": e[6] || (e[6] = (I) => g.value = I),
@@ -2520,93 +2520,93 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
                 onClick: e[5] || (e[5] = (I) => g.value = !1)
               }, {
                 default: d(() => [...e[27] || (e[27] = [
-                  q("Cancel", -1)
+                  J("Cancel", -1)
                 ])]),
                 _: 1
               }),
               h(l, {
                 type: "primary",
-                onClick: _s
+                onClick: ys
               }, {
                 default: d(() => [...e[28] || (e[28] = [
-                  q("Create New Workspace", -1)
+                  J("Create New Workspace", -1)
                 ])]),
                 _: 1
               })
             ]),
             default: d(() => [
-              n("div", yt, [
-                (y(!0), x(Ie, null, xe(S.value, (I) => {
+              i("div", Sa, [
+                (y(!0), T(Ie, null, Te(S.value, (I) => {
                   var we, rs;
-                  return y(), x("div", {
+                  return y(), T("div", {
                     key: I.id,
-                    class: Pe(["workspace-item", { active: I.id === ((we = se.value) == null ? void 0 : we.id) }]),
-                    onClick: (Tt) => qe(I)
+                    class: $e(["workspace-item", { active: I.id === ((we = se.value) == null ? void 0 : we.id) }]),
+                    onClick: (Da) => Je(I)
                   }, [
-                    n("div", bt, K(I.children && I.children.length ? "📁" : "📄"), 1),
-                    n("div", Ct, [
-                      n("h3", null, K(I.title), 1),
-                      n("p", null, K(I.description), 1),
-                      n("span", At, K(I.hasAccess ? "Active" : "Inactive"), 1)
+                    i("div", Aa, K(I.children && I.children.length ? "📁" : "📄"), 1),
+                    i("div", Ea, [
+                      i("h3", null, K(I.title), 1),
+                      i("p", null, K(I.description), 1),
+                      i("span", Ca, K(I.hasAccess ? "Active" : "Inactive"), 1)
                     ]),
-                    I.id === ((rs = se.value) == null ? void 0 : rs.id) ? (y(), x("div", Et, [
+                    I.id === ((rs = se.value) == null ? void 0 : rs.id) ? (y(), T("div", Ia, [
                       h(r, null, {
                         default: d(() => [
-                          h(H(Js))
+                          h(D(Js))
                         ]),
                         _: 1
                       })
-                    ])) : Y("", !0)
-                  ], 10, St);
+                    ])) : X("", !0)
+                  ], 10, ba);
                 }), 128))
               ])
             ]),
             _: 1
-          }, 8, ["modelValue"])) : Y("", !0),
-          h(mo, {
-            modelValue: V.value,
-            "onUpdate:modelValue": e[8] || (e[8] = (I) => V.value = I),
-            onLoginSuccess: Ss
+          }, 8, ["modelValue"])) : X("", !0),
+          h(ko, {
+            modelValue: U.value,
+            "onUpdate:modelValue": e[8] || (e[8] = (I) => U.value = I),
+            onLoginSuccess: bs
           }, null, 8, ["modelValue"]),
-          h(Mo, {
+          h(Ro, {
             modelValue: v.value,
             "onUpdate:modelValue": e[9] || (e[9] = (I) => v.value = I),
-            "session-loss-event": H(N),
-            "can-retry-session": H(k) || !1,
-            onRetry: bs,
-            onLogin: Cs,
-            onRefresh: As
+            "session-loss-event": D(H),
+            "can-retry-session": D(k) || !1,
+            onRetry: As,
+            onLogin: Es,
+            onRefresh: Cs
           }, null, 8, ["modelValue", "session-loss-event", "can-retry-session"])
         ]),
-        re.value ? (y(), oe(Ps, {
+        re.value ? (y(), oe(Ts, {
           key: 0,
           title: "New Version Available!",
           type: "warning",
           closable: !0,
-          onClose: as,
+          onClose: ts,
           "show-icon": "",
           class: "update-alert"
         }, {
           default: d(() => [
-            n("div", It, [
-              e[31] || (e[31] = n("p", null, "A new version of the application is available. Please reload to get the latest updates and features.", -1)),
-              n("div", Lt, [
+            i("div", La, [
+              e[31] || (e[31] = i("p", null, "A new version of the application is available. Please reload to get the latest updates and features.", -1)),
+              i("div", Ua, [
                 h(l, {
                   type: "primary",
                   size: "small",
-                  onClick: Rs
+                  onClick: $s
                 }, {
                   default: d(() => [...e[29] || (e[29] = [
-                    q(" Reload Now ", -1)
+                    J(" Reload Now ", -1)
                   ])]),
                   _: 1
                 }),
                 h(l, {
                   size: "small",
-                  onClick: as
+                  onClick: ts
                 }, {
                   default: d(() => [...e[30] || (e[30] = [
-                    q(" Dismiss ", -1)
+                    J(" Dismiss ", -1)
                   ])]),
                   _: 1
                 })
@@ -2614,71 +2614,71 @@ const Mo = /* @__PURE__ */ $e(Uo, [["__scopeId", "data-v-0dd27f7f"]]), $o = { cl
             ])
           ]),
           _: 1
-        })) : Y("", !0)
+        })) : X("", !0)
       ], 64);
     };
   }
 });
-const aa = /* @__PURE__ */ $e(Mt, [["__scopeId", "data-v-40c8a261"]]), $t = { class: "auth-callback" }, Wt = /* @__PURE__ */ ue({
+const rt = /* @__PURE__ */ Re(Ra, [["__scopeId", "data-v-40c8a261"]]), Ma = { class: "auth-callback" }, Na = /* @__PURE__ */ ue({
   __name: "AuthCallback",
-  setup(a) {
+  setup(t) {
     be(async () => {
       console.log("[AuthCallback] Component mounted, starting callback processing..."), console.log("[AuthCallback] Current URL:", window.location.href), console.log("[AuthCallback] Current hash:", window.location.hash);
       try {
         await new Promise((w) => setTimeout(w, 500));
-        const { data: t, error: i } = await Ue.auth.getSession();
-        if (i) {
-          console.error("Error processing callback:", i), o();
+        const { data: a, error: n } = await Pe.auth.getSession();
+        if (n) {
+          console.error("Error processing callback:", n), s();
           return;
         }
-        if (t != null && t.session) {
-          const w = t.session.user;
-          console.log("OAuth login successful:", w.email), t.session.access_token && Se(_e, t.session.access_token), t.session.refresh_token && Se(ye, t.session.refresh_token), Ne();
-          const _ = Bs();
+        if (a != null && a.session) {
+          const w = a.session.user;
+          console.log("OAuth login successful:", w.email), a.session.access_token && Se(_e, a.session.access_token), a.session.refresh_token && Se(ye, a.session.refresh_token), He();
+          const _ = js();
           console.log("[callback] Post-login redirect URL:", _), console.log("[callback] Session storage redirect:", sessionStorage.getItem("post-login-redirect")), console.log("[callback] Local storage redirect:", localStorage.getItem("post-login-redirect"));
-          const W = _ || "/";
-          if (console.log("[callback] Final redirect URL:", W), W.startsWith("/")) {
-            const T = window.location.origin, N = `${T}${W}`;
-            console.log("[callback] redirecting to:", N, { hostname: window.location.hostname, origin: T }), sessionStorage.removeItem("post-login-redirect"), localStorage.removeItem("post-login-redirect"), setTimeout(() => {
-              window.location.href = N;
+          const M = _ || "/";
+          if (console.log("[callback] Final redirect URL:", M), M.startsWith("/")) {
+            const W = window.location.origin, H = `${W}${M}`;
+            console.log("[callback] redirecting to:", H, { hostname: window.location.hostname, origin: W }), sessionStorage.removeItem("post-login-redirect"), localStorage.removeItem("post-login-redirect"), setTimeout(() => {
+              window.location.href = H;
             }, 100);
           } else
-            console.log("[callback] redirecting to absolute URL:", W), sessionStorage.removeItem("post-login-redirect"), localStorage.removeItem("post-login-redirect"), setTimeout(() => {
-              window.location.href = W;
+            console.log("[callback] redirecting to absolute URL:", M), sessionStorage.removeItem("post-login-redirect"), localStorage.removeItem("post-login-redirect"), setTimeout(() => {
+              window.location.href = M;
             }, 100);
         } else
-          o();
-      } catch (t) {
-        console.error("Error processing callback:", t), o();
+          s();
+      } catch (a) {
+        console.error("Error processing callback:", a), s();
       }
     });
-    const o = () => {
-      const i = window.location.href.replace("/auth/callback", "");
-      window.location.href = i;
+    const s = () => {
+      const n = window.location.href.replace("/auth/callback", "");
+      window.location.href = n;
     };
-    return (t, i) => (y(), x("div", $t, [...i[0] || (i[0] = [
-      n("div", { class: "callback-container" }, [
-        n("div", { class: "loading-spinner" }, [
-          n("div", { class: "spinner" })
+    return (a, n) => (y(), T("div", Ma, [...n[0] || (n[0] = [
+      i("div", { class: "callback-container" }, [
+        i("div", { class: "loading-spinner" }, [
+          i("div", { class: "spinner" })
         ]),
-        n("h2", null, "Processing login..."),
-        n("p", null, "Please wait while we complete your authentication.")
+        i("h2", null, "Processing login..."),
+        i("p", null, "Please wait while we complete your authentication.")
       ], -1)
     ])]));
   }
 });
-const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = class he {
+const nt = /* @__PURE__ */ Re(Na, [["__scopeId", "data-v-acdf6325"]]), he = class he {
   constructor() {
     me(this, "validationCache", /* @__PURE__ */ new Map());
     me(this, "CACHE_DURATION", fs().validationCacheDuration);
   }
   // Helper function to get cookie value
-  getCookieValue(o) {
+  getCookieValue(s) {
     var w;
     if (typeof document > "u")
       return null;
-    const i = `; ${document.cookie}`.split(`; ${o}=`);
-    return i.length === 2 && ((w = i.pop()) == null ? void 0 : w.split(";").shift()) || null;
+    const n = `; ${document.cookie}`.split(`; ${s}=`);
+    return n.length === 2 && ((w = n.pop()) == null ? void 0 : w.split(";").shift()) || null;
   }
   static getInstance() {
     return he.instance || (he.instance = new he()), he.instance;
@@ -2686,32 +2686,32 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
   /**
    * Validate current session with caching and improved reliability
    */
-  async validateSession(o = !1) {
-    var i, w;
-    const t = "session_validation";
-    if (!o) {
-      const _ = this.validationCache.get(t);
+  async validateSession(s = !1) {
+    var n, w;
+    const a = "session_validation";
+    if (!s) {
+      const _ = this.validationCache.get(a);
       if (_ && Date.now() - _.timestamp < this.CACHE_DURATION)
         return console.log("[SessionValidator] Using cached validation result"), _.result;
     }
     console.log("[SessionValidator] Validating session...");
     try {
-      const _ = this.getCookieValue("sb-access-token"), W = this.getCookieValue("sb-refresh-token");
-      if (!_ || !W) {
+      const _ = this.getCookieValue("sb-access-token"), M = this.getCookieValue("sb-refresh-token");
+      if (!_ || !M) {
         const f = {
           isValid: !1,
           needsLogin: !0,
           error: "No authentication tokens found",
           canRetry: !1
         };
-        return this.cacheResult(t, f), f;
+        return this.cacheResult(a, f), f;
       }
-      const T = await te();
-      let N = null, m = null;
+      const W = await ae();
+      let H = null, m = null;
       for (let f = 1; f <= 2; f++)
         try {
-          const u = await T.auth.getSession();
-          N = u.data.session, m = u.error;
+          const u = await W.auth.getSession();
+          H = u.data.session, m = u.error;
           break;
         } catch (u) {
           if (console.warn(`[SessionValidator] Network error on attempt ${f}:`, u), f === 2) {
@@ -2722,7 +2722,7 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
               error: "Network error during validation",
               canRetry: !0
             };
-            return this.cacheResult(t, L), L;
+            return this.cacheResult(a, L), L;
           }
           await new Promise((L) => setTimeout(L, 1e3));
         }
@@ -2730,22 +2730,22 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
         console.warn("[SessionValidator] Error getting session:", m);
         const u = {
           isValid: !1,
-          needsLogin: ((i = m.message) == null ? void 0 : i.includes("Invalid JWT")) || ((w = m.message) == null ? void 0 : w.includes("JWT expired")),
+          needsLogin: ((n = m.message) == null ? void 0 : n.includes("Invalid JWT")) || ((w = m.message) == null ? void 0 : w.includes("JWT expired")),
           error: `Session error: ${m.message}`,
           canRetry: !0
         };
-        return this.cacheResult(t, u), u;
+        return this.cacheResult(a, u), u;
       }
-      if (!N || !N.user) {
+      if (!H || !H.user) {
         const f = {
           isValid: !1,
           needsLogin: !0,
           error: "No valid session found",
           canRetry: !0
         };
-        return this.cacheResult(t, f), f;
+        return this.cacheResult(a, f), f;
       }
-      const k = /* @__PURE__ */ new Date(), p = new Date(N.expires_at * 1e3), c = 5 * 60 * 1e3;
+      const k = /* @__PURE__ */ new Date(), p = new Date(H.expires_at * 1e3), c = 5 * 60 * 1e3;
       if (k >= new Date(p.getTime() - c)) {
         const f = {
           isValid: !1,
@@ -2753,24 +2753,24 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
           error: "Session is close to expiry or expired",
           canRetry: !0
         };
-        return this.cacheResult(t, f), f;
+        return this.cacheResult(a, f), f;
       }
-      const R = {
+      const N = {
         isValid: !0,
         needsLogin: !1,
         canRetry: !1
       };
-      return this.cacheResult(t, R), R;
+      return this.cacheResult(a, N), N;
     } catch (_) {
       console.error("[SessionValidator] Error validating session:", _);
-      const W = {
+      const M = {
         isValid: !1,
         needsLogin: !1,
         // Don't force login on unexpected errors
         error: `Validation error: ${_}`,
         canRetry: !0
       };
-      return this.cacheResult(t, W), W;
+      return this.cacheResult(a, M), M;
     }
   }
   /**
@@ -2779,17 +2779,17 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
   async restoreSession() {
     console.log("[SessionValidator] Attempting to restore session...");
     try {
-      const o = this.getCookieValue("sb-access-token"), t = this.getCookieValue("sb-refresh-token");
-      if (!o || !t)
+      const s = this.getCookieValue("sb-access-token"), a = this.getCookieValue("sb-refresh-token");
+      if (!s || !a)
         return {
           isValid: !1,
           needsLogin: !0,
           error: "No tokens available for restoration",
           canRetry: !1
         };
-      const i = await te(), { data: w, error: _ } = await i.auth.setSession({
-        access_token: o,
-        refresh_token: t
+      const n = await ae(), { data: w, error: _ } = await n.auth.setSession({
+        access_token: s,
+        refresh_token: a
       });
       return _ ? (console.warn("[SessionValidator] Error restoring session:", _), {
         isValid: !1,
@@ -2806,11 +2806,11 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
         error: "Session restoration failed",
         canRetry: !0
       };
-    } catch (o) {
-      return console.error("[SessionValidator] Error restoring session:", o), {
+    } catch (s) {
+      return console.error("[SessionValidator] Error restoring session:", s), {
         isValid: !1,
         needsLogin: !0,
-        error: `Restoration error: ${o}`,
+        error: `Restoration error: ${s}`,
         canRetry: !0
       };
     }
@@ -2824,9 +2824,9 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
   /**
    * Cache validation result
    */
-  cacheResult(o, t) {
-    this.validationCache.set(o, {
-      result: t,
+  cacheResult(s, a) {
+    this.validationCache.set(s, {
+      result: a,
       timestamp: Date.now()
     });
   }
@@ -2834,93 +2834,136 @@ const ra = /* @__PURE__ */ $e(Wt, [["__scopeId", "data-v-acdf6325"]]), he = clas
    * Get cached validation result
    */
   getCachedResult() {
-    const o = this.validationCache.get("session_validation");
-    return o && Date.now() - o.timestamp < this.CACHE_DURATION ? o.result : null;
+    const s = this.validationCache.get("session_validation");
+    return s && Date.now() - s.timestamp < this.CACHE_DURATION ? s.result : null;
   }
 };
 me(he, "instance");
-let Ge = he;
-const je = Ge.getInstance(), Rt = (a = !1) => je.validateSession(a), Pt = () => je.restoreSession(), xt = () => je.clearCache();
-async function na() {
+let Fe = he;
+const je = Fe.getInstance(), $a = (t = !1) => je.validateSession(t), Ta = () => je.restoreSession(), Wa = () => je.clearCache();
+async function it() {
   console.log("[SessionValidator] Initializing session validation...");
-  let a = await Rt();
-  return !a.isValid && a.canRetry && (console.log("[SessionValidator] Attempting session restoration..."), a = await Pt()), a;
+  let t = await $a();
+  return !t.isValid && t.canRetry && (console.log("[SessionValidator] Attempting session restoration..."), t = await Ta()), t;
 }
-function ia() {
+function lt() {
   if (typeof window > "u")
     return () => {
     };
-  const a = () => {
-    console.log("[SessionValidator] Network restored, clearing cache for revalidation"), xt();
-  }, o = () => {
+  const t = () => {
+    console.log("[SessionValidator] Network restored, clearing cache for revalidation"), Wa();
+  }, s = () => {
     console.log("[SessionValidator] Network lost, session validation may fail");
   };
-  return window.addEventListener("online", a), window.addEventListener("offline", o), () => {
-    window.removeEventListener("online", a), window.removeEventListener("offline", o);
+  return window.addEventListener("online", t), window.addEventListener("offline", s), () => {
+    window.removeEventListener("online", t), window.removeEventListener("offline", s);
   };
+}
+function gs() {
+  let t = "", s = "", a = "";
+  {
+    const n = { VITE_APEX_DOMAIN: "aiworkspace.pro", BASE_URL: "/", MODE: "production", DEV: !1, PROD: !0, SSR: !1, SUPABASE_URL: void 0, SUPABASE_ANON_KEY: void 0 };
+    t = n.VITE_SUPABASE_URL || n.SUPABASE_URL || "", s = n.VITE_SUPABASE_ANON_KEY || n.SUPABASE_ANON_KEY || "", a = n.VITE_APEX_DOMAIN;
+  }
+  if ((!t || !s) && typeof process < "u" && process.env && (t = t || process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "", s = s || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || "", a = a || process.env.VITE_APEX_DOMAIN || process.env.APEX_DOMAIN || ""), (!t || !s) && typeof window < "u") {
+    const n = window;
+    t = t || n.__SUPABASE_URL__ || "", s = s || n.__SUPABASE_ANON_KEY__ || "", a = a || n.__APEX_DOMAIN__ || "";
+  }
+  return t && s ? {
+    supabaseUrl: t,
+    supabaseAnonKey: s,
+    apexDomain: a
+  } : null;
+}
+function ct() {
+  const t = gs();
+  t ? import("./supabase-510327ca.mjs").then((s) => s.e).then(({ configureSupabase: s }) => {
+    s({
+      url: t.supabaseUrl,
+      anonKey: t.supabaseAnonKey
+    }), console.log("[EnvConfig] Auto-configured Supabase from environment variables");
+  }).catch((s) => {
+    console.warn("[EnvConfig] Failed to auto-configure Supabase:", s);
+  }) : console.warn("[EnvConfig] No valid environment configuration found");
+}
+function ut() {
+  const t = gs();
+  console.log("[EnvConfig] Debug info:", {
+    config: t,
+    importMetaEnv: { VITE_APEX_DOMAIN: "aiworkspace.pro", BASE_URL: "/", MODE: "production", DEV: !1, PROD: !0, SSR: !1, SUPABASE_URL: void 0, SUPABASE_ANON_KEY: void 0 },
+    processEnv: typeof process < "u" ? {
+      SUPABASE_URL: !!process.env.SUPABASE_URL,
+      SUPABASE_ANON_KEY: !!process.env.SUPABASE_ANON_KEY,
+      VITE_SUPABASE_URL: !!process.env.VITE_SUPABASE_URL,
+      VITE_SUPABASE_ANON_KEY: !!process.env.VITE_SUPABASE_ANON_KEY
+    } : "N/A"
+  });
 }
 export {
   _e as ACCESS_COOKIE,
-  aa as AIWorkspaceHeader,
-  ra as AuthCallback,
-  va as LS_ACCESS_KEY,
-  wa as LS_REFRESH_KEY,
-  mo as LoginModal,
-  Me as PackageError,
+  rt as AIWorkspaceHeader,
+  nt as AuthCallback,
+  kt as LS_ACCESS_KEY,
+  _t as LS_REFRESH_KEY,
+  ko as LoginModal,
+  Ve as PackageError,
   ye as REFRESH_COOKIE,
-  Mo as SessionLossModal,
-  Ge as SessionValidator,
-  ma as buildOAuthRedirectUrl,
-  De as clearLocalStorageTokens,
-  xt as clearSessionCache,
+  Ro as SessionLossModal,
+  Fe as SessionValidator,
+  ct as autoConfigureFromEnv,
+  yt as buildOAuthRedirectUrl,
+  xe as clearLocalStorageTokens,
+  Wa as clearSessionCache,
   ke as clearSessionCookie,
-  oa as configureGitHub,
-  ua as configureSupabase,
-  ro as conservativeConfig,
-  Qt as createSessionConfig,
-  aa as default,
+  at as configureGitHub,
+  ft as configureSupabase,
+  no as conservativeConfig,
+  Za as createSessionConfig,
+  ut as debugEnvConfig,
+  rt as default,
   ve as defaultSessionConfig,
-  sa as detectionScenarios,
+  ot as detectionScenarios,
   ds as developmentConfig,
-  ka as ensureCrossSubdomainCookies,
-  ao as fastDetectionConfig,
-  Zt as getConfigByPreset,
-  _a as getCookie,
-  co as getGitHubToken,
-  Bs as getPostLoginBase,
+  St as ensureCrossSubdomainCookies,
+  ro as fastDetectionConfig,
+  et as getConfigByPreset,
+  bt as getCookie,
+  uo as getGitHubToken,
+  js as getPostLoginBase,
   fs as getSessionConfig,
-  te as getSupabase,
-  so as handleBundlingError,
-  da as handleDomainChangeAuth,
+  ae as getSupabase,
+  oo as handleBundlingError,
+  gt as handleDomainChangeAuth,
   Gs as initializeCrossSubdomainAuth,
-  na as initializeSessionValidation,
-  ta as isGitHubConfigured,
+  it as initializeSessionValidation,
+  tt as isGitHubConfigured,
+  gs as loadEnvConfig,
   ps as productionConfig,
-  pa as restoreCrossSubdomainSession,
-  Pt as restoreSession,
-  He as restoreSessionWithRetry,
-  Bt as safeExecute,
-  jt as safeExecuteAsync,
-  Kt as safeGetCookie,
-  qt as safeGetLocalStorage,
-  zt as safeImport,
-  Jt as safeSetCookie,
-  Yt as safeSetLocalStorage,
-  Xt as safeWindowOperation,
-  no as sessionConfigPresets,
+  ht as restoreCrossSubdomainSession,
+  Ta as restoreSession,
+  De as restoreSessionWithRetry,
+  ja as safeExecute,
+  za as safeExecuteAsync,
+  Ya as safeGetCookie,
+  Xa as safeGetLocalStorage,
+  Ka as safeImport,
+  Ja as safeSetCookie,
+  qa as safeSetLocalStorage,
+  Qa as safeWindowOperation,
+  io as sessionConfigPresets,
   je as sessionValidator,
   Se as setSessionCookie,
-  fa as setupAuthStateListener,
-  oo as setupGlobalErrorHandler,
-  ga as setupImmediateCrossSubdomainAuth,
-  ia as setupNetworkAwareValidation,
-  Sa as setupUniversalCallback,
-  Ue as supabase,
-  Ne as syncCookiesToLocalStorage,
-  ea as timingInfo,
-  uo as useAuth,
+  vt as setupAuthStateListener,
+  ao as setupGlobalErrorHandler,
+  wt as setupImmediateCrossSubdomainAuth,
+  lt as setupNetworkAwareValidation,
+  Et as setupUniversalCallback,
+  Pe as supabase,
+  He as syncCookiesToLocalStorage,
+  st as timingInfo,
+  po as useAuth,
   to as useEnhancedAuth,
-  io as useSessionMonitor,
-  lo as useWorkspaceStore,
-  Rt as validateSession
+  lo as useSessionMonitor,
+  co as useWorkspaceStore,
+  $a as validateSession
 };

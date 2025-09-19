@@ -109,8 +109,18 @@ function getSupabaseConfig(): SupabaseConfig | null {
   }
   
   // Strategy 2: Try environment variables (for development/demo)
-  const envUrl = (import.meta as any).env?.SUPABASE_URL
-  const envKey = (import.meta as any).env?.SUPABASE_ANON_KEY
+  // Support both VITE_ prefixed and non-prefixed variables
+  let envUrl = (import.meta as any).env?.VITE_SUPABASE_URL || (import.meta as any).env?.SUPABASE_URL
+  let envKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || (import.meta as any).env?.SUPABASE_ANON_KEY
+  
+  // Fallback: Try to access process.env directly (Node.js environments)
+  if (!envUrl && typeof process !== 'undefined' && process.env) {
+    envUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
+  }
+  if (!envKey && typeof process !== 'undefined' && process.env) {
+    envKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
+  }
+  
   if (envUrl && envKey) {
     return { url: envUrl, anonKey: envKey }
   }

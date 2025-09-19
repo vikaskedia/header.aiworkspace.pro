@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Environment Variables Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .debug-info {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 3px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Environment Variables Demo</h1>
+  <p>This demo shows how the package handles non-VITE prefixed environment variables.</p>
+  
+  <div id="debug-info" class="debug-info">
+    <h3>Loading environment configuration...</h3>
+  </div>
+
+  <div id="config-result" class="debug-info">
+    <h3>Configuration Result:</h3>
+    <div id="config-content">Loading...</div>
+  </div>
+
+  <script type="module">
+    // Import the environment configuration utilities
+    import { loadEnvConfig, debugEnvConfig, autoConfigureFromEnv } from './src/utils/envConfig.ts'
+
+    // Debug environment variables
+    console.log('=== Environment Debug ===')
+    debugEnvConfig()
+
+    // Show debug info in the page
+    const debugElement = document.getElementById('debug-info')
+    const configElement = document.getElementById('config-content')
+
+    // Display current environment state
+    const envInfo = {
+      importMetaEnv: import.meta.env,
+      processEnv: typeof process !== 'undefined' ? {
+        SUPABASE_URL: !!process.env?.SUPABASE_URL,
+        SUPABASE_ANON_KEY: !!process.env?.SUPABASE_ANON_KEY,
+        VITE_SUPABASE_URL: !!process.env?.VITE_SUPABASE_URL,
+        VITE_SUPABASE_ANON_KEY: !!process.env?.VITE_SUPABASE_ANON_KEY
+      } : 'N/A (browser environment)'
+    }
+
+    debugElement.innerHTML = `
+      <h3>Environment Debug Info:</h3>
+      <pre>${JSON.stringify(envInfo, null, 2)}</pre>
+    `
+
+    // Try to load configuration
+    const config = loadEnvConfig()
+    
+    if (config) {
+      configElement.innerHTML = `
+        <div class="success">✅ Configuration loaded successfully!</div>
+        <pre>Supabase URL: ${config.supabaseUrl.substring(0, 30)}...
+Anon Key: ${config.supabaseAnonKey.substring(0, 30)}...
+Apex Domain: ${config.apexDomain || 'Not set'}</pre>
+      `
+      
+      // Auto-configure Supabase
+      autoConfigureFromEnv()
+    } else {
+      configElement.innerHTML = `
+        <div class="error">❌ No valid configuration found!</div>
+        <p>Make sure your .env file contains:</p>
+        <pre>SUPABASE_URL=your-supabase-url
+SUPABASE_ANON_KEY=your-anon-key
+VITE_APEX_DOMAIN=aiworkspace.pro</pre>
+        <p><strong>Note:</strong> Non-VITE prefixed variables need to be explicitly defined in vite.config.ts for client-side access.</p>
+      `
+    }
+
+    // Show what import.meta.env contains
+    console.log('import.meta.env contents:', import.meta.env)
+  </script>
+</body>
+</html>
