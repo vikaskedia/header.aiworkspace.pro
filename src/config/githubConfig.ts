@@ -103,6 +103,9 @@ const fetchGitHubTokenFromDB = async (): Promise<string | null> => {
         const token = githubRows[0].key_value?.trim()
         if (token && isValidGitHubToken(token)) {
           console.log('🔧 GitHub token found in general query!')
+          console.log('Token preview:', token.substring(0, 8) + '...' + token.substring(token.length - 4))
+          console.log('Token length:', token.length)
+          console.log('Token starts with:', token.substring(0, 4))
           return token
         }
       }
@@ -144,6 +147,9 @@ const fetchGitHubTokenFromDB = async (): Promise<string | null> => {
       }
       
       console.log('🔧 GitHub token fetched from database successfully')
+      console.log('Token preview:', token.substring(0, 8) + '...' + token.substring(token.length - 4))
+      console.log('Token length:', token.length)
+      console.log('Token starts with:', token.substring(0, 4))
       return token
     }
 

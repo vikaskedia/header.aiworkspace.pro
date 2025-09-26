@@ -1383,24 +1383,32 @@ const resetGitHubCallCounter = () => {
 }
 
 // Get GitHub token from global config, environment, or localStorage
-const getGitHubToken = () => {
-  // Try global configuration first
-  const globalToken = getGlobalGitHubToken()
-  if (globalToken) {
-    return globalToken
+const getGitHubToken = async () => {
+  try {
+    // Try global configuration first (this is async!)
+    const globalToken = await getGlobalGitHubToken()
+    if (globalToken) {
+      console.log('✅ Using GitHub token from database')
+      return globalToken
+    }
+  } catch (error) {
+    console.warn('Failed to get token from database:', error)
   }
   
   // Try to get from environment variables
-  if (import.meta.env.VITE_GITHUB_TOKEN) {
-    return import.meta.env.VITE_GITHUB_TOKEN
+  if ((import.meta as any).env?.VITE_GITHUB_TOKEN) {
+    console.log('✅ Using GitHub token from environment')
+    return (import.meta as any).env.VITE_GITHUB_TOKEN
   }
   
   // Try to get from localStorage (for manual configuration)
   const storedToken = localStorage.getItem('github_token')
   if (storedToken) {
+    console.log('✅ Using GitHub token from localStorage')
     return storedToken
   }
   
+  console.warn('❌ No GitHub token found in any source')
   return null
 }
 
@@ -1424,7 +1432,7 @@ const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string
     }
     
     // Get GitHub token for authentication
-    const githubToken = getGitHubToken()
+    const githubToken = await getGitHubToken()
     const headers: HeadersInit = {
       'Accept': 'application/vnd.github.v3+json',
       'User-Agent': 'AIWorkspace-Header/1.0'
@@ -1432,8 +1440,12 @@ const getLatestCommitFromGitHub = async (repoInfo: { owner: string; repo: string
     
     // Add authentication header if token is available
     if (githubToken) {
-      headers['Authorization'] = `token ${githubToken}`
+      // GitHub now recommends Bearer token format for personal access tokens
+      headers['Authorization'] = `Bearer ${githubToken}`
       console.log('🔑 Using GitHub token for authentication')
+      console.log('Token preview:', githubToken.substring(0, 8) + '...' + githubToken.substring(githubToken.length - 4))
+      console.log('Token length:', githubToken.length)
+      console.log('Authorization header:', `Bearer ${githubToken.substring(0, 8)}...`)
     } else {
       console.log('⚠️ No GitHub token found, trying unauthenticated request')
     }
