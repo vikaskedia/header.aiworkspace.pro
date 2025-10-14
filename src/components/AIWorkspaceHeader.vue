@@ -176,8 +176,11 @@
               <el-dropdown-item v-if="showWorkspaceSelector">
                 <a href="#switch-workspace" class="nav-link" @click.prevent="handleUserCommand('workspaces')">Switch Workspace</a>
               </el-dropdown-item>
-              <el-dropdown-item>
+              <el-dropdown-item v-if="!isWorklogDomain.value">
                 <a href="https://worklog.aiworkspace.pro/worklogs" class="nav-link" @click.prevent="handleUserCommand('worklogs')">Go to Worklogs</a>
+              </el-dropdown-item>
+              <el-dropdown-item v-if="isWorklogDomain.value">
+                <a href="https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard" class="nav-link" @click.prevent="handleUserCommand('allworkspaces')">All workspaces</a>
               </el-dropdown-item>
               <el-dropdown-item @click="copyCommitHash" class="version-item">
                 <div class="version-info">
@@ -240,7 +243,7 @@
 
     <!-- Workspace Switcher Modal -->
     <el-dialog 
-      v-if="isAuthenticated && shouldShowWorkspaceSelector"
+      v-if="isAuthenticated && showWorkspaceSelector"
       v-model="workspaceSwitcherVisible" 
       title="Switch Workspace" 
       width="500px"
@@ -1026,6 +1029,9 @@ const handleUserCommand = (command: string) => {
       }
       break
     case 'workspaces':
+      workspaceSwitcherVisible.value = true
+      break
+    case 'allworkspaces':
       workspaceSwitcherVisible.value = true
       break
     case 'worklogs':
