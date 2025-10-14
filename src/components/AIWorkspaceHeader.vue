@@ -94,7 +94,7 @@
       <div v-if="showSecondaryNavigation" class="header-center">
         <nav class="main-navigation">
           <!-- Workspace selector -->
-          <el-dropdown v-if="showWorkspaceSelector" @command="handleNavCommand" trigger="hover">
+          <el-dropdown v-if="shouldShowWorkspaceSelector" @command="handleNavCommand" trigger="hover">
             <span class="nav-item">
               {{ isInAllWorkspaceMode ? 'All workspace' : (currentWorkspace?.title || 'Select Workspace') }}
               <el-icon class="nav-arrow"><ArrowDown /></el-icon>
@@ -134,7 +134,7 @@
             </template>
           </el-dropdown>
 
-          <span v-if="showWorkspaceSelector" class="nav-divider">/</span>
+          <span v-if="shouldShowWorkspaceSelector" class="nav-divider">/</span>
 
           <!-- Static secondary navigation -->
           <el-dropdown v-if="showSecondaryNavigation" trigger="hover">
@@ -173,8 +173,11 @@
               <el-dropdown-item>
                 <a href="/profile" class="nav-link" @click.prevent="handleUserCommand('profile')">Profile Settings</a>
               </el-dropdown-item>
-              <el-dropdown-item v-if="showWorkspaceSelector">
+              <el-dropdown-item v-if="shouldShowWorkspaceSelector">
                 <a href="#switch-workspace" class="nav-link" @click.prevent="handleUserCommand('workspaces')">Switch Workspace</a>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <a href="https://worklog.aiworkspace.pro/worklogs" class="nav-link" @click.prevent="handleUserCommand('worklogs')">Go to Worklogs</a>
               </el-dropdown-item>
               <el-dropdown-item @click="copyCommitHash" class="version-item">
                 <div class="version-info">
@@ -237,7 +240,7 @@
 
     <!-- Workspace Switcher Modal -->
     <el-dialog 
-      v-if="isAuthenticated && showWorkspaceSelector"
+      v-if="isAuthenticated && shouldShowWorkspaceSelector"
       v-model="workspaceSwitcherVisible" 
       title="Switch Workspace" 
       width="500px"
@@ -649,6 +652,21 @@ const currentSectionLabel = computed(() => {
   }
 })
 
+// Computed property to check if current domain is worklog
+const isWorklogDomain = computed(() => {
+  try {
+    return window.location.hostname === 'worklog.aiworkspace.pro'
+  } catch (error) {
+    console.warn('[AIWorkspaceHeader] Error checking worklog domain:', error)
+    return false
+  }
+})
+
+// Modified computed for showing workspace selector
+const shouldShowWorkspaceSelector = computed(() => {
+  return props.showWorkspaceSelector && !isWorklogDomain.value
+})
+
 // Helper: build tree from flat list
 const buildWorkspaceTree = (list: Workspace[]) => {
   const nodeMap = new Map()
@@ -1009,6 +1027,9 @@ const handleUserCommand = (command: string) => {
       break
     case 'workspaces':
       workspaceSwitcherVisible.value = true
+      break
+    case 'worklogs':
+      window.location.href = 'https://worklog.aiworkspace.pro/worklogs'
       break
     case 'logout':
       handleLogout()
