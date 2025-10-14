@@ -2279,14 +2279,14 @@ const Ds = /* @__PURE__ */ Pe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
       return y(), D(Te, null, [
         i("header", $s, [
           !V.value && U.value < Ie || W(A) ? (y(), D("div", Ws, [
-            e[11] || (e[11] = Ve('<div class="header-left" data-v-b2212c1c><div class="logo-section" data-v-b2212c1c><a href="/" class="logo" data-v-b2212c1c><div class="text-logo" data-v-b2212c1c><span class="logo-text" data-v-b2212c1c>AI Workspace</span></div></a></div></div>', 1)),
+            e[11] || (e[11] = Ve('<div class="header-left" data-v-1152684c><div class="logo-section" data-v-1152684c><a href="/" class="logo" data-v-1152684c><div class="text-logo" data-v-1152684c><span class="logo-text" data-v-1152684c>AI Workspace</span></div></a></div></div>', 1)),
             i("div", Ns, [
               i("span", Gs, [
                 W(A) ? (y(), D("span", Os, "Syncing authentication...")) : (y(), D("span", Bs, "Initializing..."))
               ])
             ])
           ])) : !V.value && U.value >= Ie ? (y(), D("div", Fs, [
-            e[13] || (e[13] = Ve('<div class="header-left" data-v-b2212c1c><div class="logo-section" data-v-b2212c1c><a href="/" class="logo" data-v-b2212c1c><div class="text-logo" data-v-b2212c1c><span class="logo-text" data-v-b2212c1c>AI Workspace</span></div></a></div></div>', 1)),
+            e[13] || (e[13] = Ve('<div class="header-left" data-v-1152684c><div class="logo-section" data-v-1152684c><a href="/" class="logo" data-v-1152684c><div class="text-logo" data-v-1152684c><span class="logo-text" data-v-1152684c>AI Workspace</span></div></a></div></div>', 1)),
             i("div", { class: "header-center" }, [
               e[12] || (e[12] = i("span", { class: "fallback-text" }, "Header Ready (Fallback Mode)", -1)),
               i("button", {
@@ -2294,9 +2294,9 @@ const Ds = /* @__PURE__ */ Pe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
                 class: "retry-button"
               }, "Retry Pinia")
             ]),
-            e[14] || (e[14] = Ve('<div class="header-right" data-v-b2212c1c><div class="user-profile" data-v-b2212c1c><div class="user-info" data-v-b2212c1c><span class="user-name" data-v-b2212c1c>User</span></div><div class="user-avatar" data-v-b2212c1c><span class="avatar-placeholder" data-v-b2212c1c>U</span></div></div></div>', 1))
+            e[14] || (e[14] = Ve('<div class="header-right" data-v-1152684c><div class="user-profile" data-v-1152684c><div class="user-info" data-v-1152684c><span class="user-name" data-v-1152684c>User</span></div><div class="user-avatar" data-v-1152684c><span class="avatar-placeholder" data-v-1152684c>U</span></div></div></div>', 1))
           ])) : oe.value && !W(C) ? (y(), D("div", js, [
-            e[17] || (e[17] = Ve('<div class="header-left" data-v-b2212c1c><div class="logo-section" data-v-b2212c1c><a href="/" class="logo" data-v-b2212c1c><div class="text-logo" data-v-b2212c1c><span class="logo-text" data-v-b2212c1c>AI Workspace</span></div></a></div></div>', 1)),
+            e[17] || (e[17] = Ve('<div class="header-left" data-v-1152684c><div class="logo-section" data-v-1152684c><a href="/" class="logo" data-v-1152684c><div class="text-logo" data-v-1152684c><span class="logo-text" data-v-1152684c>AI Workspace</span></div></a></div></div>', 1)),
             i("div", zs, [
               i("span", Ks, [
                 w(r, null, {
@@ -2442,7 +2442,7 @@ const Ds = /* @__PURE__ */ Pe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
                   _: 1
                 })) : Q("", !0),
                 Le.value ? (y(), D("span", lt, "/")) : Q("", !0),
-                o.showSecondaryNavigation ? (y(), te(le, {
+                Le.value ? (y(), te(le, {
                   key: 2,
                   trigger: "hover"
                 }, {
@@ -2500,7 +2500,7 @@ const Ds = /* @__PURE__ */ Pe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
                         ]),
                         _: 1
                       }),
-                      Le.value ? (y(), te(X, { key: 0 }, {
+                      o.showWorkspaceSelector ? (y(), te(X, { key: 0 }, {
                         default: h(() => [
                           i("a", {
                             href: "#switch-workspace",
@@ -2730,7 +2730,7 @@ const Ds = /* @__PURE__ */ Pe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
     };
   }
 });
-const pa = /* @__PURE__ */ Pe(Dt, [["__scopeId", "data-v-b2212c1c"]]), $t = { class: "auth-callback" }, Wt = /* @__PURE__ */ ue({
+const pa = /* @__PURE__ */ Pe(Dt, [["__scopeId", "data-v-1152684c"]]), $t = { class: "auth-callback" }, Wt = /* @__PURE__ */ ue({
   __name: "AuthCallback",
   setup(o) {
     Ee(async () => {

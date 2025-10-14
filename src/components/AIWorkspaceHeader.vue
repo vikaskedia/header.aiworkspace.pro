@@ -137,7 +137,7 @@
           <span v-if="shouldShowWorkspaceSelector" class="nav-divider">/</span>
 
           <!-- Static secondary navigation -->
-          <el-dropdown v-if="showSecondaryNavigation" trigger="hover">
+          <el-dropdown v-if="shouldShowWorkspaceSelector" trigger="hover">
             <span class="nav-item">
               {{ currentSectionLabel }}
               <el-icon class="nav-arrow"><ArrowDown /></el-icon>
@@ -173,7 +173,7 @@
               <el-dropdown-item>
                 <a href="/profile" class="nav-link" @click.prevent="handleUserCommand('profile')">Profile Settings</a>
               </el-dropdown-item>
-              <el-dropdown-item v-if="shouldShowWorkspaceSelector">
+              <el-dropdown-item v-if="showWorkspaceSelector">
                 <a href="#switch-workspace" class="nav-link" @click.prevent="handleUserCommand('workspaces')">Switch Workspace</a>
               </el-dropdown-item>
               <el-dropdown-item>
