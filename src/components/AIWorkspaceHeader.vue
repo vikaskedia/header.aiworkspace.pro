@@ -1032,7 +1032,7 @@ const handleUserCommand = (command: string) => {
       workspaceSwitcherVisible.value = true
       break
     case 'allworkspaces':
-      workspaceSwitcherVisible.value = true
+      window.location.href = 'https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard'
       break
     case 'worklogs':
       window.location.href = 'https://worklog.aiworkspace.pro/worklogs'
