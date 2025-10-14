@@ -177,7 +177,7 @@
                 <a href="#switch-workspace" class="nav-link" @click.prevent="handleUserCommand('workspaces')">Switch Workspace</a>
               </el-dropdown-item>
               <el-dropdown-item v-if="!isWorklogDomain">
-                <a href="https://worklog.aiworkspace.pro/worklogs" class="nav-link" @click.prevent="handleUserCommand('worklogs')">Go to Worklogs</a>
+                <a href="https://worklog.aiworkspace.pro/worklogs" class="nav-link" @click.prevent="handleUserCommand('worklogs')">Worklogs</a>
               </el-dropdown-item>
               <el-dropdown-item v-if="isWorklogDomain">
                 <a href="https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard" class="nav-link" @click.prevent="handleUserCommand('allworkspaces')">All workspaces</a>
