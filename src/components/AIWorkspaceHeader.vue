@@ -583,7 +583,7 @@ const singleWorkspaceNavItems = ref<SecondaryNavigationItem[]>([
   { label: 'AI Phone', key: 'phone', url: '/phone' },
   { label: 'AI Intake', key: 'ai_intake', url: '/ai_intake' },
   { label: 'AI Fax', key: 'ai_fax', url: '/ai_fax' },
-  { label: 'AI Portfolios', key: 'ai-portfolios', url: '/ai-portfolios' },
+  { label: 'Portfolio Analysis', key: 'ai-portfolios', url: '/ai-portfolios' },
   { label: 'AI Fund Analyst', key: 'ai_fund_analyst', url: '/ai_fund_analyst' },
   { label: 'Contacts', key: 'contacts', url: '/contacts' },
   { label: 'Settings', key: 'settings', url: '/settings' }
