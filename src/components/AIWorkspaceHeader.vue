@@ -1708,14 +1708,14 @@ onUnmounted(() => {
 }
 
 .header-placeholder h1 {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #1a202c;
   margin-bottom: 3px;
 }
 
 .header-placeholder p {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   color: #64748b;
   margin: 0 0 3px 0;
 }

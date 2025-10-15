@@ -2285,14 +2285,14 @@ const Ds = /* @__PURE__ */ xe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
       return y(), D(Ve, null, [
         n("header", $s, [
           !V.value && U.value < Ie || W(I) ? (y(), D("div", Ws, [
-            e[12] || (e[12] = He('<div class="header-left" data-v-05ed5c11><div class="logo-section" data-v-05ed5c11><a href="/" class="logo" data-v-05ed5c11><div class="text-logo" data-v-05ed5c11><span class="logo-text" data-v-05ed5c11>AI Workspace</span></div></a></div></div>', 1)),
+            e[12] || (e[12] = He('<div class="header-left" data-v-f1a0191f><div class="logo-section" data-v-f1a0191f><a href="/" class="logo" data-v-f1a0191f><div class="text-logo" data-v-f1a0191f><span class="logo-text" data-v-f1a0191f>AI Workspace</span></div></a></div></div>', 1)),
             n("div", Ns, [
               n("span", Gs, [
                 W(I) ? (y(), D("span", Os, "Syncing authentication...")) : (y(), D("span", Bs, "Initializing..."))
               ])
             ])
           ])) : !V.value && U.value >= Ie ? (y(), D("div", Fs, [
-            e[14] || (e[14] = He('<div class="header-left" data-v-05ed5c11><div class="logo-section" data-v-05ed5c11><a href="/" class="logo" data-v-05ed5c11><div class="text-logo" data-v-05ed5c11><span class="logo-text" data-v-05ed5c11>AI Workspace</span></div></a></div></div>', 1)),
+            e[14] || (e[14] = He('<div class="header-left" data-v-f1a0191f><div class="logo-section" data-v-f1a0191f><a href="/" class="logo" data-v-f1a0191f><div class="text-logo" data-v-f1a0191f><span class="logo-text" data-v-f1a0191f>AI Workspace</span></div></a></div></div>', 1)),
             n("div", { class: "header-center" }, [
               e[13] || (e[13] = n("span", { class: "fallback-text" }, "Header Ready (Fallback Mode)", -1)),
               n("button", {
@@ -2300,9 +2300,9 @@ const Ds = /* @__PURE__ */ xe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
                 class: "retry-button"
               }, "Retry Pinia")
             ]),
-            e[15] || (e[15] = He('<div class="header-right" data-v-05ed5c11><div class="user-profile" data-v-05ed5c11><div class="user-info" data-v-05ed5c11><span class="user-name" data-v-05ed5c11>User</span></div><div class="user-avatar" data-v-05ed5c11><span class="avatar-placeholder" data-v-05ed5c11>U</span></div></div></div>', 1))
+            e[15] || (e[15] = He('<div class="header-right" data-v-f1a0191f><div class="user-profile" data-v-f1a0191f><div class="user-info" data-v-f1a0191f><span class="user-name" data-v-f1a0191f>User</span></div><div class="user-avatar" data-v-f1a0191f><span class="avatar-placeholder" data-v-f1a0191f>U</span></div></div></div>', 1))
           ])) : se.value && !W(C) ? (y(), D("div", js, [
-            e[18] || (e[18] = He('<div class="header-left" data-v-05ed5c11><div class="logo-section" data-v-05ed5c11><a href="/" class="logo" data-v-05ed5c11><div class="text-logo" data-v-05ed5c11><span class="logo-text" data-v-05ed5c11>AI Workspace</span></div></a></div></div>', 1)),
+            e[18] || (e[18] = He('<div class="header-left" data-v-f1a0191f><div class="logo-section" data-v-f1a0191f><a href="/" class="logo" data-v-f1a0191f><div class="text-logo" data-v-f1a0191f><span class="logo-text" data-v-f1a0191f>AI Workspace</span></div></a></div></div>', 1)),
             n("div", zs, [
               n("span", Ks, [
                 v(r, null, {
@@ -2750,7 +2750,7 @@ const Ds = /* @__PURE__ */ xe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), $s = { cl
     };
   }
 });
-const fa = /* @__PURE__ */ xe($t, [["__scopeId", "data-v-05ed5c11"]]), Wt = { class: "auth-callback" }, Nt = /* @__PURE__ */ ue({
+const fa = /* @__PURE__ */ xe($t, [["__scopeId", "data-v-f1a0191f"]]), Wt = { class: "auth-callback" }, Nt = /* @__PURE__ */ ue({
   __name: "AuthCallback",
   setup(o) {
     Ce(async () => {
