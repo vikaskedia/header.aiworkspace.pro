@@ -153,6 +153,10 @@
             </template>
           </el-dropdown>
         </nav>
+        <div v-if="!shouldShowWorkspaceSelector && isWorklogDomain" class="header-placeholder">
+            <h1>Team Worklogs</h1>
+            <p>View all team member work entries and progress updates</p>
+          </div>
       </div>
 
       <!-- Right side - User info and notifications -->
@@ -1692,6 +1696,28 @@ onUnmounted(() => {
   height: 3px;
   background: linear-gradient(90deg, #f56c6c, #e74c3c, #f56c6c);
   animation: pulse 2s ease-in-out infinite;
+}
+
+.header-placeholder {
+  text-align: center;
+  margin-bottom: 4px;
+  position: relative;
+  padding: 0 3px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header-placeholder h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 3px;
+}
+
+.header-placeholder p {
+  font-size: 1.1rem;
+  color: #64748b;
+  margin: 0 0 3px 0;
 }
 
 @keyframes pulse {
