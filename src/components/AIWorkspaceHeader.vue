@@ -1059,6 +1059,9 @@ const handleUserCommand = (command: string) => {
     case 'worklogs':
       window.location.href = 'https://worklog.aiworkspace.pro/worklogs'
       break
+    case 'drms':
+      window.location.href = 'https://drms.aiworkspace.pro/dashboard'
+      break
     case 'logout':
       handleLogout()
       break

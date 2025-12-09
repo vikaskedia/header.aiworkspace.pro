@@ -1991,6 +1991,9 @@ const $s = /* @__PURE__ */ xe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), Ws = { cl
         case "worklogs":
           window.location.href = "https://worklog.aiworkspace.pro/worklogs";
           break;
+        case "drms":
+          window.location.href = "https://drms.aiworkspace.pro/dashboard";
+          break;
         case "logout":
           Io();
           break;
@@ -2294,14 +2297,14 @@ const $s = /* @__PURE__ */ xe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), Ws = { cl
       return _(), x(Re, null, [
         n("header", Ws, [
           !R.value && U.value < Le || W(I) ? (_(), x("div", Ns, [
-            e[13] || (e[13] = Ve('<div class="header-left" data-v-388b37cc><div class="logo-section" data-v-388b37cc><a href="/" class="logo" data-v-388b37cc><div class="text-logo" data-v-388b37cc><span class="logo-text" data-v-388b37cc>AI Workspace</span></div></a></div></div>', 1)),
+            e[13] || (e[13] = Ve('<div class="header-left" data-v-4964adfd><div class="logo-section" data-v-4964adfd><a href="/" class="logo" data-v-4964adfd><div class="text-logo" data-v-4964adfd><span class="logo-text" data-v-4964adfd>AI Workspace</span></div></a></div></div>', 1)),
             n("div", Gs, [
               n("span", Os, [
                 W(I) ? (_(), x("span", Bs, "Syncing authentication...")) : (_(), x("span", Fs, "Initializing..."))
               ])
             ])
           ])) : !R.value && U.value >= Le ? (_(), x("div", js, [
-            e[15] || (e[15] = Ve('<div class="header-left" data-v-388b37cc><div class="logo-section" data-v-388b37cc><a href="/" class="logo" data-v-388b37cc><div class="text-logo" data-v-388b37cc><span class="logo-text" data-v-388b37cc>AI Workspace</span></div></a></div></div>', 1)),
+            e[15] || (e[15] = Ve('<div class="header-left" data-v-4964adfd><div class="logo-section" data-v-4964adfd><a href="/" class="logo" data-v-4964adfd><div class="text-logo" data-v-4964adfd><span class="logo-text" data-v-4964adfd>AI Workspace</span></div></a></div></div>', 1)),
             n("div", { class: "header-center" }, [
               e[14] || (e[14] = n("span", { class: "fallback-text" }, "Header Ready (Fallback Mode)", -1)),
               n("button", {
@@ -2309,9 +2312,9 @@ const $s = /* @__PURE__ */ xe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), Ws = { cl
                 class: "retry-button"
               }, "Retry Pinia")
             ]),
-            e[16] || (e[16] = Ve('<div class="header-right" data-v-388b37cc><div class="user-profile" data-v-388b37cc><div class="user-info" data-v-388b37cc><span class="user-name" data-v-388b37cc>User</span></div><div class="user-avatar" data-v-388b37cc><span class="avatar-placeholder" data-v-388b37cc>U</span></div></div></div>', 1))
+            e[16] || (e[16] = Ve('<div class="header-right" data-v-4964adfd><div class="user-profile" data-v-4964adfd><div class="user-info" data-v-4964adfd><span class="user-name" data-v-4964adfd>User</span></div><div class="user-avatar" data-v-4964adfd><span class="avatar-placeholder" data-v-4964adfd>U</span></div></div></div>', 1))
           ])) : se.value && !W(E) ? (_(), x("div", zs, [
-            e[19] || (e[19] = Ve('<div class="header-left" data-v-388b37cc><div class="logo-section" data-v-388b37cc><a href="/" class="logo" data-v-388b37cc><div class="text-logo" data-v-388b37cc><span class="logo-text" data-v-388b37cc>AI Workspace</span></div></a></div></div>', 1)),
+            e[19] || (e[19] = Ve('<div class="header-left" data-v-4964adfd><div class="logo-section" data-v-4964adfd><a href="/" class="logo" data-v-4964adfd><div class="text-logo" data-v-4964adfd><span class="logo-text" data-v-4964adfd>AI Workspace</span></div></a></div></div>', 1)),
             n("div", Ks, [
               n("span", Ys, [
                 w(r, null, {
@@ -2770,7 +2773,7 @@ const $s = /* @__PURE__ */ xe(Ms, [["__scopeId", "data-v-0dd27f7f"]]), Ws = { cl
     };
   }
 });
-const ha = /* @__PURE__ */ xe(Nt, [["__scopeId", "data-v-388b37cc"]]), Gt = { class: "auth-callback" }, Ot = /* @__PURE__ */ de({
+const ha = /* @__PURE__ */ xe(Nt, [["__scopeId", "data-v-4964adfd"]]), Gt = { class: "auth-callback" }, Ot = /* @__PURE__ */ de({
   __name: "AuthCallback",
   setup(o) {
     Ee(async () => {
