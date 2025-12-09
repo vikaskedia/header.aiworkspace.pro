@@ -156,7 +156,11 @@
         <div v-if="!shouldShowWorkspaceSelector && isWorklogDomain" class="header-placeholder">
             <h1>Team Worklogs</h1>
             <p>View all team member work entries and progress updates</p>
-          </div>
+        </div>
+        <div v-if="!shouldShowWorkspaceSelector && isDRMSDomain" class="header-placeholder">
+            <!--h1>{{ currentSectionLabel }}</h1>
+            <p>Manage your workspace and projects effectively</p-->
+        </div>
       </div>
 
       <!-- Right side - User info and notifications -->
@@ -182,6 +186,9 @@
               </el-dropdown-item>
               <el-dropdown-item v-if="!isWorklogDomain">
                 <a href="https://worklog.aiworkspace.pro/worklogs" class="nav-link" @click.prevent="handleUserCommand('worklogs')">Worklogs</a>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <a href="https://drms.aiworkspace.pro/dashboard" class="nav-link" @click.prevent="handleUserCommand('drms')">Direct Reportee</a>
               </el-dropdown-item>
               <el-dropdown-item v-if="isWorklogDomain">
                 <a href="https://all-ws-dashboard.aiworkspace.pro/all-workspace/dashboard" class="nav-link" @click.prevent="handleUserCommand('allworkspaces')">All workspaces</a>
@@ -335,6 +342,7 @@ import { getGitHubToken as getGlobalGitHubToken } from '../config/githubConfig'
 import LoginModal from './LoginModal.vue'
 import SessionLossModal from './SessionLossModal.vue'
 import type { HeaderProps, Workspace, SecondaryNavigationItem } from '../types'
+import type { el } from 'element-plus/es/locales.mjs'
 
 const props = withDefaults(defineProps<HeaderProps>(), {
   showUserMenu: true,
@@ -669,9 +677,19 @@ const isWorklogDomain = computed(() => {
   }
 })
 
+// Computed property to check if current domain is DRMS
+const isDRMSDomain = computed(() => {
+  try {
+    return window.location.hostname === 'drms.aiworkspace.pro'
+  } catch (error) {
+    console.warn('[AIWorkspaceHeader] Error checking DRMS domain:', error)
+    return false
+  }
+})
+
 // Modified computed for showing workspace selector
 const shouldShowWorkspaceSelector = computed(() => {
-  return props.showWorkspaceSelector && !isWorklogDomain.value
+  return props.showWorkspaceSelector && !isWorklogDomain.value && !isDRMSDomain.value
 })
 
 // Helper: build tree from flat list
