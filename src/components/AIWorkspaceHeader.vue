@@ -158,8 +158,8 @@
             <p>View all team member work entries and progress updates</p>
         </div>
         <div v-if="!shouldShowWorkspaceSelector && isDRMSDomain" class="header-placeholder">
-            <!--h1>{{ currentSectionLabel }}</h1>
-            <p>Manage your workspace and projects effectively</p-->
+            <h1>Direct Reportee Management System</h1>
+            <p>Manage your direct reportees tasks and progress</p>
         </div>
       </div>
 
