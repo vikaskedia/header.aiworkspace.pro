@@ -680,7 +680,9 @@ const isWorklogDomain = computed(() => {
 // Computed property to check if current domain is DRMS
 const isDRMSDomain = computed(() => {
   try {
-    return window.location.hostname === 'drms.aiworkspace.pro'
+    // check for drms domain or localhost/dashbaord for testing
+    return window.location.hostname === 'drms.aiworkspace.pro' || 
+           (window.location.hostname === 'localhost' && window.location.pathname.startsWith('/dashboard'))
   } catch (error) {
     console.warn('[AIWorkspaceHeader] Error checking DRMS domain:', error)
     return false
