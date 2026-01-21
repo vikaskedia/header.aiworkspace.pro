@@ -21,7 +21,7 @@ export function setSessionCookie(name: string, value: string, maxAgeSec = 60 * 6
   const isLocal = isLocalHost(host)
   if (isLocal) {
     document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAgeSec}; SameSite=Lax`
-    console.log('[auth][cookie][set][local]', { host, name, valuePreview: value.slice(0,20) + '...' })
+    console.log('[auth][cookie][set][local]', { host, name, valuePreview: value.slice(0, 20) + '...' })
     console.log('[auth][cookie][after]', cookieSummary([name]))
     return
   }
@@ -29,7 +29,7 @@ export function setSessionCookie(name: string, value: string, maxAgeSec = 60 * 6
   document.cookie = `${name}=${encodeURIComponent(value)}; Domain=.${APEX_DOMAIN}; Path=/; Max-Age=${maxAgeSec}; SameSite=Lax; Secure`
   // Remove possible host-only duplicate
   document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax`
-  console.log('[auth][cookie][set][apex]', { host, apex: APEX_DOMAIN, name, valuePreview: value.slice(0,20) + '...' })
+  console.log('[auth][cookie][set][apex]', { host, apex: APEX_DOMAIN, name, valuePreview: value.slice(0, 20) + '...' })
   console.log('[auth][cookie][after]', cookieSummary([name]))
 }
 
@@ -64,7 +64,7 @@ export function ensureCrossSubdomainCookies(names: string[]) {
     return
   }
   console.log('[auth][cookie][promote] start', { host, apex: APEX_DOMAIN, names })
-  
+
   // First, try to get cookies from localStorage as backup
   const localStorageBackup = new Map()
   names.forEach(n => {
@@ -75,16 +75,16 @@ export function ensureCrossSubdomainCookies(names: string[]) {
       console.log('[auth][cookie][promote] found in localStorage', n)
     }
   })
-  
+
   names.forEach(n => {
     let v = getCookie(n)
-    
+
     // If cookie not found, try localStorage backup
     if (!v && localStorageBackup.has(n)) {
       v = localStorageBackup.get(n)
       console.log('[auth][cookie][promote] using localStorage backup for', n)
     }
-    
+
     if (v) {
       setSessionCookie(n, v, 60 * 60 * 24 * 365) // Use 1 year expiration instead of default 7 days
     } else {
@@ -103,24 +103,24 @@ export function getPostLoginBase(): string {
     // Check both search params and hash params (OAuth callbacks often use hash)
     const searchParams = new URLSearchParams(location.search)
     const hashParams = new URLSearchParams(location.hash.replace('#', ''))
-    
+
     // Look for redirect parameters in both search and hash
-    const searchParamKey = ['redirect','redirect_to','returnTo','next','redirect_origin'].find(k => searchParams.get(k))
-    const hashParamKey = ['redirect','redirect_to','returnTo','next','redirect_origin'].find(k => hashParams.get(k))
-    
-    let candidate = searchParamKey ? searchParams.get(searchParamKey)! : 
-                   hashParamKey ? hashParams.get(hashParamKey)! : ''
-    
+    const searchParamKey = ['redirect', 'redirect_to', 'returnTo', 'next', 'redirect_origin'].find(k => searchParams.get(k))
+    const hashParamKey = ['redirect', 'redirect_to', 'returnTo', 'next', 'redirect_origin'].find(k => hashParams.get(k))
+
+    let candidate = searchParamKey ? searchParams.get(searchParamKey)! :
+      hashParamKey ? hashParams.get(hashParamKey)! : ''
+
     console.log('[getPostLoginBase] Search params:', Object.fromEntries(searchParams))
     console.log('[getPostLoginBase] Hash params:', Object.fromEntries(hashParams))
     console.log('[getPostLoginBase] Found search param key:', searchParamKey)
     console.log('[getPostLoginBase] Found hash param key:', hashParamKey)
     console.log('[getPostLoginBase] Candidate from params:', candidate)
-    
+
     if (!candidate) {
       const storedUrl = sessionStorage.getItem('post-login-redirect') || localStorage.getItem('post-login-redirect') || ''
       console.log('[getPostLoginBase] Stored URL from storage:', storedUrl)
-      
+
       // If stored URL is a full URL, extract the path
       if (storedUrl.startsWith('http')) {
         try {
@@ -134,15 +134,15 @@ export function getPostLoginBase(): string {
       } else {
         candidate = storedUrl
       }
-      
+
       console.log('[getPostLoginBase] Final candidate from storage:', candidate)
     }
-    
+
     if (!candidate) {
       candidate = (import.meta as any).env?.VITE_DEFAULT_POST_LOGIN_URL || '/'
       console.log('[getPostLoginBase] Using default:', candidate)
     }
-    
+
     if (candidate.startsWith('http')) {
       try {
         const u = new URL(candidate)
@@ -152,12 +152,12 @@ export function getPostLoginBase(): string {
         }
         console.log('[getPostLoginBase] Invalid hostname, returning /')
         return '/'
-      } catch { 
+      } catch {
         console.log('[getPostLoginBase] Invalid URL, returning /')
-        return '/' 
+        return '/'
       }
     }
-    
+
     if (!candidate.startsWith('/')) candidate = '/' + candidate
     console.log('[getPostLoginBase] Final candidate:', candidate)
     return candidate
@@ -176,14 +176,25 @@ export function syncCookiesToLocalStorage() {
   try {
     const at = getCookie(ACCESS_COOKIE)
     const rt = getCookie(REFRESH_COOKIE)
-    if (at) localStorage.setItem(LS_ACCESS_KEY, at)
-    if (rt) localStorage.setItem(LS_REFRESH_KEY, rt)
-    console.log('[auth][cookie->ls] sync', {
+
+    if (at) {
+      localStorage.setItem(LS_ACCESS_KEY, at)
+    } else {
+      console.log('[auth][cookie->ls] access token cookie missing')
+    }
+
+    if (rt) {
+      localStorage.setItem(LS_REFRESH_KEY, rt)
+    } else {
+      console.log('[auth][cookie->ls] refresh token cookie missing')
+    }
+
+    console.log('[auth][cookie->ls] sync complete', {
       hasAccess: !!at,
       hasRefresh: !!rt
     })
   } catch (e) {
-    console.log('[auth][cookie->ls] error', e)
+    console.error('[auth][cookie->ls] error', e)
   }
 }
 
@@ -213,18 +224,18 @@ if (typeof window !== 'undefined') {
       buildOAuthRedirectUrl,
       getPostLoginBase
     }
-    
-    // Assign the object to window
-    ;(window as any).authRedirectGlobal = authRedirectGlobal
-    
-    // Also assign individual functions for backward compatibility
-    ;(window as any).ensureCrossSubdomainCookies = ensureCrossSubdomainCookies
-    ;(window as any).ACCESS_COOKIE = ACCESS_COOKIE
-    ;(window as any).REFRESH_COOKIE = REFRESH_COOKIE
-    ;(window as any).setSessionCookie = setSessionCookie
-    ;(window as any).getCookie = getCookie
-    ;(window as any).clearSessionCookie = clearSessionCookie
-    
+
+      // Assign the object to window
+      ; (window as any).authRedirectGlobal = authRedirectGlobal
+
+      // Also assign individual functions for backward compatibility
+      ; (window as any).ensureCrossSubdomainCookies = ensureCrossSubdomainCookies
+      ; (window as any).ACCESS_COOKIE = ACCESS_COOKIE
+      ; (window as any).REFRESH_COOKIE = REFRESH_COOKIE
+      ; (window as any).setSessionCookie = setSessionCookie
+      ; (window as any).getCookie = getCookie
+      ; (window as any).clearSessionCookie = clearSessionCookie
+
     console.log('[auth][authRedirect] Functions made available globally for fallback access')
   } catch (globalError) {
     console.warn('[auth][authRedirect] Failed to assign functions globally:', globalError)
