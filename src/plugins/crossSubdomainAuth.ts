@@ -1,6 +1,83 @@
 import { getSupabase } from '../lib/supabase'
 import { ensureCrossSubdomainCookies, getCookie, syncCookiesToLocalStorage, setSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE, broadcastAuthState } from '../utils/authRedirect'
 
+// Global auth ready state - allows consuming apps to wait for cross-subdomain auth to complete
+let authReadyResolve: ((value: { isAuthenticated: boolean; session: any }) => void) | null = null
+let authReadyPromise: Promise<{ isAuthenticated: boolean; session: any }> | null = null
+let isAuthReady = false
+let authReadyResult: { isAuthenticated: boolean; session: any } | null = null
+
+/**
+ * Wait for cross-subdomain authentication to be ready.
+ * Consuming apps should call this before checking their own auth state.
+ * 
+ * @example
+ * // In your app's main setup:
+ * import { waitForAuthReady } from '@aiworkspace/shared-header'
+ * 
+ * const authResult = await waitForAuthReady()
+ * if (authResult.isAuthenticated) {
+ *   // User is authenticated, proceed with app logic
+ * }
+ */
+export function waitForAuthReady(): Promise<{ isAuthenticated: boolean; session: any }> {
+  // If already ready, return immediately
+  if (isAuthReady && authReadyResult !== null) {
+    console.log('[auth][ready] Auth already ready, returning cached result')
+    return Promise.resolve(authReadyResult)
+  }
+
+  // If promise exists, return it
+  if (authReadyPromise) {
+    console.log('[auth][ready] Waiting for existing auth ready promise')
+    return authReadyPromise
+  }
+
+  // Create new promise
+  console.log('[auth][ready] Creating new auth ready promise')
+  authReadyPromise = new Promise((resolve) => {
+    authReadyResolve = resolve
+  })
+
+  return authReadyPromise
+}
+
+/**
+ * Signal that auth is ready. Called internally after cross-subdomain auth completes.
+ */
+function signalAuthReady(isAuthenticated: boolean, session: any) {
+  console.log('[auth][ready] Signaling auth ready:', { isAuthenticated, hasSession: !!session })
+
+  authReadyResult = { isAuthenticated, session }
+  isAuthReady = true
+
+  if (authReadyResolve) {
+    authReadyResolve(authReadyResult)
+    authReadyResolve = null
+  }
+
+  // Also dispatch a custom event for apps that prefer event-based handling
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('auth-ready', {
+      detail: authReadyResult
+    }))
+  }
+}
+
+/**
+ * Check if auth is ready (non-blocking)
+ */
+export function isAuthReadySync(): boolean {
+  return isAuthReady
+}
+
+/**
+ * Get the auth ready result if available (non-blocking)
+ */
+export function getAuthReadyResult(): { isAuthenticated: boolean; session: any } | null {
+  return authReadyResult
+}
+
 // Ultra-early cross-subdomain authentication setup for domain changes
 // This should be called as early as possible in the page lifecycle
 export function setupImmediateCrossSubdomainAuth() {
@@ -40,13 +117,19 @@ export async function initializeCrossSubdomainAuth() {
 
     if (restoreResult.success) {
       console.log('[auth][init] Cross-subdomain authentication initialized successfully')
+      // Signal that auth is ready with authenticated state
+      signalAuthReady(true, restoreResult.session)
       return { success: true, session: restoreResult.session }
     } else {
       console.log('[auth][init] Cross-subdomain authentication initialization completed (no active session)')
+      // Signal that auth is ready but not authenticated
+      signalAuthReady(false, null)
       return { success: false, error: restoreResult.error }
     }
   } catch (error) {
     console.error('[auth][init] Error during cross-subdomain authentication initialization:', error)
+    // Signal auth ready even on error so apps don't hang
+    signalAuthReady(false, null)
     return { success: false, error }
   }
 }

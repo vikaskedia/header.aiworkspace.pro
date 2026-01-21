@@ -3,12 +3,12 @@ var Bo = (o, s, a) => s in o ? Oo(o, s, { enumerable: !0, configurable: !0, writ
 var be = (o, s, a) => (Bo(o, typeof s != "symbol" ? s + "" : s, a), a);
 import { defineComponent as ie, openBlock as y, createElementBlock as M, createElementVNode as n, ref as I, computed as j, onMounted as Ee, onUnmounted as wo, watch as ge, reactive as Fo, resolveComponent as oe, createBlock as Q, withCtx as g, toDisplayString as q, createVNode as w, unref as $, withModifiers as ne, createCommentVNode as B, createTextVNode as J, Fragment as Ve, createStaticVNode as He, normalizeClass as Ne, renderList as Ge, normalizeStyle as jo } from "vue";
 import { ElForm as zo, ElMessage as F, ElDialog as Ko, ElIcon as Ue, ElButton as Oe, ElProgress as Yo, ElMessageBox as po } from "element-plus";
-import { i as qo, g as Z, r as Jo, s as Me } from "./supabase-db98ff49.mjs";
-import { c as Ca, h as Ea, b as Aa, d as Ia, a as La } from "./supabase-db98ff49.mjs";
+import { i as qo, g as Z, r as Jo, s as Me } from "./supabase-6cdf6543.mjs";
+import { c as Ca, b as Ea, h as Aa, a as Ia, e as La, f as Ra, d as Ta, w as Va } from "./supabase-6cdf6543.mjs";
 import { broadcastAuthState as Xo, clearSessionCookie as Se, ACCESS_COOKIE as le, REFRESH_COOKIE as ce, clearLocalStorageTokens as Be, ensureCrossSubdomainCookies as fo, setSessionCookie as ue, syncCookiesToLocalStorage as Re, listenForAuthBroadcasts as Qo, getPostLoginBase as Zo } from "./utils/authRedirect.js";
-import { AUTH_BROADCAST_CHANNEL as Ta, AUTH_BROADCAST_KEY as Va, LS_ACCESS_KEY as Ha, LS_REFRESH_KEY as Ua, buildOAuthRedirectUrl as Ma, getCookie as Da, syncCookiesAndBroadcast as xa } from "./utils/authRedirect.js";
+import { AUTH_BROADCAST_CHANNEL as Ua, AUTH_BROADCAST_KEY as Ma, LS_ACCESS_KEY as Da, LS_REFRESH_KEY as xa, buildOAuthRedirectUrl as Pa, getCookie as Wa, syncCookiesAndBroadcast as $a } from "./utils/authRedirect.js";
 import { defineStore as es } from "pinia";
-import { setupUniversalCallback as Wa } from "./utils/universalCallback.js";
+import { setupUniversalCallback as Ga } from "./utils/universalCallback.js";
 /*! Element Plus Icons Vue v2.3.2 */
 var os = /* @__PURE__ */ ie({
   name: "ArrowDown",
@@ -3008,18 +3008,18 @@ function ya() {
 export {
   le as ACCESS_COOKIE,
   ma as AIWorkspaceHeader,
-  Ta as AUTH_BROADCAST_CHANNEL,
-  Va as AUTH_BROADCAST_KEY,
+  Ua as AUTH_BROADCAST_CHANNEL,
+  Ma as AUTH_BROADCAST_KEY,
   ka as AuthCallback,
-  Ha as LS_ACCESS_KEY,
-  Ua as LS_REFRESH_KEY,
+  Da as LS_ACCESS_KEY,
+  xa as LS_REFRESH_KEY,
   Ls as LoginModal,
   De as PackageError,
   ce as REFRESH_COOKIE,
   Gs as SessionLossModal,
   Ke as SessionValidator,
   Xo as broadcastAuthState,
-  Ma as buildOAuthRedirectUrl,
+  Pa as buildOAuthRedirectUrl,
   _s as clearGitHubTokenCache,
   Be as clearLocalStorageTokens,
   Yt as clearSessionCache,
@@ -3035,21 +3035,23 @@ export {
   mo as developmentConfig,
   fo as ensureCrossSubdomainCookies,
   fs as fastDetectionConfig,
+  Ea as getAuthReadyResult,
   da as getConfigByPreset,
-  Da as getCookie,
+  Wa as getCookie,
   Ye as getGitHubToken,
   Zo as getPostLoginBase,
   _o as getSessionConfig,
   Z as getSupabase,
   us as handleBundlingError,
-  Ea as handleDomainChangeAuth,
+  Aa as handleDomainChangeAuth,
   qo as initializeCrossSubdomainAuth,
   _a as initializeSessionValidation,
+  Ia as isAuthReadySync,
   ha as isGitHubConfigured,
   Qo as listenForAuthBroadcasts,
   ko as productionConfig,
   wa as refreshGitHubToken,
-  Aa as restoreCrossSubdomainSession,
+  La as restoreCrossSubdomainSession,
   Kt as restoreSession,
   Jo as restoreSessionWithRetry,
   sa as safeExecute,
@@ -3063,18 +3065,19 @@ export {
   hs as sessionConfigPresets,
   qe as sessionValidator,
   ue as setSessionCookie,
-  Ia as setupAuthStateListener,
+  Ra as setupAuthStateListener,
   ds as setupGlobalErrorHandler,
-  La as setupImmediateCrossSubdomainAuth,
+  Ta as setupImmediateCrossSubdomainAuth,
   ya as setupNetworkAwareValidation,
-  Wa as setupUniversalCallback,
+  Ga as setupUniversalCallback,
   Me as supabase,
-  xa as syncCookiesAndBroadcast,
+  $a as syncCookiesAndBroadcast,
   Re as syncCookiesToLocalStorage,
   pa as timingInfo,
   ys as useAuth,
   ps as useEnhancedAuth,
   ws as useSessionMonitor,
   vs as useWorkspaceStore,
-  zt as validateSession
+  zt as validateSession,
+  Va as waitForAuthReady
 };
