@@ -65,17 +65,8 @@ export function useEnhancedAuth() {
         }
       }
 
-      // Perform cookie synchronization multiple times for domain changes
+      // Perform cookie synchronization for domain changes
       performCookieSync([ACCESS_COOKIE, REFRESH_COOKIE])
-
-      // Add a small delay to ensure cookies are properly set
-      await new Promise(resolve => setTimeout(resolve, 50))
-
-      // Perform additional cookie sync for domain changes
-      performCookieSync([ACCESS_COOKIE, REFRESH_COOKIE])
-
-      // Add another small delay
-      await new Promise(resolve => setTimeout(resolve, 50))
 
       // First check Supabase session (highest priority)
       let session = null
@@ -118,7 +109,8 @@ export function useEnhancedAuth() {
       console.log('[auth][enhanced] No active session, attempting to restore from cookies...')
 
       // Use the improved restoration logic which handles retries and cookie syncing internally
-      const restoreResult = await restoreSessionWithRetry(15, 200)
+      // Fast-fail check in restoreSessionWithRetry will quickly return if no tokens exist
+      const restoreResult = await restoreSessionWithRetry(5, 200)
 
       if (restoreResult.success && restoreResult.session) {
         console.log('[auth][enhanced] Session restored successfully from cookies')

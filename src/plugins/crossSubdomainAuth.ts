@@ -170,9 +170,26 @@ export async function setupAuthStateListener() {
 }
 
 // Enhanced session restoration with automatic retry and cross-subdomain sync
-// Enhanced session restoration with automatic retry and cross-subdomain sync
+// Optimized to fail fast when there's no session to restore
 export async function restoreSessionWithRetry(maxRetries = 10, delayMs = 200) {
   console.log('[auth][restore] Starting enhanced session restoration...')
+
+  // FAST PATH: Check for cookies immediately before any retries
+  // If there are no cookies at all, there's no session to restore - fail fast
+  const initialAccessToken = getCookie(ACCESS_COOKIE)
+  const initialRefreshToken = getCookie(REFRESH_COOKIE)
+
+  // Also check localStorage as a backup source
+  const lsAccessToken = localStorage.getItem('sb-access-token')
+  const lsRefreshToken = localStorage.getItem('sb-refresh-token')
+
+  const hasAnyCookies = initialAccessToken || initialRefreshToken
+  const hasAnyLocalStorage = lsAccessToken || lsRefreshToken
+
+  if (!hasAnyCookies && !hasAnyLocalStorage) {
+    console.log('[auth][restore] No cookies or localStorage tokens found - fast fail (user not logged in)')
+    return { success: false, error: 'No auth tokens found' }
+  }
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -198,13 +215,18 @@ export async function restoreSessionWithRetry(maxRetries = 10, delayMs = 200) {
       ensureCrossSubdomainCookies([ACCESS_COOKIE, REFRESH_COOKIE])
 
       // 3. Check for cookies
-      const at = getCookie(ACCESS_COOKIE)
-      const rt = getCookie(REFRESH_COOKIE)
+      const at = getCookie(ACCESS_COOKIE) || lsAccessToken
+      const rt = getCookie(REFRESH_COOKIE) || lsRefreshToken
 
       if (!at || !rt) {
-        console.log(`[auth][restore] Attempt ${attempt}: Missing cookies (Access: ${!!at}, Refresh: ${!!rt})`)
+        console.log(`[auth][restore] Attempt ${attempt}: Missing tokens (Access: ${!!at}, Refresh: ${!!rt})`)
+        // If we had tokens initially but don't now, something went wrong - don't retry as much
+        if (attempt >= 3) {
+          console.log('[auth][restore] Tokens disappeared after sync - giving up')
+          return { success: false, error: 'Tokens not found after sync' }
+        }
         if (attempt < maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, delayMs * attempt)) // Progressive backoff
+          await new Promise(resolve => setTimeout(resolve, delayMs))
           continue
         } else {
           return { success: false, error: 'No cookies found after retries' }
@@ -230,10 +252,15 @@ export async function restoreSessionWithRetry(maxRetries = 10, delayMs = 200) {
 
       if (error) {
         console.warn(`[auth][restore] Attempt ${attempt} failed: ${error.message}`)
+        // If tokens are invalid (e.g., expired, revoked), don't keep retrying
+        if (error.message.includes('Invalid') || error.message.includes('expired') || error.message.includes('revoked')) {
+          console.log('[auth][restore] Tokens are invalid - stopping retries')
+          return { success: false, error }
+        }
         if (attempt === maxRetries) return { success: false, error }
       }
 
-      // Wait before retry
+      // Wait before retry (only for potential network issues)
       await new Promise(resolve => setTimeout(resolve, delayMs))
 
     } catch (e) {
