@@ -1,7 +1,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { getSupabase } from '../lib/supabase'
 import { restoreSessionWithRetry, initializeCrossSubdomainAuth } from '../plugins/crossSubdomainAuth'
-import { clearSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE, clearLocalStorageTokens } from '../utils/authRedirect'
+import { clearSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE, clearLocalStorageTokens, broadcastAuthState } from '../utils/authRedirect'
 import { handleBundlingError } from '../utils/errorHandler'
 import type { AuthState, Session, AuthResult } from '../types'
 
@@ -173,6 +173,13 @@ export function useEnhancedAuth() {
   // Sign out user
   const logout = async (): Promise<void> => {
     try {
+      // Broadcast sign-out to other tabs/subdomains FIRST
+      // This ensures other tabs are notified even if the Supabase signOut fails
+      broadcastAuthState({
+        type: 'SIGNED_OUT',
+        timestamp: Date.now()
+      })
+
       // Clear Supabase session
       const supabase = await getSupabase()
       await supabase.auth.signOut()

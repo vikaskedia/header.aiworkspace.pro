@@ -1,5 +1,5 @@
 import { getSupabase } from '../lib/supabase'
-import { ensureCrossSubdomainCookies, getCookie, syncCookiesToLocalStorage, setSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE } from '../utils/authRedirect'
+import { ensureCrossSubdomainCookies, getCookie, syncCookiesToLocalStorage, setSessionCookie, ACCESS_COOKIE, REFRESH_COOKIE, broadcastAuthState } from '../utils/authRedirect'
 
 // Ultra-early cross-subdomain authentication setup for domain changes
 // This should be called as early as possible in the page lifecycle
@@ -98,6 +98,15 @@ export async function setupAuthStateListener() {
             setSessionCookie(ACCESS_COOKIE, session.access_token, 60 * 60 * 24 * 365) // 1 year
             setSessionCookie(REFRESH_COOKIE, session.refresh_token, 60 * 60 * 24 * 365) // 1 year
             syncCookiesToLocalStorage()
+
+            // Broadcast token refresh to other tabs/subdomains
+            broadcastAuthState({
+              type: 'TOKEN_REFRESHED',
+              timestamp: Date.now(),
+              userId: session.user?.id,
+              accessToken: session.access_token,
+              refreshToken: session.refresh_token
+            })
           }
           break
 
@@ -108,12 +117,27 @@ export async function setupAuthStateListener() {
             setSessionCookie(ACCESS_COOKIE, session.access_token, 60 * 60 * 24 * 365)
             setSessionCookie(REFRESH_COOKIE, session.refresh_token, 60 * 60 * 24 * 365)
             syncCookiesToLocalStorage()
+
+            // Broadcast sign-in to other tabs/subdomains
+            broadcastAuthState({
+              type: 'SIGNED_IN',
+              timestamp: Date.now(),
+              userId: session.user?.id,
+              accessToken: session.access_token,
+              refreshToken: session.refresh_token
+            })
           }
           break
 
         case 'SIGNED_OUT':
           console.log('[auth][listener] User signed out')
           // Don't clear cookies here - let the logout handler do it
+
+          // Broadcast sign-out to other tabs/subdomains
+          broadcastAuthState({
+            type: 'SIGNED_OUT',
+            timestamp: Date.now()
+          })
 
           // Trigger immediate session loss detection
           if (typeof window !== 'undefined') {
@@ -134,10 +158,11 @@ export async function setupAuthStateListener() {
 
     authListenerSetup = true
     console.log('[auth][listener] Auth state listener set up successfully')
-  } catch (error) {
+  } catch (error: unknown) {
     console.warn('[auth][listener] Failed to setup auth state listener:', error)
     // If it's a configuration error, we'll retry when Supabase is properly configured
-    if (error.message && error.message.includes('Missing configuration')) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (errorMessage && errorMessage.includes('Missing configuration')) {
       console.log('[auth][listener] Supabase not configured yet, will retry when configured')
       authListenerSetup = false // Allow retry when configuration is available
     }

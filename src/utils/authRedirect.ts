@@ -2,6 +2,150 @@
 
 const APEX_DOMAIN = (import.meta as any).env?.VITE_APEX_DOMAIN || 'aiworkspace.pro'
 
+// ============================================
+// Cross-Subdomain Auth Broadcasting
+// ============================================
+
+// BroadcastChannel for cross-tab/subdomain auth sync
+export const AUTH_BROADCAST_CHANNEL = 'aiworkspace-auth-channel'
+export const AUTH_BROADCAST_KEY = 'aiworkspace-auth-broadcast' // localStorage fallback
+
+// Auth broadcast event types
+export type AuthBroadcastEvent = {
+  type: 'SIGNED_IN' | 'SIGNED_OUT' | 'TOKEN_REFRESHED' | 'SESSION_RESTORED'
+  timestamp: number
+  userId?: string
+  accessToken?: string
+  refreshToken?: string
+}
+
+// Create or get the BroadcastChannel instance
+let authChannel: BroadcastChannel | null = null
+
+function getAuthChannel(): BroadcastChannel | null {
+  if (typeof window === 'undefined') return null
+
+  if (!authChannel) {
+    try {
+      if ('BroadcastChannel' in window) {
+        authChannel = new BroadcastChannel(AUTH_BROADCAST_CHANNEL)
+        console.log('[auth][broadcast] BroadcastChannel created:', AUTH_BROADCAST_CHANNEL)
+      }
+    } catch (error) {
+      console.warn('[auth][broadcast] BroadcastChannel not supported, using localStorage fallback')
+    }
+  }
+
+  return authChannel
+}
+
+/**
+ * Broadcast auth state change to all tabs/subdomains
+ * Uses BroadcastChannel with localStorage fallback
+ */
+export function broadcastAuthState(event: AuthBroadcastEvent) {
+  if (typeof window === 'undefined') return
+
+  console.log('[auth][broadcast] Broadcasting auth event:', event.type)
+
+  // Method 1: BroadcastChannel (preferred, works across all tabs including different subdomains)
+  const channel = getAuthChannel()
+  if (channel) {
+    try {
+      channel.postMessage(event)
+      console.log('[auth][broadcast] Event sent via BroadcastChannel')
+    } catch (error) {
+      console.warn('[auth][broadcast] BroadcastChannel postMessage failed:', error)
+    }
+  }
+
+  // Method 2: localStorage event (fallback, triggers storage event in other tabs)
+  try {
+    // Write to localStorage with timestamp to ensure change detection
+    const broadcastData = JSON.stringify(event)
+    localStorage.setItem(AUTH_BROADCAST_KEY, broadcastData)
+
+    // Immediately remove to trigger another storage event if needed for same-type events
+    setTimeout(() => {
+      localStorage.removeItem(AUTH_BROADCAST_KEY)
+    }, 100)
+
+    console.log('[auth][broadcast] Event sent via localStorage')
+  } catch (error) {
+    console.warn('[auth][broadcast] localStorage broadcast failed:', error)
+  }
+}
+
+/**
+ * Listen for auth state changes from other tabs/subdomains
+ * Returns cleanup function
+ */
+export function listenForAuthBroadcasts(callback: (event: AuthBroadcastEvent) => void): () => void {
+  if (typeof window === 'undefined') return () => { }
+
+  const cleanupFunctions: (() => void)[] = []
+
+  // Method 1: BroadcastChannel listener
+  const channel = getAuthChannel()
+  if (channel) {
+    const handleMessage = (event: MessageEvent<AuthBroadcastEvent>) => {
+      console.log('[auth][broadcast] Received BroadcastChannel event:', event.data?.type)
+      if (event.data && event.data.type) {
+        callback(event.data)
+      }
+    }
+
+    channel.addEventListener('message', handleMessage)
+    cleanupFunctions.push(() => channel.removeEventListener('message', handleMessage))
+  }
+
+  // Method 2: localStorage event listener (fallback)
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === AUTH_BROADCAST_KEY && event.newValue) {
+      try {
+        const data = JSON.parse(event.newValue) as AuthBroadcastEvent
+        console.log('[auth][broadcast] Received localStorage event:', data.type)
+        callback(data)
+      } catch (error) {
+        console.warn('[auth][broadcast] Failed to parse localStorage event:', error)
+      }
+    }
+  }
+
+  window.addEventListener('storage', handleStorage)
+  cleanupFunctions.push(() => window.removeEventListener('storage', handleStorage))
+
+  console.log('[auth][broadcast] Auth broadcast listeners registered')
+
+  // Return cleanup function
+  return () => {
+    cleanupFunctions.forEach(cleanup => cleanup())
+    console.log('[auth][broadcast] Auth broadcast listeners cleaned up')
+  }
+}
+
+/**
+ * Force sync cookies with broadcast to notify other tabs
+ * Call this after successful login/session restoration
+ */
+export function syncCookiesAndBroadcast(accessToken: string, refreshToken: string, userId?: string) {
+  // Set cookies
+  setSessionCookie(ACCESS_COOKIE, accessToken)
+  setSessionCookie(REFRESH_COOKIE, refreshToken)
+
+  // Sync to localStorage
+  syncCookiesToLocalStorage()
+
+  // Broadcast to other tabs/subdomains
+  broadcastAuthState({
+    type: 'SESSION_RESTORED',
+    timestamp: Date.now(),
+    userId,
+    accessToken,
+    refreshToken
+  })
+}
+
 function isLocalHost(host: string) {
   return host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)
 }
