@@ -52,36 +52,50 @@ onMounted(async () => {
       console.log('[callback] Session storage redirect:', sessionStorage.getItem('post-login-redirect'))
       console.log('[callback] Local storage redirect:', localStorage.getItem('post-login-redirect'))
       
-      // If no redirect URL found, use the root path
-      const finalRedirectUrl = redirectUrl || '/'
+      // If no redirect URL found or it's the callback URL, use the root path
+      let finalRedirectUrl = redirectUrl || '/'
+      
+      // Ensure we don't redirect back to /auth/callback
+      if (finalRedirectUrl === '/auth/callback' || finalRedirectUrl.includes('/auth/callback')) {
+        console.log('[callback] Avoiding redirect to /auth/callback, using /')
+        finalRedirectUrl = '/'
+      }
+      
       console.log('[callback] Final redirect URL:', finalRedirectUrl)
       
-      // If it's a relative URL, construct the full URL using current origin
-      if (finalRedirectUrl.startsWith('/')) {
-        const currentOrigin = window.location.origin
-        const fullRedirectUrl = `${currentOrigin}${finalRedirectUrl}`
-        console.log('[callback] redirecting to:', fullRedirectUrl, { hostname: window.location.hostname, origin: currentOrigin })
-        
-        // Clear the stored redirect URL
-        sessionStorage.removeItem('post-login-redirect')
-        localStorage.removeItem('post-login-redirect')
-        
-        // Redirect after a short delay to ensure session is fully established
-        setTimeout(() => {
+      // Clear the stored redirect URL
+      sessionStorage.removeItem('post-login-redirect')
+      localStorage.removeItem('post-login-redirect')
+      
+      // Perform the redirect
+      const performRedirect = () => {
+        if (finalRedirectUrl.startsWith('/')) {
+          const currentOrigin = window.location.origin
+          const fullRedirectUrl = `${currentOrigin}${finalRedirectUrl}`
+          console.log('[callback] redirecting to:', fullRedirectUrl, { hostname: window.location.hostname, origin: currentOrigin })
           window.location.href = fullRedirectUrl
-        }, 100)
-      } else {
-        console.log('[callback] redirecting to absolute URL:', finalRedirectUrl)
-        
-        // Clear the stored redirect URL
-        sessionStorage.removeItem('post-login-redirect')
-        localStorage.removeItem('post-login-redirect')
-        
-        // Redirect after a short delay
-        setTimeout(() => {
+          // Fallback using replace in case href doesn't work
+          setTimeout(() => {
+            if (window.location.pathname === '/auth/callback') {
+              console.log('[callback] Redirect did not work, trying replace...')
+              window.location.replace(fullRedirectUrl)
+            }
+          }, 500)
+        } else {
+          console.log('[callback] redirecting to absolute URL:', finalRedirectUrl)
           window.location.href = finalRedirectUrl
-        }, 100)
+          // Fallback using replace
+          setTimeout(() => {
+            if (window.location.pathname === '/auth/callback') {
+              console.log('[callback] Redirect did not work, trying replace...')
+              window.location.replace(finalRedirectUrl)
+            }
+          }, 500)
+        }
       }
+      
+      // Redirect after a short delay to ensure session is fully established
+      setTimeout(performRedirect, 100)
     } else {
       // No session found, redirect to login
       redirectToLogin()

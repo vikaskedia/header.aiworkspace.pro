@@ -248,41 +248,81 @@ export function getPostLoginBase(): string {
     const searchParams = new URLSearchParams(location.search)
     const hashParams = new URLSearchParams(location.hash.replace('#', ''))
 
-    // Look for redirect parameters in both search and hash
-    const searchParamKey = ['redirect', 'redirect_to', 'returnTo', 'next', 'redirect_origin'].find(k => searchParams.get(k))
-    const hashParamKey = ['redirect', 'redirect_to', 'returnTo', 'next', 'redirect_origin'].find(k => hashParams.get(k))
+    // Also check if the hash contains token data with redirect_origin embedded
+    // e.g., #access_token=xyz&redirect_origin=https://...
+    const hashContent = location.hash.substring(1) // Remove the leading '#'
+    const tokenParams = new URLSearchParams(hashContent)
+
+    // Look for redirect parameters in search, hash, and token params
+    const redirectKeys = ['redirect', 'redirect_to', 'returnTo', 'next', 'redirect_origin']
+
+    const searchParamKey = redirectKeys.find(k => searchParams.get(k))
+    const hashParamKey = redirectKeys.find(k => hashParams.get(k))
+    const tokenParamKey = redirectKeys.find(k => tokenParams.get(k))
 
     let candidate = searchParamKey ? searchParams.get(searchParamKey)! :
-      hashParamKey ? hashParams.get(hashParamKey)! : ''
+      hashParamKey ? hashParams.get(hashParamKey)! :
+        tokenParamKey ? tokenParams.get(tokenParamKey)! : ''
 
     console.log('[getPostLoginBase] Search params:', Object.fromEntries(searchParams))
     console.log('[getPostLoginBase] Hash params:', Object.fromEntries(hashParams))
-    console.log('[getPostLoginBase] Found search param key:', searchParamKey)
-    console.log('[getPostLoginBase] Found hash param key:', hashParamKey)
+    console.log('[getPostLoginBase] Token params:', Object.fromEntries(tokenParams))
+    console.log('[getPostLoginBase] Found param key:', searchParamKey || hashParamKey || tokenParamKey)
     console.log('[getPostLoginBase] Candidate from params:', candidate)
 
     if (!candidate) {
       const storedUrl = sessionStorage.getItem('post-login-redirect') || localStorage.getItem('post-login-redirect') || ''
       console.log('[getPostLoginBase] Stored URL from storage:', storedUrl)
 
-      // If stored URL is a full URL, extract the path
+      // If stored URL is a full URL, use it directly if it's under our domain
       if (storedUrl.startsWith('http')) {
         try {
           const url = new URL(storedUrl)
-          candidate = url.pathname + url.search + url.hash
-          console.log('[getPostLoginBase] Extracted path from stored URL:', candidate)
+          // Check if the stored URL is for the same subdomain
+          if (url.origin === window.location.origin) {
+            // Same subdomain - extract the path
+            candidate = url.pathname + url.search + url.hash
+            console.log('[getPostLoginBase] Same origin, extracted path:', candidate)
+          } else if (isUnderApex(url.hostname) || isLocalHost(url.hostname)) {
+            // Different subdomain but same apex domain - use the full URL
+            candidate = storedUrl
+            console.log('[getPostLoginBase] Cross-subdomain, using full URL:', candidate)
+          } else {
+            // Different domain - fallback to root
+            candidate = '/'
+            console.log('[getPostLoginBase] Different domain, using root')
+          }
         } catch (e) {
           console.log('[getPostLoginBase] Error parsing stored URL:', e)
           candidate = storedUrl
         }
-      } else {
+      } else if (storedUrl) {
         candidate = storedUrl
       }
 
       console.log('[getPostLoginBase] Final candidate from storage:', candidate)
     }
 
-    if (!candidate) {
+    // If still no candidate and we're on /auth/callback, redirect to the root of current subdomain
+    if (!candidate || candidate === '/auth/callback') {
+      // Try to get the referrer as a fallback
+      if (document.referrer && document.referrer !== window.location.href) {
+        try {
+          const referrerUrl = new URL(document.referrer)
+          if (isUnderApex(referrerUrl.hostname) || isLocalHost(referrerUrl.hostname)) {
+            // Don't use referrer if it's also an auth/callback URL
+            if (!referrerUrl.pathname.includes('/auth/callback')) {
+              candidate = referrerUrl.href
+              console.log('[getPostLoginBase] Using referrer:', candidate)
+            }
+          }
+        } catch (e) {
+          console.log('[getPostLoginBase] Error parsing referrer:', e)
+        }
+      }
+    }
+
+    if (!candidate || candidate === '/auth/callback') {
       candidate = (import.meta as any).env?.VITE_DEFAULT_POST_LOGIN_URL || '/'
       console.log('[getPostLoginBase] Using default:', candidate)
     }
@@ -303,6 +343,11 @@ export function getPostLoginBase(): string {
     }
 
     if (!candidate.startsWith('/')) candidate = '/' + candidate
+    // Don't return /auth/callback as the redirect target
+    if (candidate === '/auth/callback') {
+      candidate = '/'
+      console.log('[getPostLoginBase] Avoiding /auth/callback redirect, using /')
+    }
     console.log('[getPostLoginBase] Final candidate:', candidate)
     return candidate
   } catch (error) {
